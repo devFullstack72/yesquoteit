@@ -279,9 +279,10 @@ function lead_generation_first_card_shortcode( $atts ) {
         $output .= '<div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);flex-basis:50%">';
 
         // Display image
+        $image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
         if ( $image ) {
-            $output .= '<figure class="wp-block-image size-full has-custom-border is-style-default"><img decoding="async" src="' . esc_url( $image ) . '" alt="' . get_the_title() . '" style="border-radius:16px"></figure>';
-        }
+	    $output .= '<figure class="wp-block-image size-full has-custom-border is-style-default"><img decoding="async" src="' . esc_url( $image ) . '" alt="' . get_the_title() . '" style="border-radius:16px"></figure>';
+			}
 
         $output .= '</div>'; // Close first column
 
@@ -351,10 +352,11 @@ function lead_generation_last_card_shortcode() {
         // Second column for the image
         $output .= '<div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);flex-basis:50%">';
         
+        $image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
         // Display image
         if ( $image ) {
-            $output .= '<figure class="wp-block-image size-full has-custom-border is-style-default"><img decoding="async" src="' . esc_url( $image ) . '" alt="' . get_the_title() . '" style="border-radius:16px"></figure>';
-        }
+	    $output .= '<figure class="wp-block-image size-full has-custom-border is-style-default"><img decoding="async" src="' . esc_url( $image ) . '" alt="' . get_the_title() . '" style="border-radius:16px"></figure>';
+			}
 
         $output .= '</div>'; // Close second column
 
@@ -377,7 +379,7 @@ add_filter('excerpt_length', 'custom_excerpt_length');
 
 // Remove the "Read More" link in excerpts
 function remove_read_more_link($more) {
-    return ''; // Return an empty string to remove the "Read More" link
+    return '...'; // Return an empty string to remove the "Read More" link
 }
 add_filter('excerpt_more', 'remove_read_more_link');
 
