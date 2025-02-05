@@ -162,14 +162,14 @@ class Footer extends Abstract_Builder {
 			return;
 		}
 
+
 		$output  = '<div class="builder-item"><div class="item--inner"><div class="component-wrap"><div>';
 		$output .= sprintf(
-		/* translators: %1$s is Theme Name ( Neve ), %2$s is WordPress */
-			esc_html__( '%1$s | Powered by %2$s', 'neve' ),
-			wp_kses_post( '<p><a href="' . tsdk_translate_link( 'https://themeisle.com/themes/neve/', 'path' ) . '" rel="nofollow">Neve</a>' ),
-			wp_kses_post( '<a href="https://wordpress.org" rel="nofollow">WordPress</a></p>' )
+			/* translators: %1$s is WordPress */
+			wp_kses_post( '<a href="' . home_url() . '" rel="nofollow">YesQuoteIt</a>' )
 		);
 		$output .= '</div></div></div></div>';
+
 
 
 		echo wp_kses_post( $output );
