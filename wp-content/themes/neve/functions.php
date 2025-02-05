@@ -252,6 +252,124 @@ function lead_generation_cards_shortcode( $atts ) {
 add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
 
 
+function lead_generation_first_card_shortcode( $atts ) {
+   
+    // WP Query to fetch Lead Generation posts
+    $args = array(
+	    'post_type'      => 'lead_generation',  // Custom Post Type
+	    'posts_per_page' => 1,
+	    'post_status'    => 'publish',  // Only show published posts
+	    'orderby'        => 'post_date',  // Order by post date (including time)
+	    'order'          => 'ASC',    // Descending order to get the latest post first
+	);
+
+    $query = new WP_Query( $args );
+
+    // Check if there are posts
+    if ( $query->have_posts() ) {
+        $output = '<div class="lead-generation-cards-wrapper wp-block-columns are-vertically-aligned-center is-layout-flex wp-container-core-columns-is-layout-7 wp-block-columns-is-layout-flex">';
+
+        // Get the first post (since we limited posts to 1)
+        $query->the_post();
+
+        // Get featured image
+        $image = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
+
+        // Start card container
+        $output .= '<div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);flex-basis:50%">';
+
+        // Display image
+        if ( $image ) {
+            $output .= '<figure class="wp-block-image size-full has-custom-border is-style-default"><img decoding="async" src="' . esc_url( $image ) . '" alt="' . get_the_title() . '" style="border-radius:16px"></figure>';
+        }
+
+        $output .= '</div>'; // Close first column
+
+        // Add title and description
+        $output .= '<div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);flex-basis:50%">';
+        $output .= '<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>';
+        $output .= '<h2 class="wp-block-heading has-text-align-left has-neve-text-color-color has-text-color">' . get_the_title() . '</h2>';
+        $output .= '<p class="has-text-align-left has-neve-text-color-color has-text-color" style="font-size:17px">' . get_the_excerpt() . '</p>';
+        
+        // Add button
+        $output .= '<div class="wp-block-buttons has-custom-font-size has-small-font-size is-content-justification-left is-layout-flex wp-container-core-buttons-is-layout-2 wp-block-buttons-is-layout-flex">';
+        $output .= '<div class="wp-block-button has-custom-font-size is-style-default" style="font-size:16px"><a class="wp-block-button__link has-nv-text-dark-bg-color has-neve-link-color-background-color has-text-color has-background has-link-color wp-element-button" href="' . get_permalink() . '">Learn more</a></div>';
+        $output .= '</div>'; // Close button wrapper
+
+        $output .= '</div>'; // Close second column
+        $output .= '</div>'; // Close cards wrapper
+
+        wp_reset_postdata(); // Reset post data
+
+        return $output; // Return the generated HTML
+    } else {
+        return '<p>No Lead Generation posts found.</p>';
+    }
+}
+add_shortcode( 'lead_generation_first_card', 'lead_generation_first_card_shortcode' );
+
+
+// Get last Lead 
+
+function lead_generation_last_card_shortcode() {
+    // WP Query to fetch Lead Generation posts
+	$args = array(
+	    'post_type'      => 'lead_generation',  // Custom Post Type
+	    'posts_per_page' => 1,
+	    'post_status'    => 'publish',  // Only show published posts
+	    'orderby'        => 'post_date',  // Order by post date (including time)
+	    'order'          => 'DESC',    // Descending order to get the latest post first
+	);
+
+    $query = new WP_Query( $args );
+
+    // Check if there are posts
+    if ( $query->have_posts() ) {
+        $output = '<div class="wp-block-columns are-vertically-aligned-center is-layout-flex wp-container-core-columns-is-layout-8 wp-block-columns-is-layout-flex">';
+
+        // Get the first post (which will be the latest record because of DESC order)
+        $query->the_post();
+
+        // Get featured image
+        $image = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
+
+        // First column for title and description
+        $output .= '<div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);flex-basis:50%">';
+        $output .= '<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>';
+
+        // Display title and description
+        $output .= '<h2 class="wp-block-heading has-text-align-left has-neve-text-color-color has-text-color">' . get_the_title() . '</h2>';
+        $output .= '<p class="has-text-align-left has-neve-text-color-color has-text-color" style="font-size:17px">' . get_the_excerpt() . '</p>';
+        
+        // Add button
+        $output .= '<div class="wp-block-buttons has-custom-font-size has-small-font-size is-content-justification-left is-layout-flex wp-container-core-buttons-is-layout-3 wp-block-buttons-is-layout-flex">';
+        $output .= '<div class="wp-block-button has-custom-font-size is-style-default" style="font-size:16px"><a class="wp-block-button__link has-nv-text-dark-bg-color has-neve-link-color-background-color has-text-color has-background has-link-color wp-element-button" href="' . get_permalink() . '">Learn more</a></div>';
+        $output .= '</div>'; // Close button wrapper
+
+        $output .= '</div>'; // Close first column
+
+        // Second column for the image
+        $output .= '<div class="wp-block-column is-vertically-aligned-center is-layout-flow wp-block-column-is-layout-flow" style="padding-right:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);flex-basis:50%">';
+        
+        // Display image
+        if ( $image ) {
+            $output .= '<figure class="wp-block-image size-full has-custom-border is-style-default"><img decoding="async" src="' . esc_url( $image ) . '" alt="' . get_the_title() . '" style="border-radius:16px"></figure>';
+        }
+
+        $output .= '</div>'; // Close second column
+
+        $output .= '</div>'; // Close columns wrapper
+
+        wp_reset_postdata(); // Reset post data
+
+        return $output; // Return the generated HTML
+    } else {
+        return '<p>No Lead Generation posts found.</p>';
+    }
+}
+add_shortcode( 'lead_generation_last_card', 'lead_generation_last_card_shortcode' );
+
+
 function enqueue_custom_styles() {
     // Check if we are on the homepage or a page that needs the custom styles
     if ( is_front_page() || is_page() || is_single()) {
