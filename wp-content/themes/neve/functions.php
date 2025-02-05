@@ -215,39 +215,37 @@ function lead_generation_cards_shortcode( $atts ) {
 
     // Check if there are posts
     if ( $query->have_posts() ) {
-        $output = '<div class="lead-generation-cards-wrapper">';
+    $output = '<div class="lead-generation-cards-wrapper">';
 
-        // Loop through the posts
-        while ( $query->have_posts() ) {
-            $query->the_post();
+    while ( $query->have_posts() ) {
+        $query->the_post();
+        $image = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
+        $post_link = get_permalink();
 
-            // Get featured image
-            $image = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
+        // Start clickable card container
+        $output .= '<a href="' . esc_url( $post_link ) . '" class="lead-generation-card" style="text-decoration: none; color: inherit;">';
 
-            // Start card container
-            $output .= '<div class="lead-generation-card">';
-            
-            // Display image
-            if ( $image ) {
-                $output .= '<div class="lead-generation-card-image"><img src="' . esc_url( $image ) . '" alt="' . get_the_title() . '"></div>';
-            }
-
-            // Display title and link to the single post page
-            $output .= '<div class="lead-generation-card-content">';
-            $output .= '<h3 class="lead-generation-card-title" style="text-align:center"><a style="text-decoration: none !important;color: black;" href="' . get_permalink() . '">' . get_the_title() . '</a></h3>';
-            $output .= '</div>'; // Close card-content
-
-            $output .= '</div>'; // Close card container
+        // Display image
+        if ( $image ) {
+            $output .= '<div class="lead-generation-card-image"><img src="' . esc_url( $image ) . '" alt="' . esc_attr( get_the_title() ) . '"></div>';
         }
 
-        $output .= '</div>'; // Close cards wrapper
+        // Display title
+        $output .= '<div class="lead-generation-card-content">';
+        $output .= '<h3 class="lead-generation-card-title" style="text-align:center;">' . get_the_title() . '</h3>';
+        $output .= '</div>'; // Close card-content
 
-        wp_reset_postdata(); // Reset post data
-
-        return $output; // Return the generated HTML
-    } else {
-        return '<p>No Lead Generation posts found.</p>';
+        $output .= '</a>'; // Close clickable card
     }
+
+    $output .= '</div>'; // Close cards wrapper
+
+    wp_reset_postdata();
+    return $output;
+} else {
+    return '<p>No Lead Generation posts found.</p>';
+}
+
 }
 add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
 
