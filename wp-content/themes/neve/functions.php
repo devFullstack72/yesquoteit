@@ -234,7 +234,7 @@ function lead_generation_cards_shortcode( $atts ) {
 
             // Display title and link to the single post page
             $output .= '<div class="lead-generation-card-content">';
-            $output .= '<h3 class="lead-generation-card-title"><a href="' . get_permalink() . '">' . get_the_title() . '</a></h3>';
+            $output .= '<h3 class="lead-generation-card-title" style="text-align:center"><a href="' . get_permalink() . '">' . get_the_title() . '</a></h3>';
             $output .= '</div>'; // Close card-content
 
             $output .= '</div>'; // Close card container
