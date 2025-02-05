@@ -43,3 +43,34 @@
 .lead-generation-card-title a:hover {
     text-decoration: underline;
 }
+
+
+/* Styling for lead_generation single page */
+.single-lead-generation-container .lead-generation-featured-image {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.single-lead-generation-container .lead-generation-featured-image img {
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.single-lead-generation-container .lead-generation-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.single-lead-generation-container .lead-generation-content {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.single-lead-generation-container .lead-generation-custom-field {
+    margin-top: 20px;
+    font-size: 1.1em;
+    background: #f0f0f0;
+    padding: 10px;
+}

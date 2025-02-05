@@ -254,7 +254,7 @@ add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
 
 function enqueue_custom_styles() {
     // Check if we are on the homepage or a page that needs the custom styles
-    if ( is_front_page() || is_page() ) {
+    if ( is_front_page() || is_page() || is_single()) {
     	wp_enqueue_style( 'custom-style', get_template_directory_uri() . '/style-custom.css', array(), time() );
     }
 }
