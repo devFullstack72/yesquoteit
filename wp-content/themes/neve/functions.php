@@ -187,7 +187,7 @@ function create_posttype_lead_generation() {
             'public' => true,
             'has_archive' => true,
             'show_in_rest' => true,  // Optional: Enables Gutenberg block editor
-            'rewrite' => array( 'slug' => 'lead-generation' ),
+            'rewrite' => array( 'slug' => 'leads' ),
             'supports' => array( 'title', 'editor', 'custom-fields', 'thumbnail' ),
         )
     );
