@@ -369,6 +369,17 @@ function lead_generation_last_card_shortcode() {
 }
 add_shortcode( 'lead_generation_last_card', 'lead_generation_last_card_shortcode' );
 
+// Modify the excerpt length (optional)
+function custom_excerpt_length($length) {
+    return 100; // Set the length to your desired word count, e.g., 20
+}
+add_filter('excerpt_length', 'custom_excerpt_length');
+
+// Remove the "Read More" link in excerpts
+function remove_read_more_link($more) {
+    return ''; // Return an empty string to remove the "Read More" link
+}
+add_filter('excerpt_more', 'remove_read_more_link');
 
 function enqueue_custom_styles() {
     // Check if we are on the homepage or a page that needs the custom styles
