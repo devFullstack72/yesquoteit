@@ -72,6 +72,20 @@ wp_footer();
 do_action( 'neve_body_end_before' );
 
 ?>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".scroll-to-lead-gen").forEach(button => {
+        button.addEventListener("click", function(e) {
+            e.preventDefault(); // Prevent default jump
+
+            const targetSection = document.getElementById("lead-generation-id");
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    });
+});
+</script>
 </body>
 
 </html>
