@@ -112,8 +112,11 @@ function lead_generation_cards_shortcode( $atts ) {
     endif;
 
     wp_reset_postdata();
+
+    // Return the generated output
     return $output;
 }
+
 
 
 add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
