@@ -34,13 +34,15 @@
                 <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
                     <div class="widget">
                         <h3 class="widget-title">Pages</h3>
-                        <ul class="menu">
-                            <li class="menu-item"><a href="<?php echo esc_url(home_url()); ?>">Home</a></li>
-                            <li class="menu-item"><a href="#">About</a></li>
-                            <!-- <li class="menu-item"><a href="<?php //echo esc_url(get_permalink(get_option('page_for_posts'))); ?>">Blog</a></li> -->
-                            <li class="menu-item"><a href="#">Leads</a></li>
-                            <li class="menu-item"><a href="#">Contact</a></li>
-                        </ul>
+                        <?php 
+                                wp_nav_menu(array(
+                                    'theme_location' => 'primary-menu',  // Use the correct theme location
+                                    'menu_class'     => 'menu',     // Bootstrap's navbar nav class
+                                    'container'      => false,            // Don't wrap in a container div
+                                    'depth'           => 1,                // Only 1 level deep (top-level items)
+                                    'fallback_cb'     => false,           // Prevent fallback to wp_page_menu
+                                ));
+                                ?>
                     </div><!-- .widget -->
                 </aside>
 

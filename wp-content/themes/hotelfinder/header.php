@@ -20,6 +20,15 @@
     <link href="<?php echo get_template_directory_uri(); ?>/css/jquery-ui.css" rel="stylesheet" />
 
     <?php wp_head(); ?> <!-- WordPress Hook -->
+
+    <style type="text/css">
+    /* Apply underline effect to the current active menu item */
+        .current-menu-item>a:after {
+            background: #23def7;  /* The color for the underline */
+            content: '';  /* Creates the underline */
+        }
+
+    </style>
 </head>
 <body>
     <!-- Overlay preloader-->
@@ -62,19 +71,16 @@
                             </div><!-- .navbar-header -->
                             <!-- Collect the nav links, forms, and other content for toggling -->
                             <div class="collapse navbar-collapse" id="htlfndr-main-nav">
-                                <ul class="nav navbar-nav">
-                                    <li class="active">
-                                        <a href="#">Home</a>
-                                    </li>
-                                    <li><a href="#">About</a></li>
-                                    <li>
-                                        <a href="#">Leads</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Contanct</a>
-                                    </li>
-                                </ul>
-                            </div><!-- .collapse.navbar-collapse -->
+                                <?php 
+                                wp_nav_menu(array(
+                                    'theme_location' => 'primary-menu',  // Use the correct theme location
+                                    'menu_class'     => 'nav navbar-nav',     // Bootstrap's navbar nav class
+                                    'container'      => false,            // Don't wrap in a container div
+                                    'depth'           => 1,                // Only 1 level deep (top-level items)
+                                    'fallback_cb'     => false,           // Prevent fallback to wp_page_menu
+                                ));
+                                ?>
+                            </div>
                         </div><!-- .container -->
                     </nav><!-- .navbar.navbar-default.htlfndr-blue-hover-nav -->
                 </div><!-- .htlfndr-under-header -->

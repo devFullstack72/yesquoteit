@@ -84,49 +84,51 @@ function lead_generation_cards_shortcode( $atts ) {
     $query = new WP_Query( $args );
 
     // Start output buffer
-    
+    $output = '';
 
-   while ( $query->have_posts() ) {
-    $query->the_post();
-    $image = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
-    $post_link = get_permalink();
-    $title = get_the_title();
+    if ( $query->have_posts() ) :
+        $output .= '<div class="row">';
+        
+        while ( $query->have_posts() ) : $query->the_post();
+            $image = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
+            $post_link = get_permalink();
+            $title = get_the_title();
 
-    $output .= '<div class="col-xs-12 col-sm-4 col-md-4">';
-    $output .= '<a href="' . esc_url( $post_link ) . '" style="text-decoration: none; color: inherit;">'; // Wrap the entire card
-    $output .= '<article class="htlfndr-top-destination-block">';
-    $output .= '<div class="htlfndr-content-block">';
-    $output .= '<img src="' . esc_url( $image ) . '" alt="' . esc_attr( $title ) . '" />';
-    $output .= '<div class="htlfndr-post-content">';
-    $output .= '<p class="htlfndr-the-excerpt">' . get_the_excerpt();
-    $output .= '<span class="htlfndr-read-more-arrow"><i class="fa fa-angle-right"></i></span>';
-    $output .= '</p>';
-    $output .= '<div class="htlfndr-services">';
-    $output .= '</div>'; // .htlfndr-services
-    $output .= '</div>'; // .htlfndr-post-content
-    $output .= '</div>'; // .htlfndr-content-block
-    $output .= '<footer class="entry-footer" style="text-align: center;">';
-    $output .= '<h5 class="entry-title">' . esc_html( $title ) . '</h5>';
-    $output .= '</footer>';
-    $output .= '</article>'; // .htlfndr-top-destination-block
-    $output .= '</a>'; // Close clickable wrapper
-    $output .= '</div>'; // .col-xs-12 col-sm-4 col-md-4
-}
+            // Output card HTML
+            $output .= '<div class="col-sm-4 col-xs-6">';
+            $output .= '<div class="htlfndr-category-box" onclick="void(0)">'; // The "onclick" is used for Safari (IOS)
+            $output .= '<img src="' . esc_url( $image ) . '" height="311" width="370" alt="' . esc_attr( $title ) . '" />';
+            $output .= '<div class="category-description">';
+            $output .= '<div class="htlfndr-icon-flag-border"><i class="htlfndr-icon-flag flag-germany"></i></div>'; // Example icon; change as needed
+            $output .= '<h2 class="subcategory-name">' . esc_html( $title ) . '</h2>';
+            $output .= '<a href="' . esc_url( $post_link ) . '" class="htlfndr-category-permalink"></a>'; // Link for overlay
+            $output .= '<h5 class="category-name">' . esc_html( $title ) . '</h5>'; // This can be dynamic if needed
+            //$output .= '<p class="category-properties"><span>374</span> properties</p>';
+            $output .= '</div>'; // .category-description
+            $output .= '</div>'; // .htlfndr-category-box
+            $output .= '</div>'; // .col-sm-4 .col-xs-6
+        endwhile;
 
-
-
+        $output .= '</div>'; // .row lead-generation-cards-wrapper
+    endif;
 
     wp_reset_postdata();
     return $output;
 }
 
+
 add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
 
-function mytheme_register_menus() {
+function register_my_menus() {
     register_nav_menus(
         array(
-            'primary-menu' => __('Primary Menu', 'mytheme'),
+            'primary-menu' => __( 'Primary Menu' ),
         )
     );
 }
-add_action('after_setup_theme', 'mytheme_register_menus');
+add_action( 'after_setup_theme', 'register_my_menus' );
+
+function my_theme_enqueue_styles() {
+    wp_enqueue_style('my-theme-style', get_stylesheet_uri());
+}
+add_action('wp_enqueue_scripts', 'my_theme_enqueue_styles');
