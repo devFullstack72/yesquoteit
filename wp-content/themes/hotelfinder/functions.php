@@ -112,11 +112,8 @@ function lead_generation_cards_shortcode( $atts ) {
     endif;
 
     wp_reset_postdata();
-
-    // Return the generated output
     return $output;
 }
-
 
 
 add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
@@ -134,3 +131,17 @@ function my_theme_enqueue_styles() {
     wp_enqueue_style('my-theme-style', get_stylesheet_uri());
 }
 add_action('wp_enqueue_scripts', 'my_theme_enqueue_styles');
+
+
+// function register_lead_generation_post_type() {
+//     $args = array(
+//         'labels' => array(
+//             'name' => 'Lead Generations',
+//             'singular_name' => 'Lead Generation',
+//         ),
+//         'public' => true,
+//         'supports' => array('title', 'editor', 'thumbnail'), // Ensure 'thumbnail' is added here
+//     );
+//     register_post_type('lead_generation', $args);
+// }
+// add_action('init', 'register_lead_generation_post_type');
