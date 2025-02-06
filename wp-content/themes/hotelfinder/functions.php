@@ -146,3 +146,12 @@ add_action('wp_enqueue_scripts', 'my_theme_enqueue_styles');
 //     register_post_type('lead_generation', $args);
 // }
 // add_action('init', 'register_lead_generation_post_type');
+
+
+// Ensure Contact Form 7 styles are loaded
+function custom_contact_form_styles() {
+    if ( class_exists( 'WPCF7' ) ) {
+        wp_enqueue_style( 'contact-form-7', plugins_url( '/contact-form-7/includes/css/styles.css' ), array(), '5.7.3' ); // Adjust version as needed
+    }
+}
+add_action( 'wp_enqueue_scripts', 'custom_contact_form_styles' );
