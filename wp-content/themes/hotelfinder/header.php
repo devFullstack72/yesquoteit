@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php wp_title( '|', true, 'right' ); ?> Hotel Finder</title>
+    <title><?php wp_title( '|', true, 'right' ); ?> Yes Quote It</title>
 
     <!-- Bootstrap -->
     <link href="<?php echo get_template_directory_uri(); ?>/css/bootstrap.min.css" rel="stylesheet" />
@@ -40,7 +40,7 @@
                             </button>
                             <a class="htlfndr-logo navbar-brand" href="<?php echo home_url(); ?>"> <!-- Home link -->
                                 <img src="<?php echo get_template_directory_uri(); ?>/images/logo.png" alt="Logo" />
-                                <p class="htlfndr-logo-text">hotel <span>finder</span></p>
+                                <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p>
                             </a>
                         </div><!-- .navbar-header -->
                         <div class="collapse navbar-collapse navbar-right" id="htlfndr-first-nav">

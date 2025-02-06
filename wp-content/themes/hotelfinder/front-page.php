@@ -92,8 +92,10 @@
     <!-- Search form aside stop -->
 
 </section><!-- .htlfndr-slider-section -->
-<div style="margin-top: 50px;"> <!-- Adjust value as needed -->
+<div style="margin-top: 25px;"> <!-- Adjust value as needed -->
     <div class="container">
+        <h2 class="htlfndr-section-title bigger-title">Leads</h2>
+        <div class="htlfndr-section-under-title-line"></div>
         <div class="row lead-generation-cards-wrapper">
             <?php echo do_shortcode('[lead_generation_cards]'); ?>
         </div>

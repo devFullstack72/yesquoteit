@@ -21,7 +21,7 @@
                     <div class="widget">
                         <h3 class="widget-title">Contact Info</h3>
                         <h5>Address</h5>
-                        <p>Hotel Finder<br>120 CA 15th Avenue-Suite 214, USA</p>
+                        <p>Yes Quote It<br>120 CA 15th Avenue-Suite 214, USA</p>
                         <hr />
                         <h5>Phone Number</h5>
                         <p>1-555-5555-5555</p>
