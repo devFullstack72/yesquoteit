@@ -99,7 +99,6 @@ function lead_generation_cards_shortcode( $atts ) {
             $output .= '<div class="htlfndr-category-box" onclick="void(0)">'; // The "onclick" is used for Safari (IOS)
             $output .= '<img src="' . esc_url( $image ) . '" height="311" width="370" alt="' . esc_attr( $title ) . '" />';
             $output .= '<div class="category-description">';
-            $output .= '<div class="htlfndr-icon-flag-border"><i class="htlfndr-icon-flag flag-germany"></i></div>'; // Example icon; change as needed
             $output .= '<h2 class="subcategory-name">' . esc_html( $title ) . '</h2>';
             $output .= '<a href="' . esc_url( $post_link ) . '" class="htlfndr-category-permalink"></a>'; // Link for overlay
             $output .= '<h5 class="category-name">' . esc_html( $title ) . '</h5>'; // This can be dynamic if needed
