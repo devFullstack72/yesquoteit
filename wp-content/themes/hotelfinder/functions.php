@@ -96,7 +96,7 @@ function lead_generation_cards_shortcode( $atts ) {
 
             // Output card HTML
             $output .= '<div class="col-sm-4 col-xs-6">';
-            $output .= '<div class="htlfndr-category-box" onclick="' . esc_url( $post_link ) . '">'; // The "onclick" is used for Safari (IOS)
+            $output .= '<div class="htlfndr-category-box" onclick="void(0)">'; // The "onclick" is used for Safari (IOS)
             $output .= '<img src="' . esc_url( $image ) . '" height="311" width="370" alt="' . esc_attr( $title ) . '" />';
             $output .= '<div class="category-description">';
             $output .= '<div class="htlfndr-icon-flag-border"><i class="htlfndr-icon-flag flag-germany"></i></div>'; // Example icon; change as needed
