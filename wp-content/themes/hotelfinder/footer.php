@@ -6,8 +6,8 @@
             <div class="row">
                 <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
                     <div class="widget">
-                        <a class="htlfndr-logo navbar-brand" href="<?php echo home_url(); ?>">
-                            <img src="<?php echo get_template_directory_uri(); ?>/images/logo.png" height="20" width="30" alt="Logo" />
+                        <a class="htlfndr-logo navbar-brand" href="<?php echo esc_url(home_url()); ?>">
+                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/logo.png" height="20" width="30" alt="Logo" />
                             <p class="htlfndr-logo-text">hotel <span>finder</span></p>
                         </a>
                         <hr />
@@ -27,7 +27,7 @@
                         <p>1-555-5555-5555</p>
                         <hr />
                         <h5>Email Address</h5>
-                        <p>info@testhotelfinder.com</p>
+                        <p><a href="mailto:info@testhotelfinder.com">info@testhotelfinder.com</a></p>
                     </div><!-- .widget -->
                 </aside>
 
@@ -35,11 +35,11 @@
                     <div class="widget">
                         <h3 class="widget-title">Pages</h3>
                         <ul class="menu">
-                            <li class="menu-item"><a href="<?php echo home_url(); ?>">Home</a></li>
-                            <li class="menu-item"><a href="#">Elements</a></li>
-                            <li class="menu-item"><a href="<?php echo get_permalink( get_option( 'page_for_posts' ) ); ?>">Blog</a></li>
+                            <li class="menu-item"><a href="<?php echo esc_url(home_url()); ?>">Home</a></li>
                             <li class="menu-item"><a href="#">About</a></li>
-                            <li class="menu-item"><a href="#">User Profile</a></li>
+                            <!-- <li class="menu-item"><a href="<?php //echo esc_url(get_permalink(get_option('page_for_posts'))); ?>">Blog</a></li> -->
+                            <li class="menu-item"><a href="#">Leads</a></li>
+                            <li class="menu-item"><a href="#">Contact</a></li>
                         </ul>
                     </div><!-- .widget -->
                 </aside>
@@ -70,7 +70,7 @@
 
     <div class="htlfndr-copyright">
         <div class="container" role="contentinfo">
-            <p>Copyright <?php echo date('Y'); ?> | BESTWEBSOFT | All Rights Reserved | Designed by BestWebSoft</p>
+            <p>Copyright &copy; <?php echo date('Y'); ?> | BESTWEBSOFT | All Rights Reserved | Designed by BestWebSoft</p>
         </div><!-- .container -->
     </div><!-- .htlfndr-copyright -->
 </footer>
@@ -85,19 +85,19 @@
             <div class="row">
                 <div class="col-md-6">
                     <h4>First Name</h4>
-                    <input type="text" class="htlfndr-input" name="first_name">
+                    <input type="text" class="htlfndr-input" name="first_name" required>
                 </div>
                 <div class="col-md-6">
                     <h4>Last Name</h4>
-                    <input type="text" class="htlfndr-input" name="last_name">
+                    <input type="text" class="htlfndr-input" name="last_name" required>
                 </div>
             </div>
             <h4>Email Address</h4>
-            <input type="email" class="htlfndr-input" name="email">
+            <input type="email" class="htlfndr-input" name="email" required>
             <h4>Password</h4>
-            <input type="password" class="htlfndr-input" name="password">
+            <input type="password" class="htlfndr-input" name="password" required>
             <h4>Confirm Password</h4>
-            <input type="password" class="htlfndr-input" name="confirm_password">
+            <input type="password" class="htlfndr-input" name="confirm_password" required>
             <div class="clearfix">
                 <span>Have an account? <a href="#">Sign in</a></span>
                 <input type="submit" value="Sign Up" class="pull-right">
@@ -114,9 +114,9 @@
         </div>
         <form id="htlfndr-sing-in-form" method="post">
             <h4>Email Address</h4>
-            <input type="email" class="htlfndr-input" name="email">
+            <input type="email" class="htlfndr-input" name="email" required>
             <h4>Password</h4>
-            <input type="password" class="htlfndr-input" name="password">
+            <input type="password" class="htlfndr-input" name="password" required>
             <div class="clearfix">
                 <span>Don't have an account? <a href="#">Sign up</a></span>
                 <input type="submit" value="Sign In" class="pull-right">
@@ -126,12 +126,12 @@
 </div>
 
 <!-- jQuery and Scripts -->
-<script src="<?php echo get_template_directory_uri(); ?>/js/jquery-1.11.3.min.js"></script>
-<script src="<?php echo get_template_directory_uri(); ?>/js/jquery-ui.min.js"></script>
-<script src="<?php echo get_template_directory_uri(); ?>/js/jquery.ui.touch-punch.min.js"></script>
-<script src="<?php echo get_template_directory_uri(); ?>/js/bootstrap.min.js"></script>
-<script src="<?php echo get_template_directory_uri(); ?>/js/owl.carousel.min.js"></script>
-<script src="<?php echo get_template_directory_uri(); ?>/js/script.js"></script>
+<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/jquery-1.11.3.min.js"></script>
+<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/jquery-ui.min.js"></script>
+<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/jquery.ui.touch-punch.min.js"></script>
+<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/bootstrap.min.js"></script>
+<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/owl.carousel.min.js"></script>
+<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/script.js"></script>
 
 <?php wp_footer(); ?>
 </body>
