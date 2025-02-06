@@ -43,42 +43,7 @@
                                 <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p>
                             </a>
                         </div><!-- .navbar-header -->
-                        <div class="collapse navbar-collapse navbar-right" id="htlfndr-first-nav">
-                                <!-- List with sing up/sing in links -->
-                               <!--  <ul class="nav navbar-nav htlfndr-singup-block">
-                                    <li id="htlfndr-singup-link">
-                                <a href="#" data-toggle="modal" data-target="#htlfndr-sing-up"><span>sing up</span></a>
-                            </li>
-                            <li id="htlfndr-singin-link">
-                                <a href="#" data-toggle="modal" data-target="#htlfndr-sing-in"><span>sing in</span></a>
-                            </li>
-                                </ul> --><!-- .htlfndr-singup-block -->
-                                <!-- List with currency and language dropdons -->
-                                <!-- <ul class="nav navbar-nav htlfndr-custom-select htlfndr-currency">
-                                    <li>
-                                        <label for="htlfndr-currency" class="sr-only">Change currency</label>
-                                        <select name="htlfndr-currency" id="htlfndr-currency" tabindex="-1">
-                                            <option value="eur">eur</option>
-                                            <option value="gbp">gbp</option>
-                                            <option value="jpy">jpy</option>
-                                            <option value="usd" selected="selected">usd</option>
-                                        </select>
-                                    </li>
-                                </ul>
-                                <ul class="nav navbar-nav htlfndr-custom-select htlfndr-language">
-                                    <li id="htlfndr-dropdown-language">
-                                        <label for="htlfndr-language" class="sr-only">Change language</label>
-                                        <select name="htlfndr-language" id="htlfndr-language" tabindex="-1">
-                                            <option value="eng" selected="selected">eng</option>
-                                            <option value="ger">ger</option>
-                                            <option value="jap">jap</option>
-                                            <option value="ita">ita</option>
-                                            <option value="fre">fre</option>
-                                            <option value="rus" >rus</option>
-                                        </select>
-                                    </li>   
-                                </ul> --><!-- .htlfndr-top-menu-dropdowns -->
-                            </div><!-- .collapse.navbar-collapse -->
+                      
                     </div><!-- .container -->
                 </div><!-- .navbar.navbar-default.htlfndr-blue-hover-nav-->
             </div><!-- .htlfndr-top-header -->

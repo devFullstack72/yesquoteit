@@ -12,7 +12,7 @@
                     <i class="fa fa-star-o"></i>
                     <i class="fa fa-star-o"></i>
                 </div><!-- .htlfndr-slide-rating-stars -->
-                <h1 class="htlfndr-slider-title">find your perfect hotel</h1>
+                <h1 class="htlfndr-slider-title">find your perfect quote</h1>
                 <div class="htlfndr-slider-under-title-line"></div>
             </div><!-- .htlfndr-slide-data.container -->
         </div><!-- .htlfndr-slide-wrapper-->
@@ -26,7 +26,7 @@
                     <i class="fa fa-star-o htlfndr-star-color"></i>
                     <i class="fa fa-star-o"></i>
                 </div><!-- .htlfndr-slide-rating-stars -->
-                <h1 class="htlfndr-slider-title">find your perfect hotel</h1>
+                <h1 class="htlfndr-slider-title">find your perfect quote</h1>
                 <div class="htlfndr-slider-under-title-line"></div>
             </div><!-- .htlfndr-slide-data.container -->
         </div><!-- .htlfndr-slide-wrapper-->
@@ -40,7 +40,7 @@
                     <i class="fa fa-star-o"></i>
                     <i class="fa fa-star-o"></i>
                 </div><!-- .htlfndr-slide-rating-stars -->
-                <h1 class="htlfndr-slider-title">find your perfect hotel</h1>
+                <h1 class="htlfndr-slider-title">find your perfect quote</h1>
                 <div class="htlfndr-slider-under-title-line"></div>
             </div><!-- .htlfndr-slide-data.container -->
         </div><!-- .htlfndr-slide-wrapper-->
