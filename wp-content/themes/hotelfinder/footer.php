@@ -8,7 +8,7 @@
                     <div class="widget">
                         <a class="htlfndr-logo navbar-brand" href="<?php echo esc_url(home_url()); ?>">
                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/logo.png" height="20" width="30" alt="Logo" />
-                            <p class="htlfndr-logo-text">hotel <span>finder</span></p>
+                            <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p>
                         </a>
                         <hr />
                         <p>Suspendisse sed sollicitudin nisl, at dignissim libero. Sed porta tincidunt ipsum, vel volutpat.</p>
@@ -27,7 +27,7 @@
                         <p>1-555-5555-5555</p>
                         <hr />
                         <h5>Email Address</h5>
-                        <p><a href="mailto:info@testhotelfinder.com">info@testhotelfinder.com</a></p>
+                        <p><a href="mailto:info@yesquoteit.com">info@yesquoteit.com</a></p>
                     </div><!-- .widget -->
                 </aside>
 
