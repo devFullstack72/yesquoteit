@@ -95,9 +95,9 @@ function lead_generation_cards_shortcode( $atts ) {
             $title = get_the_title();
 
             // Output card HTML
-            $output .= '<div class="col-sm-4 col-xs-6" style="max-heigth:500px;">';
+            $output .= '<div class="col-sm-4 col-xs-6">';
             $output .= '<div class="htlfndr-category-box" onclick="void(0)">'; // The "onclick" is used for Safari (IOS)
-            $output .= '<img style="height:340px;max-heigth:340px;" src="' . esc_url( $image ) . '"  alt="' . esc_attr( $title ) . '" />';
+            $output .= '<img style="height:320px;" src="' . esc_url( $image ) . '"  alt="' . esc_attr( $title ) . '" />';
             $output .= '<div class="category-description">';
             $output .= '<h3 class="subcategory-name">' . esc_html( $title ) . '</h3>';
             $output .= '<a href="' . esc_url( $post_link ) . '" class="htlfndr-category-permalink"></a>'; // Link for overlay
