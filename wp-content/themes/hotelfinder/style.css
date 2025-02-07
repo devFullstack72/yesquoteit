@@ -157,3 +157,36 @@ Version: 1.0
 
 
 /*Contact Form7 Style*/
+
+
+/*Lead Single Page */
+
+.htlfndr-lined-title span {
+    background-color: #ffffff;
+    padding: 0 2.5rem;
+    position: relative;
+    z-index: 1;
+}
+.htlfndr-usp-section .htlfndr-section-title {
+    margin-bottom: 6.4rem !important;
+    margin-top: 5.65rem !important;
+}
+
+.htlfndr-lined-title {
+    position: relative; /* Ensures the pseudo-element aligns properly */
+    display: block; /* Adjust width to fit content */
+}
+
+.htlfndr-lined-title:before {
+    content: '';
+    position: absolute;
+    left: 50%; /* Start from the middle */
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background-color: #dfdfdf; /* Border color */
+    transform: translateX(-50%); /* Center it */
+    z-index: 0; /* Ensure it's behind text */
+}
+
+/*Lead Single Page */

@@ -143,7 +143,7 @@ get_header();
                     the_post();
 
                     // Display the title of the post
-                    echo '<h3 id="lead-generation-content-details" class="htlfndr-font-24"><b style="color: #08c1da;text-transform: uppercase;margin-bottom: 23px;padding:15px;">' . get_the_title() . '</b></h3>';
+                    echo '<h2 class="htlfndr-section-title htlfndr-lined-title"><span>' . get_the_title() . '</span></h2>';
 
                     // Display the content of the post
                     echo '<div class="lead-generation-content">';
