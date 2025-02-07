@@ -1,7 +1,7 @@
 <?php
 get_header(); ?>
 
-<div class="container archive-container">
+<div class="container archive-container" style="margin-bottom:100px;">
 	<div class="row">
 		
 				<?php 
@@ -17,7 +17,7 @@ get_header(); ?>
 				
 				if ( $query->have_posts() ) : 
 					while ( $query->have_posts() ) : $query->the_post();
-						$image = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
+						$image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
 						$post_link = get_permalink();
 						$title = get_the_title();
 						
