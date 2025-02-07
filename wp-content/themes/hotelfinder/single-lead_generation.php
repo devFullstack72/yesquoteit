@@ -108,7 +108,7 @@ get_header();
 <div class="lead-generation-featured-container">
     <?php if ( has_post_thumbnail() ) : ?>
         <div class="lead-generation-featured-image">
-            <?php the_post_thumbnail( 'large' ); ?>
+            <?php the_post_thumbnail( 'extra-large' ); ?>
         </div>
     <?php endif; ?>
 

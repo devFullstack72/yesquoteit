@@ -161,7 +161,7 @@ Version: 1.0
 
 /*Lead Single Page */
 
-.htlfndr-lined-title span {
+.single-lead-generation-container .htlfndr-lined-title span {
     background-color: #ffffff;
     padding: 0 2.5rem;
     position: relative;
@@ -194,3 +194,16 @@ Version: 1.0
     overflow: hidden;
 }
 /*Lead Single Page */
+
+
+.htlfndr-category-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensures all cards are the same height */
+}
+
+.htlfndr-category-box img {
+    width: 100%;
+    height: 320px; /* Adjust image height as needed */
+    object-fit: cover; /* Ensures uniform image display */
+}
