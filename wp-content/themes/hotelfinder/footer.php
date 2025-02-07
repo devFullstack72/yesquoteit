@@ -7,8 +7,7 @@
                 <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
                     <div class="widget">
                         <a class="htlfndr-logo navbar-brand" href="<?php echo esc_url(home_url()); ?>">
-                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/logo.png" height="20" width="30" alt="Logo" />
-                            <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p>
+                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/logo.png" height="50" width="150" alt="Logo" / style="top:22%;">
                         </a>
                         <hr />
                         <p>Suspendisse sed sollicitudin nisl, at dignissim libero. Sed porta tincidunt ipsum, vel volutpat.</p>

@@ -28,6 +28,10 @@
             content: '';  /* Creates the underline */
         }
 
+        .htlfndr-top-header .htlfndr-logo.navbar-brand>img {
+            top: 9px;
+        }
+
     </style>
 </head>
 <body>
@@ -49,7 +53,7 @@
                             </button>
                             <a class="htlfndr-logo navbar-brand" href="<?php echo home_url(); ?>"> <!-- Home link -->
                                 <img src="<?php echo get_template_directory_uri(); ?>/images/logo.png" alt="Logo" />
-                                <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p>
+                                <!-- <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p> -->
                             </a>
                         </div><!-- .navbar-header -->
                       
