@@ -90,16 +90,16 @@ function lead_generation_cards_shortcode( $atts ) {
         $output .= '<div class="row">';
         
         while ( $query->have_posts() ) : $query->the_post();
-            $image = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
+            $image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
             $post_link = get_permalink();
             $title = get_the_title();
 
             // Output card HTML
-            $output .= '<div class="col-sm-4 col-xs-6">';
+            $output .= '<div class="col-sm-4 col-xs-6" style="max-heigth:500px;">';
             $output .= '<div class="htlfndr-category-box" onclick="void(0)">'; // The "onclick" is used for Safari (IOS)
-            $output .= '<img src="' . esc_url( $image ) . '" height="311" width="370" alt="' . esc_attr( $title ) . '" />';
+            $output .= '<img style="height:340px;max-heigth:340px;" src="' . esc_url( $image ) . '"  alt="' . esc_attr( $title ) . '" />';
             $output .= '<div class="category-description">';
-            $output .= '<h2 class="subcategory-name">' . esc_html( $title ) . '</h2>';
+            $output .= '<h3 class="subcategory-name">' . esc_html( $title ) . '</h3>';
             $output .= '<a href="' . esc_url( $post_link ) . '" class="htlfndr-category-permalink"></a>'; // Link for overlay
             $output .= '<h5 class="category-name">' . esc_html( $title ) . '</h5>'; // This can be dynamic if needed
             //$output .= '<p class="category-properties"><span>374</span> properties</p>';
