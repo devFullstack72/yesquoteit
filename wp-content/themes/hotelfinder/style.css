@@ -10,3 +10,150 @@ Version: 1.0
     height: 2px;
     opacity: 1;
 }
+
+.lead-generation-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;  /* White background */
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px; /* Space around image */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Box shadow effect */
+    max-width: 400px; /* Set max width */
+    margin: 20px auto; /* Center the card */
+}
+
+.lead-generation-featured-image img {
+    width: 100%;
+    height: auto;
+   
+}
+
+
+/*Signle Lead page Content Style*/
+
+.lead-generation-content {
+   
+}
+
+.lead-generation-content p {
+    margin-bottom: 15px; /* Space between paragraphs */
+     font-size: 18px;
+    line-height: 1.6;
+    color: #333; /* Dark grey for readability */
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0); /* Subtle shadow */
+    text-align: justify; /* Better alignment */
+    padding: 15px;
+}
+
+.lead-generation-content strong {
+    color: #0073e6; /* Highlight strong/bold text */
+}
+
+.lead-generation-content h2,
+.lead-generation-content h3 {
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.lead-generation-content a {
+    color: #0073e6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.lead-generation-content a:hover {
+    text-decoration: underline;
+}
+
+/*Signle Lead page Content Style*/
+
+/*Contact Form7 Style*/
+
+/* Container Card Design */
+.wpcf7-form {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+/* Label Styling */
+.wpcf7-form p label {
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Input & Textarea Styling */
+.wpcf7-form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+    box-sizing: border-box;
+}
+
+/* Focus Effect on Input */
+.wpcf7-form-control:focus {
+    border-color: #0073e6;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 115, 230, 0.3);
+}
+
+/* Textarea Styling */
+.wpcf7-textarea {
+    height: 120px;
+    resize: none;
+}
+
+/* Submit Button Styling */
+.wpcf7-submit {
+    background: #0073e6;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    width: 100%;
+    display: block;
+}
+
+.wpcf7-submit:hover {
+    background: #005bb5;
+}
+
+/* Adjust Spinner (Loading Animation) */
+.wpcf7-spinner {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+/* Form Response Output */
+.wpcf7-response-output {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+/* Error Messages */
+.wpcf7-not-valid-tip {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+
+/*Contact Form7 Style*/

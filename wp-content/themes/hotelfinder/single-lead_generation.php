@@ -29,17 +29,19 @@ get_header();
 
                         // Display the featured image
                         if ( has_post_thumbnail() ) :
-                            echo '<div class="lead-generation-featured-image">';
-                            the_post_thumbnail( 'large' );  // Adjust image size as needed
-                            echo '</div>';
-                        endif;
+                                echo '<div class="lead-generation-card">';
+                                echo '<div class="lead-generation-featured-image">';
+                                the_post_thumbnail( 'large' );  // Adjust image size as needed
+                                echo '</div>';
+                                echo '</div>';
+                            endif;
 
                         // Display the title of the post
                         echo '<h3 class="htlfndr-font-24"><b style="color: #08c1da;text-transform: uppercase;margin-bottom: 23px;">' . get_the_title() . '</b></h3>';
 
                         // Display the content of the post
-                        echo '<div class="lead-generation-content"  style="font-size: 20px;">';
-                        the_content();  // This will display the content you added in the editor
+                        echo '<div class="lead-generation-content">';
+                        the_content();  // Displays the content you added in the editor
                         echo '</div>';
 
                         // Display custom fields (if any)
