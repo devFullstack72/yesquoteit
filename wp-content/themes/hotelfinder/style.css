@@ -189,4 +189,8 @@ Version: 1.0
     z-index: 0; /* Ensure it's behind text */
 }
 
+.lead-generation-featured-container {
+    background-color: #f6f6f6;
+    overflow: hidden;
+}
 /*Lead Single Page */
