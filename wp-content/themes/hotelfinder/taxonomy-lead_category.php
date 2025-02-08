@@ -139,6 +139,7 @@ if (!$category_image) {
                         <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" />
                         <div class="category-description">
                             <h3 class="subcategory-name"><?php echo esc_html($title); ?></h3>
+                            <h5 class="category-name"><?php echo esc_html($title); ?></h3>
                             <a href="<?php echo esc_url($post_link); ?>" class="htlfndr-category-permalink"></a>
                         </div>
                     </div>
