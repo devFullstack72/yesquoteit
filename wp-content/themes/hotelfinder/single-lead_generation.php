@@ -45,10 +45,26 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
         transform: translate(-50%, -50%);
         text-align: center;
         background: rgba(0, 0, 0, 0.6);
-        /* Semi-transparent background */
         padding: 50px;
         color: white;
         width: 50%;
+        max-width: 90%; /* Ensures it doesn't overflow on smaller screens */
+        box-sizing: border-box;
+    }
+
+    /* Mobile Styles */
+    @media only screen and (max-width: 768px) {
+        .cs-lp-form {
+            width: 90%; /* Increase width for better fit on mobile */
+            padding: 30px; /* Reduce padding to save space */
+        }
+    }
+
+    @media only screen and (max-width: 480px) {
+        .cs-lp-form {
+            width: 95%;
+            padding: 20px; /* Further reduce padding for smaller screens */
+        }
     }
 
 
