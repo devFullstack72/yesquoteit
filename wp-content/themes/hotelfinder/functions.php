@@ -311,16 +311,30 @@ function lead_generation_cards_shortcode($atts) {
 add_shortcode('lead_generation_cards', 'lead_generation_cards_shortcode');
 
 
-// Adding Leads Categories
-
-function enqueue_custom_scripts() {
-    // jQuery Steps Plugin CSS
-    wp_enqueue_style('jquery-steps-css', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.css', array(), '1.1.0');
-
-    // jQuery Steps Plugin JS
-    wp_enqueue_script('jquery-steps', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js', array('jquery'), '1.1.0', true);
-
-    // Custom JS
-    wp_enqueue_script('custom-lead-form', get_template_directory_uri() . '/js/custom-lead-form.js', array('jquery', 'jquery-steps'), '1.0', true);
+function add_lead_generation_meta_box() {
+    add_meta_box(
+        'lead_form_shortcode_meta_box', 
+        'Lead Form Shortcode', 
+        'render_lead_form_shortcode_meta_box', 
+        'lead_generation',  // Custom post type slug
+        'side', 
+        'default'
+    );
 }
-add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
+add_action('add_meta_boxes', 'add_lead_generation_meta_box');
+
+function render_lead_form_shortcode_meta_box($post) {
+    // Retrieve the current meta value
+    $shortcode_value = get_post_meta($post->ID, '_lead_form_short_code', true);
+    ?>
+    <label for="lead_form_shortcode_input">Enter Shortcode:</label>
+    <input type="text" id="lead_form_shortcode_input" name="lead_form_shortcode_input" value="<?php echo esc_attr($shortcode_value); ?>" style="width: 100%;">
+    <?php
+}
+
+function save_lead_form_shortcode_meta($post_id) {
+    if (array_key_exists('lead_form_shortcode_input', $_POST)) {
+        update_post_meta($post_id, '_lead_form_short_code', sanitize_text_field($_POST['lead_form_shortcode_input']));
+    }
+}
+add_action('save_post', 'save_lead_form_shortcode_meta');
