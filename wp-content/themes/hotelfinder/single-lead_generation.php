@@ -16,7 +16,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
 
 <style type="text/css">
     .htlfndr-under-header {
-        display: none;
+        /* display: none; */
         /* Hide under-header section */
     }
 

@@ -75,7 +75,7 @@ Version: 1.0
 /* Container Card Design */
 .wpcf7-form {
     background: #ffffff;
-    padding: 25px;
+    padding: 0px 25px;
     border-radius: 10px;
     box-shadow: 0 7px 9px rgba(0, 0, 0, 0.1);
     max-width: 600px;
@@ -229,4 +229,9 @@ Version: 1.0
 
 #cf7WizardForm .form-control-error {
     border-color: red;
+}
+
+#quoteModalWizard form h2.form-title {
+    margin-top: 0;
+    margin-bottom: 25px;
 }
