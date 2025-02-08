@@ -1,63 +1,78 @@
 <?php
-get_header(); ?>
+get_header(); 
+
+// Get search parameters from URL
+$selected_category = isset($_GET['htlfndr-category']) ? sanitize_text_field($_GET['htlfndr-category']) : '';
+$search_query = isset($_GET['htlfndr-search']) ? sanitize_text_field($_GET['htlfndr-search']) : '';
+
+// Pagination setup
+$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+
+// Query arguments
+$args = array(
+    'post_type'      => 'lead_generation',
+    'paged'         => $paged,
+    'posts_per_page' => 12,
+    'orderby'       => 'date',
+    'order'         => 'DESC',
+    's'             => $search_query, // Search by lead title
+);
+
+// Filter by category if selected
+if (!empty($selected_category)) {
+    $args['tax_query'] = array(
+        array(
+            'taxonomy' => 'lead_category',
+            'field'    => 'slug',
+            'terms'    => $selected_category,
+        ),
+    );
+}
+
+// Execute query
+$query = new WP_Query($args);
+?>
 
 <div class="container archive-container" style="margin-bottom:100px;">
-	<div class="row">
-		
-				<?php 
-				// Get current page for pagination
-				$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+    <div class="row">
+        <?php 
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                $image = get_the_post_thumbnail_url(get_the_ID(), 'large');
+                $post_link = get_permalink();
+                $title = get_the_title();
+                ?>
 
-				// Set up a custom query for 'lead_generation' posts with pagination
-				$query = new WP_Query( array(
-					'post_type' => 'lead_generation',
-					'paged' => $paged, // Use the paged parameter to handle pagination
-					'posts_per_page' => 12
-				));
-				
-				if ( $query->have_posts() ) : 
-					while ( $query->have_posts() ) : $query->the_post();
-						$image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
-						$post_link = get_permalink();
-						$title = get_the_title();
-						
-						$output = ''; // Initialize the output variable
+                <div class="col-sm-4 col-xs-6">
+                    <div class="htlfndr-category-box">
+                        <img src="<?php echo esc_url($image); ?>" height="311" width="370" alt="<?php echo esc_attr($title); ?>" />
+                        <div class="category-description">
+                            <h2 class="subcategory-name"><?php echo esc_html($title); ?></h2>
+                            <a href="<?php echo esc_url($post_link); ?>" class="htlfndr-category-permalink"></a>
+                            <h5 class="category-name"><?php echo esc_html($title); ?></h5>
+                        </div>
+                    </div>
+                </div>
 
-						// Start outputting the custom HTML structure
-						$output .= '<div class="col-sm-4 col-xs-6">';
-						$output .= '<div class="htlfndr-category-box" onclick="void(0)">';
-						$output .= '<img src="' . esc_url( $image ) . '" height="311" width="370" alt="' . esc_attr( $title ) . '" />';
-						$output .= '<div class="category-description">';
-						$output .= '<h2 class="subcategory-name">' . esc_html( $title ) . '</h2>';
-						$output .= '<a href="' . esc_url( $post_link ) . '" class="htlfndr-category-permalink"></a>';
-						$output .= '<h5 class="category-name">' . esc_html( $title ) . '</h5>';
-						$output .= '</div>'; // .category-description
-			            $output .= '</div>'; // .htlfndr-category-box
-			            $output .= '</div>'; // .col-sm-4 .col-xs-6
+                <?php
+            endwhile;
+        else :
+            echo '<p>No matching leads found.</p>';
+        endif;
+        ?>
 
-						// Echo the output
-						echo $output;
-
-					endwhile;
-
-					// Pagination
-					?>
-					<div class="pagination">
-						<?php
-							echo paginate_links(array(
-								'prev_text' => __('« Prev'),
-								'next_text' => __('Next »'),
-								'total' => $query->max_num_pages, // Ensure the pagination knows the total number of pages
-								'current' => $paged, // Current page number
-							));
-						?>
-					</div>
-
-				<?php else : ?>
-					<p>No Lead Generations found.</p>
-				<?php endif; ?>
-			
-	</div>
+        <!-- Pagination -->
+        <div class="pagination">
+            <?php
+            echo paginate_links(array(
+                'prev_text' => __('« Prev'),
+                'next_text' => __('Next »'),
+                'total'     => $query->max_num_pages,
+                'current'   => $paged,
+            ));
+            ?>
+        </div>
+    </div>
 </div>
 
 <?php get_footer(); ?>
