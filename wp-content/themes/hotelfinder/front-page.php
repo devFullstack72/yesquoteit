@@ -49,39 +49,30 @@
     <!-- Search form aside start -->
     <aside class="htlfndr-form-in-slider htlfndr-search-form-inline">
         <div class="container">
-            <h5>Where are you going?</h5>
-            <form  action="search-result.html" name="search-hotel" id="search-hotel" class="htlfndr-search-form">
-                <div id="htlfndr-input-1" class="htlfndr-input-wrapper">
-                    <input type="text" name="htlfndr-city" id="htlfndr-city" class="search-hotel-input" placeholder="Enter city, region or district" />
-                    <p class="htlfndr-search-checkbox">
-                        <input type="checkbox" id="htlfndr-checkbox" name="htlfndr-checkbox" value="no-dates" />
-                        <label for="htlfndr-checkbox">I don't have specific dates yet</label>
-                    </p>
-                </div><!-- #htlfndr-input-1.htlfndr-input-wrapper -->
+            <h5>Where are you looking for?</h5>
+            <form  action="<?php echo esc_url(home_url()); ?>" name="search-hotel" id="search-hotel" class="htlfndr-search-form">
+                 <div id="htlfndr-input-category" class="htlfndr-input-wrapper">
+                <label for="htlfndr-category" class="sr-only">Select Category</label>
+                <select name="htlfndr-category" id="htlfndr-category" class="htlfndr-dropdown">
+                    <option value="">Select Category</option>
+                    <?php
+                    $categories = get_terms(array(
+                        'taxonomy'   => 'lead_category', // Change to your category taxonomy name
+                        'hide_empty' => false,
+                    ));
+                    if (!empty($categories) && !is_wp_error($categories)) {
+                        foreach ($categories as $category) {
+                            echo '<option value="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</option>';
+                        }
+                    }
+                    ?>
+                </select>
+            </div>
 
-                <div id="htlfndr-input-date-in" class="htlfndr-input-wrapper">
-                    <label for="htlfndr-date-in" class="sr-only">Date in</label>
-                    <input type="text" name="htlfndr-date-in" id="htlfndr-date-in" class="search-hotel-input" />
-                    <button type="button" class="htlfndr-clear-datepicker"></button>
-                </div><!-- #htlfndr-input-date-in.htlfndr-input-wrapper -->
-
-                <div id="htlfndr-input-date-out" class="htlfndr-input-wrapper">
-                    <label for="htlfndr-date-out" class="sr-only">Date out</label>
-                    <input type="text" name="htlfndr-date-out" id="htlfndr-date-out" class="search-hotel-input" />
-                    <button type="button" class="htlfndr-clear-datepicker"></button>
-                </div><!-- #htlfndr-input-date-out.htlfndr-input-wrapper -->
-
-                <div id="htlfndr-input-4" class="htlfndr-input-wrapper">
-                    <label for="htlfndr-dropdown" class="sr-only">Number person in room</label>
-                    <select name="htlfndr-dropdown" id="htlfndr-dropdown" class="htlfndr-dropdown">
-                        <option value="1 adult">1 adult</option>
-                        <option value="2 adults in 1 room">2 adults in 1 room</option>
-                        <option value="3 adults in 1 room">3 adults in 1 room</option>
-                        <option value="4 adults in 1 room">4 adults in 1 room</option>
-                        <option value="2 adults in 2 room">2 adults in 2 room</option>
-                        <option value="need more">Need more?</option>
-                    </select>
-                </div><!-- #htlfndr-input-4.htlfndr-input-wrapper -->
+                <!-- Search Input -->
+                <div id="htlfndr-input-search" class="htlfndr-input-wrapper">
+                    <input type="text" name="htlfndr-search" id="htlfndr-search" class="search-hotel-input" placeholder="Search..." />
+                </div>
 
                 <div id="htlfndr-input-5">
                     <input type="submit" value="search"/>

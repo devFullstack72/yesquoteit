@@ -59,64 +59,65 @@ function create_posttype_lead_generation() {
             'show_in_rest' => true,  // Optional: Enables Gutenberg block editor
             'rewrite' => array( 'slug' => 'leads' ),
             'supports' => array( 'title', 'editor', 'custom-fields', 'thumbnail' ),
+            'taxonomies'   => array('lead_category'),
         )
     );
 }
 add_action( 'init', 'create_posttype_lead_generation' );
 
-function lead_generation_cards_shortcode( $atts ) {
-    // Set default attributes
-    $atts = shortcode_atts(
-        array(
-            'posts_per_page' => 6, // Default number of posts to show
-        ),
-        $atts,
-        'lead_generation_cards'
-    );
+// function lead_generation_cards_shortcode( $atts ) {
+//     // Set default attributes
+//     $atts = shortcode_atts(
+//         array(
+//             'posts_per_page' => 6, // Default number of posts to show
+//         ),
+//         $atts,
+//         'lead_generation_cards'
+//     );
 
-    // WP Query to fetch Lead Generation posts
-    $args = array(
-        'post_type'      => 'lead_generation',  // Custom Post Type
-        'posts_per_page' => $atts['posts_per_page'],
-        'post_status'    => 'publish',  // Only show published posts
-    );
+//     // WP Query to fetch Lead Generation posts
+//     $args = array(
+//         'post_type'      => 'lead_generation',  // Custom Post Type
+//         'posts_per_page' => $atts['posts_per_page'],
+//         'post_status'    => 'publish',  // Only show published posts
+//     );
 
-    $query = new WP_Query( $args );
+//     $query = new WP_Query( $args );
 
-    // Start output buffer
-    $output = '';
+//     // Start output buffer
+//     $output = '';
 
-    if ( $query->have_posts() ) :
-        $output .= '<div class="row">';
+//     if ( $query->have_posts() ) :
+//         $output .= '<div class="row">';
         
-        while ( $query->have_posts() ) : $query->the_post();
-            $image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
-            $post_link = get_permalink();
-            $title = get_the_title();
+//         while ( $query->have_posts() ) : $query->the_post();
+//             $image = get_the_post_thumbnail_url( get_the_ID(), 'large' );
+//             $post_link = get_permalink();
+//             $title = get_the_title();
 
-            // Output card HTML
-            $output .= '<div class="col-sm-4 col-xs-6">';
-            $output .= '<div class="htlfndr-category-box" onclick="void(0)">'; // The "onclick" is used for Safari (IOS)
-            $output .= '<img src="' . esc_url( $image ) . '"  alt="' . esc_attr( $title ) . '" />';
-            $output .= '<div class="category-description">';
-            $output .= '<h3 class="subcategory-name">' . esc_html( $title ) . '</h3>';
-            $output .= '<a href="' . esc_url( $post_link ) . '" class="htlfndr-category-permalink"></a>'; // Link for overlay
-            $output .= '<h5 class="category-name">' . esc_html( $title ) . '</h5>'; // This can be dynamic if needed
-            //$output .= '<p class="category-properties"><span>374</span> properties</p>';
-            $output .= '</div>'; // .category-description
-            $output .= '</div>'; // .htlfndr-category-box
-            $output .= '</div>'; // .col-sm-4 .col-xs-6
-        endwhile;
+//             // Output card HTML
+//             $output .= '<div class="col-sm-4 col-xs-6">';
+//             $output .= '<div class="htlfndr-category-box" onclick="void(0)">'; // The "onclick" is used for Safari (IOS)
+//             $output .= '<img src="' . esc_url( $image ) . '"  alt="' . esc_attr( $title ) . '" />';
+//             $output .= '<div class="category-description">';
+//             $output .= '<h3 class="subcategory-name">' . esc_html( $title ) . '</h3>';
+//             $output .= '<a href="' . esc_url( $post_link ) . '" class="htlfndr-category-permalink"></a>'; // Link for overlay
+//             $output .= '<h5 class="category-name">' . esc_html( $title ) . '</h5>'; // This can be dynamic if needed
+//             //$output .= '<p class="category-properties"><span>374</span> properties</p>';
+//             $output .= '</div>'; // .category-description
+//             $output .= '</div>'; // .htlfndr-category-box
+//             $output .= '</div>'; // .col-sm-4 .col-xs-6
+//         endwhile;
 
-        $output .= '</div>'; // .row lead-generation-cards-wrapper
-    endif;
+//         $output .= '</div>'; // .row lead-generation-cards-wrapper
+//     endif;
 
-    wp_reset_postdata();
-    return $output;
-}
+//     wp_reset_postdata();
+//     return $output;
+// }
 
 
-add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
+// add_shortcode( 'lead_generation_cards', 'lead_generation_cards_shortcode' );
 
 function register_my_menus() {
     register_nav_menus(
@@ -132,16 +133,192 @@ function my_theme_enqueue_styles() {
 }
 add_action('wp_enqueue_scripts', 'my_theme_enqueue_styles');
 
+// Adding Leads Categories
 
-// function register_lead_generation_post_type() {
-//     $args = array(
-//         'labels' => array(
-//             'name' => 'Lead Generations',
-//             'singular_name' => 'Lead Generation',
-//         ),
-//         'public' => true,
-//         'supports' => array('title', 'editor', 'thumbnail'), // Ensure 'thumbnail' is added here
-//     );
-//     register_post_type('lead_generation', $args);
-// }
-// add_action('init', 'register_lead_generation_post_type');
+function create_lead_categories_taxonomy() {
+    register_taxonomy(
+        'lead_category',
+        array('lead_generation'), // Ensure this matches your post type
+        array(
+            'label'             => __('Lead Categories'),
+            'rewrite'           => array('slug' => 'lead-category'),
+            'hierarchical'      => true, // Allows parent-child relationships
+            'show_admin_column' => true,
+            'show_ui'           => true, // Ensure UI is enabled
+            'show_in_menu'      => true, // Show in admin menu
+        )
+    );
+}
+add_action('init', 'create_lead_categories_taxonomy');
+
+
+// Category Image add
+
+// Add Image Upload Field in Lead Categories
+function add_lead_category_image_field($term) {
+    $image_id = get_term_meta($term->term_id, 'lead_category_image', true);
+    ?>
+    <div class="form-field">
+        <label for="lead_category_image"><?php _e('Category Image', 'text-domain'); ?></label>
+        <input type="text" id="lead_category_image" name="lead_category_image" value="<?php echo esc_attr($image_id); ?>" />
+        <button class="upload_image_button button"><?php _e('Upload Image', 'text-domain'); ?></button>
+        <br>
+        <?php if ($image_id) { ?>
+            <img src="<?php echo esc_url($image_id); ?>" style="max-width: 200px; display: block; margin-top: 10px;">
+        <?php } ?>
+    </div>
+    <?php
+}
+add_action('lead_category_add_form_fields', 'add_lead_category_image_field', 10);
+add_action('lead_category_edit_form_fields', 'add_lead_category_image_field', 10);
+
+
+// Save Category Image Field
+function save_lead_category_image($term_id) {
+    if (isset($_POST['lead_category_image'])) {
+        update_term_meta($term_id, 'lead_category_image', esc_url($_POST['lead_category_image']));
+    }
+}
+add_action('edited_lead_category', 'save_lead_category_image', 10, 2);
+add_action('created_lead_category', 'save_lead_category_image', 10, 2);
+
+
+function enqueue_admin_scripts($hook) {
+    if ('edit-tags.php' === $hook || 'term.php' === $hook) { // Only for taxonomy pages
+        wp_enqueue_media(); // Ensures WordPress Media Uploader is loaded
+        wp_enqueue_script('jquery'); // Ensure jQuery is loaded
+    }
+}
+add_action('admin_enqueue_scripts', 'enqueue_admin_scripts');
+
+// Enqueue Media Uploader
+function enqueue_media_uploader() {
+    wp_enqueue_media();
+    ?>
+    <script>
+        jQuery(document).ready(function($){
+            $('.upload_image_button').click(function(e) {
+                e.preventDefault();
+                var button = $(this);
+                var file_frame = wp.media({
+                    title: 'Select Category Image',
+                    library: { type: 'image' },
+                    button: { text: 'Use this image' },
+                    multiple: false
+                }).open().on('select', function(){
+                    var attachment = file_frame.state().get('selection').first().toJSON();
+                    button.prev('input').val(attachment.url);
+                    button.next('img').attr('src', attachment.url).show();
+                });
+            });
+        });
+    </script>
+    <?php
+}
+add_action('admin_footer', 'enqueue_media_uploader');
+
+// Category Image add
+
+function lead_generation_cards_shortcode($atts) {
+    // Set default attributes
+    $atts = shortcode_atts(
+        array(
+            'posts_per_page' => 6, // Default number of posts to show
+        ),
+        $atts,
+        'lead_generation_cards'
+    );
+
+    $output = '<div class="container" style="margin:0;"><div class="row">'; // Single row for both categories & leads
+
+    // Get all categories from custom taxonomy "lead_category"
+    $categories = get_terms(array(
+        'taxonomy'   => 'lead_category',
+        'hide_empty' => false, // Show categories even if no leads
+    ));
+
+    if (!empty($categories) && !is_wp_error($categories)) {
+        foreach ($categories as $category) {
+            $category_link  = get_term_link($category);
+            $category_name  = esc_html($category->name);
+            $category_image = get_term_meta($category->term_id, 'lead_category_image', true);
+
+            // ✅ Fix: Set default image if no category image found
+            if (!$category_image) {
+                $category_image = 'http://localhost/wordpress/wp-content/uploads/2025/02/1581618767-1-1024x683.jpeg';
+            }
+
+            // Generate category HTML
+            $output .= '<div class="col-sm-4 col-xs-6">';
+            $output .= '<div class="htlfndr-category-box">';
+            $output .= '<img src="' . esc_url($category_image) . '" alt="' . esc_attr($category_name) . '" />';
+            $output .= '<div class="category-description">';
+            $output .= '<h3 class="subcategory-name">' . $category_name . '</h3>';
+            $output .= '<a href="' . esc_url($category_link) . '" class="htlfndr-category-permalink"></a>';
+            $output .= '</div>'; // .category-description
+            $output .= '</div>'; // .htlfndr-category-box
+            $output .= '</div>'; // .col-sm-4
+        }
+    }
+
+    // WP Query to fetch Uncategorized Leads
+    $args = array(
+        'post_type'      => 'lead_generation',  
+        'posts_per_page' => $atts['posts_per_page'],
+        'post_status'    => 'publish',
+        'tax_query'      => array(
+            array(
+                'taxonomy' => 'lead_category',
+                'operator' => 'NOT EXISTS' // Fetch leads with NO category
+            ),
+        ),
+    );
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $image = get_the_post_thumbnail_url(get_the_ID(), 'large');
+            $post_link = get_permalink();
+            $title = get_the_title();
+
+            // ✅ Fix: Set default image if no featured image found
+            if (!$image) {
+                $image = 'http://localhost/wordpress/wp-content/uploads/2025/02/1581618767-1-1024x683.jpeg';
+            }
+
+            $output .= '<div class="col-sm-4 col-xs-6">';
+            $output .= '<div class="htlfndr-category-box">';
+            $output .= '<img src="' . esc_url($image) . '" alt="' . esc_attr($title) . '" />';
+            $output .= '<div class="category-description">';
+            $output .= '<h3 class="subcategory-name">' . esc_html($title) . '</h3>';
+            $output .= '<a href="' . esc_url($post_link) . '" class="htlfndr-category-permalink"></a>';
+            $output .= '</div>'; // .category-description
+            $output .= '</div>'; // .htlfndr-category-box
+            $output .= '</div>'; // .col-sm-4
+        }
+    }
+
+    $output .= '</div></div>'; // Close Row & Container
+
+    wp_reset_postdata();
+    return $output;
+}
+
+add_shortcode('lead_generation_cards', 'lead_generation_cards_shortcode');
+
+
+// Adding Leads Categories
+
+function enqueue_custom_scripts() {
+    // jQuery Steps Plugin CSS
+    wp_enqueue_style('jquery-steps-css', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.css', array(), '1.1.0');
+
+    // jQuery Steps Plugin JS
+    wp_enqueue_script('jquery-steps', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js', array('jquery'), '1.1.0', true);
+
+    // Custom JS
+    wp_enqueue_script('custom-lead-form', get_template_directory_uri() . '/js/custom-lead-form.js', array('jquery', 'jquery-steps'), '1.0', true);
+}
+add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
