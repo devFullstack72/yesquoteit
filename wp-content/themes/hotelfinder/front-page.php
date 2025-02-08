@@ -50,34 +50,36 @@
     <aside class="htlfndr-form-in-slider htlfndr-search-form-inline">
         <div class="container">
             <h5>Where are you looking for?</h5>
-            <form  action="<?php echo esc_url(home_url()); ?>" name="search-hotel" id="search-hotel" class="htlfndr-search-form">
-                 <div id="htlfndr-input-category" class="htlfndr-input-wrapper">
-                <label for="htlfndr-category" class="sr-only">Select Category</label>
-                <select name="htlfndr-category" id="htlfndr-category" class="htlfndr-dropdown">
-                    <option value="">Select Category</option>
-                    <?php
-                    $categories = get_terms(array(
-                        'taxonomy'   => 'lead_category', // Change to your category taxonomy name
-                        'hide_empty' => false,
-                    ));
-                    if (!empty($categories) && !is_wp_error($categories)) {
-                        foreach ($categories as $category) {
-                            echo '<option value="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</option>';
-                        }
-                    }
-                    ?>
-                </select>
-            </div>
+                <form action="<?php echo esc_url(get_post_type_archive_link('lead_generation')); ?>" method="GET" name="search-lead" id="search-lead" class="htlfndr-search-form">
+                    <div id="htlfndr-input-category" class="htlfndr-input-wrapper">
+                        <label for="htlfndr-category" class="sr-only">Select Category</label>
+                        <select name="htlfndr-category" id="htlfndr-category" class="htlfndr-dropdown">
+                            <option value="">Select Category</option>
+                            <?php
+                            $categories = get_terms(array(
+                                'taxonomy'   => 'lead_category',
+                                'hide_empty' => false,
+                            ));
+                            if (!empty($categories) && !is_wp_error($categories)) {
+                                foreach ($categories as $category) {
+                                    echo '<option value="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                        <span id="category-error" class="error-message" style="color: red; display: none;">Please select a category or enter a search lead text.</span>
+                    </div>
 
-                <!-- Search Input -->
-                <div id="htlfndr-input-search" class="htlfndr-input-wrapper">
-                    <input type="text" name="htlfndr-search" id="htlfndr-search" class="search-hotel-input" placeholder="Search..." />
-                </div>
+                    <div id="htlfndr-input-search" class="htlfndr-input-wrapper">
+                        <input type="text" name="htlfndr-search" id="htlfndr-search" class="search-hotel-input" placeholder="Search by lead name" />
+                    </div>
 
-                <div id="htlfndr-input-5">
-                    <input type="submit" value="search"/>
-                </div><!-- #htlfndr-input-5.htlfndr-input-wrapper -->
-            </form>
+                    <div id="htlfndr-input-5">
+                        <input type="submit" value="Search" />
+                    </div>
+                </form>
+
+
         </div><!-- .container -->
     </aside><!-- .htlfndr-form-in-slider.container-fluid -->
     <!-- Search form aside stop -->
@@ -180,5 +182,18 @@
                 </section><!-- .container-fluid.htlfndr-visitors-cards -->
             </main>
             <!-- End of main content -->
+                <script>
+                document.getElementById("search-lead").addEventListener("submit", function(event) {
+                    var category = document.getElementById("htlfndr-category").value;
+                    var search = document.getElementById("htlfndr-search").value.trim();
+                    var errorMessage = document.getElementById("category-error");
 
+                    if (category === "" && search === "") {
+                        errorMessage.style.display = "block"; // Show error message
+                        event.preventDefault(); // Stop form submission
+                    } else {
+                        errorMessage.style.display = "none"; // Hide error if valid
+                    }
+                });
+                </script>
             <?php get_footer(); ?>
