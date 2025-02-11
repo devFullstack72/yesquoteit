@@ -47,9 +47,9 @@ function pr_render_registration_form() {
     ob_start();
     ?>
     <h2 class="htlfndr-section-title bigger-title">Become Partner</h2><div class="htlfndr-section-under-title-line"></div>
-    <div class="wpcf7 js" style="margin: 0px auto; padding: 20px;">
+    <div class="wpcf7 js" style="margin-bottom:100px; padding: 20px;">
 
-    <form id="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+    <form id="partner-registration-form" method="POST" class="wpcf7-form" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="min-width:100%">
         <input type="hidden" name="action" value="pr_partner_form_submission">
         <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
 
