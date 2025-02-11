@@ -254,3 +254,9 @@ Version: 1.0
     margin: 0 !important;
     padding: 0 !important;
 }
+
+.about-us-page p
+{
+    width: 50% !important;
+    margin: auto;
+}
