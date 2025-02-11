@@ -26,6 +26,7 @@ function pr_create_tables() {
         email VARCHAR(255) NOT NULL,
         phone VARCHAR(50) NOT NULL,
         address TEXT NOT NULL,
+        status TINYINT(1) DEFAULT 0,
         PRIMARY KEY (id)
     ) $charset_collate;";
 
@@ -48,7 +49,11 @@ function pr_render_registration_form() {
     <h2 class="htlfndr-section-title bigger-title">Become Partner</h2><div class="htlfndr-section-under-title-line"></div>
     <div class="wpcf7 js" style="width: 100%;max-width: 600px;margin: 0px auto; padding: 20px;">
         
-        <form id="partner-registration-form" class="wpcf7-form" method="POST" style="padding:30px;">
+    <form id="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+        <input type="hidden" name="action" value="pr_partner_form_submission">
+        <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
+
+        <input type="hidden" name="lead_id" value="<?php echo !empty($_GET['lead_id']) ? $_GET['lead_id'] : '' ?>">
         
         <p><label>Name<br>
         <span class="wpcf7-form-control-wrap" data-name="name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="name" aria-required="true" aria-invalid="false" value="" type="text" name="name"></span> </label>
@@ -65,55 +70,58 @@ function pr_render_registration_form() {
         <span class="wpcf7-form-control-wrap" data-name="address"><textarea size="40" maxlength="400" rows="3" cols="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="address" aria-required="true" aria-invalid="false" value="" type="text" name="address"></textarea></span> </label>
         </p>
 
-        <!-- <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
-
-        <label for="phone">Phone:</label>
-        <input type="text" id="phone" name="phone" required><br>
-
-        <label for="address">Address:</label>
-        <textarea id="address" name="address" required></textarea><br>
- -->
         <p><input class="wpcf7-form-control wpcf7-submit has-spinner" style="width: 30%;" type="submit" name="partner_submit" value="Register"></p>
-        <!-- <input type="submit" name="partner_submit" value="Register"> -->
+        
     </form>
     </div>
     <?php
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partner_submit'])) {
-        pr_handle_form_submission();
-    }
-
     return ob_get_clean();
 }
 
+// Handle form submission with nonce verification
+add_action('admin_post_nopriv_pr_partner_form_submission', 'pr_handle_form_submission');
+add_action('admin_post_pr_partner_form_submission', 'pr_handle_form_submission');
+
 function pr_handle_form_submission() {
-    global $wpdb;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['partner_submit'])) {
 
-    $name = sanitize_text_field($_POST['name']);
-    $email = sanitize_email($_POST['email']);
-    $phone = sanitize_text_field($_POST['phone']);
-    $address = sanitize_textarea_field($_POST['address']);
+        // Verify nonce for security
+        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+            wp_die('Security check failed.');
+        }
 
-    $service_partners_table = $wpdb->prefix . 'service_partners';
-    $lead_partners_table = $wpdb->prefix . 'lead_partners';
+        global $wpdb;
 
-    // Insert into service_partners table
-    $wpdb->insert($service_partners_table, [
-        'name' => $name,
-        'email' => $email,
-        'phone' => $phone,
-        'address' => $address
-    ]);
+        // Sanitize form inputs
+        $name = sanitize_text_field($_POST['name']);
+        $email = sanitize_email($_POST['email']);
+        $phone = sanitize_text_field($_POST['phone']);
+        $address = sanitize_textarea_field($_POST['address']);
 
-    $partner_id = $wpdb->insert_id;
+        $service_partners_table = $wpdb->prefix . 'service_partners';
+        $lead_partners_table = $wpdb->prefix . 'lead_partners';
 
-    // Insert into lead_partners table
-    $wpdb->insert($lead_partners_table, [
-        'lead_id' => $partner_id,  // Assuming lead_id is the same as partner_id in this case
-        'partner_id' => $partner_id
-    ]);
+        // Insert into service_partners table
+        $wpdb->insert($service_partners_table, [
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'address' => $address,
+            'status' => 0 // Pending status
+        ]);
 
-    echo '<p>Thank you for registering as a partner!</p>';
+        $partner_id = $wpdb->insert_id;
+
+        // Insert into lead_partners table
+        $wpdb->insert($lead_partners_table, [
+            'lead_id' => $_POST['lead_id'],
+            'partner_id' => $partner_id,
+            'created_at' => current_time('mysql')
+        ]);
+
+        wp_redirect(add_query_arg('success', '1', $_SERVER['HTTP_REFERER']));
+        exit;
+    }
 }
 ?>
