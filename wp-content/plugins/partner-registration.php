@@ -70,7 +70,7 @@ function pr_render_registration_form() {
         <span class="wpcf7-form-control-wrap" data-name="address"><textarea size="40" maxlength="400" rows="3" cols="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="address" required aria-required="true" aria-invalid="false" value="" type="text" name="address"></textarea></span> </label>
         </p>
 
-        <p><input class="wpcf7-form-control wpcf7-submit has-spinner" style="width: 30%;" type="submit" name="partner_submit" value="Register"></p>
+        <p><input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" name="partner_submit" value="Register"></p>
         
     </form>
     </div>
