@@ -46,9 +46,9 @@ function pr_render_registration_form() {
     ob_start();
     ?>
     <h2 class="htlfndr-section-title bigger-title">Become Partner</h2><div class="htlfndr-section-under-title-line"></div>
-    <div class="wpcf7 js" style="width: 100%;max-width: 600px;margin: 0px auto; padding: 20px;">
+    <div class="wpcf7 js" style="margin: 0px auto; padding: 20px;">
         
-        <form id="partner-registration-form" class="wpcf7-form" method="POST" style="padding:30px;">
+        <form id="partner-registration-form" class="wpcf7-form" method="POST" style="min-width:100%">
         
         <p><label>Name<br>
         <span class="wpcf7-form-control-wrap" data-name="name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="name" aria-required="true" aria-invalid="false" value="" type="text" name="name"></span> </label>
