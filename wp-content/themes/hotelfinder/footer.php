@@ -4,7 +4,7 @@
     <div class="widget-wrapper">
         <div class="container">
             <div class="row">
-                <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
+                <aside class="col-xs-12 col-sm-6 col-md-4 htlfndr-widget-column">
                     <div class="widget">
                         <a class="htlfndr-logo navbar-brand" href="<?php echo esc_url(home_url()); ?>">
                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/footer-logo.png" alt="Logo" />
@@ -18,20 +18,8 @@
                     </div><!-- .widget -->
                 </aside>
 
-                <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
-                    <div class="widget">
-                        <h3 class="widget-title">Contact Info</h3>
-                        <h5>Address</h5>
-                        <p>Yes Quote It<br>120 CA 15th Avenue-Suite 214, USA</p>
-                        <hr />
-                        <h5>Phone Number</h5>
-                        <p>1-555-5555-5555</p>
-                        <hr />
-                        <h5>Email Address</h5>
-                        <p><a href="mailto:info@yesquoteit.com">info@yesquoteit.com</a></p>
-                    </div><!-- .widget -->
-                </aside>
-
+               
+                <aside class="col-xs-12 col-sm-6 col-md-1 htlfndr-widget-column"></aside>
                 <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
                     <div class="widget">
                         <h3 class="widget-title">Pages</h3>
@@ -47,15 +35,13 @@
                     </div><!-- .widget -->
                 </aside>
 
-                <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
+                <aside class="col-xs-12 col-sm-6 col-md-4 htlfndr-widget-column">
                     <div class="widget">
                         <h3 class="widget-title">Follow Us</h3>
                         <div class="htlfndr-follow-plugin">
                             <a href="https://www.facebook.com/yesquoteit" class="htlfndr-follow-button button-facebook"></a>
                             <a href="http://x.com/yesquoteit" class="htlfndr-follow-button button-twitter"></a>
-                            <a href="https://www.instagram.com/yesquoteit" class="htlfndr-follow-button button-instagram">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
+                            <a href="https://www.instagram.com/yesquoteit/" class="htlfndr-follow-button button-instagram"></a>
                         </div><!-- .htlfndr-follow-plugin -->
                         <hr />
                         <h3 class="widget-title">Mailing List</h3>

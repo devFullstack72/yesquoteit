@@ -245,6 +245,18 @@ Version: 1.0
     margin-top: 18px;
 }
 
+ .htlfndr-follow-button.button-instagram::before {
+     background-color: #cb2027;
+}
+ .htlfndr-follow-button.button-instagram::before, .htlfndr-follow-button.button-instagram::after {
+     content: "\f16d";
+}
+ .htlfndr-follow-button.button-instagram::after {
+     background-color: #89161a;
+}
+ .htlfndr-follow-button.button-instagram::before, .htlfndr-follow-button.button-instagram::after {
+     content: "\f16d";
+}
 
 /*About us Cover image */
 
