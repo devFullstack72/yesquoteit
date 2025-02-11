@@ -7,7 +7,7 @@
                 <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
                     <div class="widget">
                         <a class="htlfndr-logo navbar-brand" href="<?php echo esc_url(home_url()); ?>">
-                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/footer-logo.jpg" alt="Logo" />
+                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/footer-logo.png" alt="Logo" />
                         </a>
                         <hr style="margin-top:100px;">
                         <p>Yes Quote It’s mission is to make a market place where customers and providers connect directly making it cheaper and better for everyone.</p>

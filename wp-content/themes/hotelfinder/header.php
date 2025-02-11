@@ -52,7 +52,7 @@
                                 <span class="icon-bar"></span>
                             </button>
                             <a class="htlfndr-logo navbar-brand" href="<?php echo home_url(); ?>"> <!-- Home link -->
-                                <img src="<?php echo get_template_directory_uri(); ?>/images/header-logo.jpg" alt="Logo" />
+                                <img src="<?php echo get_template_directory_uri(); ?>/images/header-logo.png" alt="Logo" style="margin-top:5px;" />
                                 <!-- <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p> -->
                             </a>
                         </div><!-- .navbar-header -->
