@@ -6,6 +6,11 @@ Author URI: http://localhost/wordpress/
 Description: A custom WordPress theme based on an HTML template.
 Version: 1.0
 */
+
+.button-instagram {
+    background: #E4405F;
+}
+
 #htlfndr-main-nav .navbar-nav>li.current-menu-item>a:after {
     height: 2px;
     opacity: 1;

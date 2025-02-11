@@ -74,7 +74,7 @@
                         <input type="text" name="htlfndr-search" id="htlfndr-search" class="search-hotel-input" placeholder="Search by lead name" />
                     </div>
 
-                    <div id="htlfndr-input-5">
+                    <div id="htlfndr-input-5" style="margin:1px;">
                         <input type="submit" value="Search" />
                     </div>
                 </form>

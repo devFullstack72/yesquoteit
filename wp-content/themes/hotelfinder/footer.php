@@ -7,12 +7,14 @@
                 <aside class="col-xs-12 col-sm-6 col-md-3 htlfndr-widget-column">
                     <div class="widget">
                         <a class="htlfndr-logo navbar-brand" href="<?php echo esc_url(home_url()); ?>">
-                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/logo.png" height="50" width="150" alt="Logo" / style="top:22%;">
+                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/footer-logo.jpg" alt="Logo" />
                         </a>
-                        <hr />
-                        <p>Suspendisse sed sollicitudin nisl, at dignissim libero. Sed porta tincidunt ipsum, vel volutpat.</p>
+                        <hr style="margin-top:100px;">
+                        <p>Yes Quote It’s mission is to make a market place where customers and providers connect directly making it cheaper and better for everyone.</p>
                         <br />
-                        <p>Nunc ut fringilla urna. Cras vel adipiscing ipsum. Integer dignissim nisl eu lacus interdum facilisis. Aliquam erat volutpat.</p>
+                        <p>Our platform helps Customers save money by receiving quotes directly from Providers (who often provide unadvertised or below market rates).</p>
+                        <br />
+                        <p>Providers using our site save on 3rd party booking fees, and can deal directly with customers to create customised experiences.</p>
                     </div><!-- .widget -->
                 </aside>
 
@@ -49,12 +51,11 @@
                     <div class="widget">
                         <h3 class="widget-title">Follow Us</h3>
                         <div class="htlfndr-follow-plugin">
-                            <a href="#" class="htlfndr-follow-button button-facebook"></a>
-                            <a href="#" class="htlfndr-follow-button button-twitter"></a>
-                            <a href="#" class="htlfndr-follow-button button-google-plus"></a>
-                            <a href="#" class="htlfndr-follow-button button-linkedin"></a>
-                            <a href="#" class="htlfndr-follow-button button-pinterest"></a>
-                            <a href="#" class="htlfndr-follow-button button-youtube"></a>
+                            <a href="https://www.facebook.com/yesquoteit" class="htlfndr-follow-button button-facebook"></a>
+                            <a href="http://x.com/yesquoteit" class="htlfndr-follow-button button-twitter"></a>
+                            <a href="https://www.instagram.com/yesquoteit" class="htlfndr-follow-button button-instagram">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
                         </div><!-- .htlfndr-follow-plugin -->
                         <hr />
                         <h3 class="widget-title">Mailing List</h3>
@@ -63,17 +64,24 @@
                             <input type="email" placeholder="Your E-mail" />
                             <input type="submit" />
                         </form>
+                        <hr/>
+                        <h3 class="widget-title">contact info</h3>
+                        <h5>address</h5>
+                        <p>Yes Quoteit  <br>P.O Box 2, Jindabyne, NSW 2627</p>
+                        <hr>
+                        <h5>email address</h5>
+                        <p> info@yesquoteit.com</p>
                     </div><!-- .widget -->
                 </aside>
             </div><!-- .row -->
         </div><!-- .container -->
     </div><!-- .widget-wrapper -->
 
-    <div class="htlfndr-copyright">
+    <div class="htlfndr-copyright text-center">
         <div class="container" role="contentinfo">
-            <p>Copyright &copy; <?php echo date('Y'); ?> | BESTWEBSOFT | All Rights Reserved | Designed by BestWebSoft</p>
+            <p>© Copyright 2025 <a href="https://yesquoteit.com/">YES Quote It Pty Ltd</a></p>
         </div><!-- .container -->
-    </div><!-- .htlfndr-copyright -->
+    </div>
 </footer>
 
 <!-- Add Sign Up & Sign In Forms -->
