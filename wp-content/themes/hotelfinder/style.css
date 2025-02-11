@@ -244,3 +244,13 @@ Version: 1.0
 #htlfndr-input-5 {
     margin-top: 18px;
 }
+
+
+/*About us Cover image */
+
+.about-us-page{
+    width: 100vw !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
