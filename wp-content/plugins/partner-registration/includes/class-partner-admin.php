@@ -15,8 +15,8 @@ class Partner_Admin
     public function register_admin_menu()
     {
         add_menu_page(
-            'Service Partners',
-            'Service Partners',
+            'Providers',
+            'Providers',
             'manage_options',
             'service-partners',
             [$this, 'render_service_partners_page'],
@@ -32,7 +32,7 @@ class Partner_Admin
         $partners = $wpdb->get_results("SELECT * FROM $service_partners_table");
 ?>
         <div class="wrap">
-            <h1>Service Partners</h1>
+            <h1>Providers</h1>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>

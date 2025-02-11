@@ -149,7 +149,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
         <div class="cls_searchhotl cs-cont-btn">
             <div id="htlfndr-input-5">
                 <input type="Submit" value="Get a quote now" data-toggle="modal" data-target="#quoteModalWizard">
-                <a href="<?php echo home_url(); ?>/become-a-partner?lead_id=<?php echo get_the_ID() ?>" class="btn btn-success" style="color:white;margin:0;padding: 6px 15px;margin-top:-5px;">Become a partner</a>
+                <a href="<?php echo home_url(); ?>/become-a-partner?lead_id=<?php echo get_the_ID() ?>" class="btn btn-success" style="color:white;margin:0;padding: 6px 15px;margin-top:-5px;">Become a Provider</a>
             </div>
         </div>
 
