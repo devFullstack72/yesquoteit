@@ -17,26 +17,32 @@ class Partner_Registration_Form
     {
         ob_start();
 ?>
-        <form id="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+        <h2 class="htlfndr-section-title bigger-title">Become Partner</h2><div class="htlfndr-section-under-title-line"></div>
+         <div class="wpcf7 js" style="margin-bottom:100px; padding: 20px;">
+        <form id="partner-registration-form" method="POST" class="wpcf7-form" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"  style="min-width:100%">
             <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
             <input type="hidden" name="action" value="pr_partner_form_submission">
 
             <input type="hidden" name="lead_id" value="<?php echo !empty($_GET['lead_id']) ? $_GET['lead_id'] : '' ?>">
 
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required><br>
+            <p><label>Name<br>
+            <span class="wpcf7-form-control-wrap" data-name="name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="name" aria-required="true" aria-invalid="false" value="" type="text" name="name"></span> </label>
+            </p>
+            <p><label>Email<br>
+            <span class="wpcf7-form-control-wrap" data-name="email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="email" aria-required="true" aria-invalid="false" value="" type="email" id="email" name="email"></span> </label>
+            </p>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br>
+            <p><label>Phone<br>
+            <span class="wpcf7-form-control-wrap" data-name="phone"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="phone" aria-required="true" aria-invalid="false" value="" type="text" name="phone"></span> </label>
+            </p>
 
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" required><br>
+            <p><label>Address<br>
+            <span class="wpcf7-form-control-wrap" data-name="address"><textarea size="40" maxlength="400" rows="3" cols="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="address" required aria-required="true" aria-invalid="false" value="" type="text" name="address"></textarea></span> </label>
+            </p>
 
-            <label for="address">Address:</label>
-            <textarea id="address" name="address" required></textarea><br>
-
-            <input type="submit" name="partner_submit" value="Register">
+            <p><input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" name="partner_submit" value="Register"></p>
         </form>
+    </div>
 <?php
         return ob_get_clean();
     }
