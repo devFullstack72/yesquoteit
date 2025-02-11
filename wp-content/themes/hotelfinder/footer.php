@@ -37,7 +37,7 @@
                         <h3 class="widget-title">Pages</h3>
                         <?php 
                                 wp_nav_menu(array(
-                                    'theme_location' => 'footer-menu',  // Use the correct theme location
+                                    'theme_location' => 'main-menu',  // Use the correct theme location
                                     'menu_class'     => 'menu',     // Bootstrap's navbar nav class
                                     'container'      => false,            // Don't wrap in a container div
                                     'depth'           => 1,                // Only 1 level deep (top-level items)
