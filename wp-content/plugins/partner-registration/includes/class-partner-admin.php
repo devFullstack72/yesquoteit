@@ -9,6 +9,7 @@ class Partner_Admin
     public function __construct()
     {
         add_action('admin_menu', [$this, 'register_admin_menu']);
+        add_action('admin_init', [$this, 'handle_partner_actions']);
     }
 
     public function register_admin_menu()
@@ -65,6 +66,42 @@ class Partner_Admin
             </table>
         </div>
 <?php
+    }
+
+    public function handle_partner_actions() {
+        if (!isset($_GET['page']) || $_GET['page'] !== 'service-partners') {
+            return;
+        }
+
+        if (isset($_GET['action']) && isset($_GET['id'])) {
+            global $wpdb;
+            $service_partners_table = $wpdb->prefix . 'service_partners';
+            $partner_id = intval($_GET['id']);
+
+            if ($_GET['action'] === 'approve') {
+                $wpdb->update(
+                    $service_partners_table,
+                    ['status' => 1],
+                    ['id' => $partner_id],
+                    ['%d'],
+                    ['%d']
+                );
+                wp_redirect(admin_url('admin.php?page=service-partners'));
+                exit;
+            }
+
+            if ($_GET['action'] === 'reject') {
+                $wpdb->update(
+                    $service_partners_table,
+                    ['status' => 2],
+                    ['id' => $partner_id],
+                    ['%d'],
+                    ['%d']
+                );
+                wp_redirect(admin_url('admin.php?page=service-partners'));
+                exit;
+            }
+        }
     }
 }
 ?>
