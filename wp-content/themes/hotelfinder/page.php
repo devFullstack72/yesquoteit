@@ -5,7 +5,7 @@
     $page_slug = get_post_field( 'post_name', get_the_ID() );
 ?>
 
-<div class="container <?php echo ($page_slug == 'about-us') ? 'about-us-page' : ''; ?>">
+<div class="container <?php echo ($page_slug == 'aboutus') ? 'about-us-page' : ''; ?>">
     <?php 
         if ( have_posts() ) {
             while ( have_posts() ) {
