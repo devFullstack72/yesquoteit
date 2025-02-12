@@ -18,9 +18,12 @@ class Partner_CF7_Handler {
         }
 
         // Retrieve lead_id passed via shortcode
-        $is_lead = isset($_POST['is_lead']) ? $_POST['is_lead'] : '';
+        $lead_id = isset($_POST['is_lead']) ? $_POST['is_lead'] : '';
 
-        if (empty($is_lead))
+        $customer_template_id = get_post_meta($lead_id, '_lead_customer_email_template', true);
+        $provider_template_id = get_post_meta($lead_id, '_lead_provider_email_template', true);
+
+        if (empty($lead_id))
             return;
 
         // Get submitted form fields
@@ -28,11 +31,21 @@ class Partner_CF7_Handler {
         
         // Get user email from the form (modify the key based on your CF7 form)
         $user_email = isset($posted_data['your-email']) ? sanitize_email($posted_data['your-email']) : '';
-    
-        // Fetch all approved service provider emails
+
         global $wpdb;
-        $service_partners_table = $wpdb->prefix . 'service_partners';
-        $approved_partners = $wpdb->get_results("SELECT email FROM $service_partners_table WHERE status = 1");
+        $service_partners_table = $wpdb->prefix . 'service_partners'; // Main partners table
+        $lead_partners_table = $wpdb->prefix . 'lead_partners'; // Junction table
+
+        $approved_partners = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT sp.email 
+                FROM $service_partners_table AS sp
+                INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
+                WHERE lp.lead_id = %d AND sp.status = 1",
+                $lead_id
+            )
+        );
+
         
         // Prepare data for email template
         $email_data = [];
@@ -47,13 +60,13 @@ class Partner_CF7_Handler {
         // Send email to approved service providers
         if (!empty($approved_partners)) {
             foreach ($approved_partners as $partner) {
-                $this->pr_send_yeemail($partner->email, 'Provider Email Template', $email_data);
+                $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
             }
         }
     
         // Send email to the customer
         if (!empty($user_email)) {
-            $this->pr_send_yeemail($user_email, 'Customer Quote Email', $email_data);
+            $this->pr_send_yeemail($user_email, $customer_template_id, $email_data, 'customer');
         }
     }
 
@@ -98,17 +111,24 @@ class Partner_CF7_Handler {
     //     $cf7->set_properties(['mail' => $mail]);
     // }
 
-    public function pr_send_yeemail($to, $template_name, $email_data) {
+    public function pr_send_yeemail($to, $template_id, $email_data, $from = 'provider') {
         if (class_exists('YeeMail')) {
             $email = new YeeMail();
-            $email->set_template($template_name);
+            $email->set_template($template_id);
             $email->set_to($to);
-            $email->set_subject("New Inquiry Received");
+            if ($from == 'provider') {
+                $email->set_subject("New Inquiry Received");
+            } else {
+                $email->set_subject("Thank you for submitting quote");
+            }
     
             // Pass CF7 form fields dynamically into the email content
             $email->set_content($email_data);
     
             $email->send();
+
+            echo "aayu";
+            exit;
         }
     }
 }
