@@ -16,9 +16,18 @@ class Partner_Registration_Form
     public function render_registration_form()
     {
         ob_start();
+
 ?>
         <h2 class="htlfndr-section-title bigger-title">Become Partner</h2><div class="htlfndr-section-under-title-line"></div>
          <div class="wpcf7 js" style="margin-bottom:100px; padding: 20px;">
+            <?php
+            // Check for success message
+            if (isset($_GET['success']) && $_GET['success'] == 1) {
+                echo '<div class="notice notice-success" style="padding: 10px; border: 1px solid #46b450; background-color: #dff0d8; color: #3c763d; margin-bottom: 15px;">
+                        Thank you for registering! We will review it shortly.
+                    </div>';
+            }
+            ?>
         <form id="partner-registration-form" method="POST" class="wpcf7-form" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"  style="min-width:100%">
             <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
             <input type="hidden" name="action" value="pr_partner_form_submission">
