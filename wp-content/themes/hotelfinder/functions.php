@@ -367,3 +367,60 @@ function lead_generation_save_custom_meta_box_data($post_id) {
     }
 }
 add_action('save_post', 'lead_generation_save_custom_meta_box_data');
+
+function add_lead_email_template_metabox() {
+    add_meta_box(
+        'lead_email_template',
+        'Select Email Templates',
+        'render_lead_email_template_metabox',
+        'lead_generation', // Change this to your actual CPT name
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_lead_email_template_metabox');
+
+function render_lead_email_template_metabox($post) {
+    // Get selected templates from post meta
+    $selected_customer_template = get_post_meta($post->ID, '_lead_customer_email_template', true);
+    $selected_provider_template = get_post_meta($post->ID, '_lead_provider_email_template', true);
+
+    // Fetch available YeeMail templates
+    $email_templates = get_posts([
+        'post_type'   => 'yeemail_template', // Adjust post type if different
+        'numberposts' => -1
+    ]);
+
+    echo '<label for="lead_customer_email_template"><strong>Customer Email Template:</strong></label>';
+    echo '<select name="lead_customer_email_template" id="lead_customer_email_template">';
+    echo '<option value="">Select a template</option>';
+    
+    foreach ($email_templates as $template) {
+        $selected = ($template->ID == $selected_customer_template) ? 'selected' : '';
+        echo '<option value="' . esc_attr($template->ID) . '" ' . $selected . '>' . esc_html($template->post_title) . '</option>';
+    }
+
+    echo '</select><br><br>';
+
+    echo '<label for="lead_provider_email_template"><strong>Provider Email Template:</strong></label>';
+    echo '<select name="lead_provider_email_template" id="lead_provider_email_template">';
+    echo '<option value="">Select a template</option>';
+    
+    foreach ($email_templates as $template) {
+        $selected = ($template->ID == $selected_provider_template) ? 'selected' : '';
+        echo '<option value="' . esc_attr($template->ID) . '" ' . $selected . '>' . esc_html($template->post_title) . '</option>';
+    }
+
+    echo '</select>';
+}
+
+function save_lead_email_templates($post_id) {
+    if (isset($_POST['lead_customer_email_template'])) {
+        update_post_meta($post_id, '_lead_customer_email_template', sanitize_text_field($_POST['lead_customer_email_template']));
+    }
+
+    if (isset($_POST['lead_provider_email_template'])) {
+        update_post_meta($post_id, '_lead_provider_email_template', sanitize_text_field($_POST['lead_provider_email_template']));
+    }
+}
+add_action('save_post', 'save_lead_email_templates');

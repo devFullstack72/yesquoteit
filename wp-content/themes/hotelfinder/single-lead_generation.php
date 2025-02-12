@@ -229,3 +229,8 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
 <?php endif; ?>
 
 <?php get_footer(); ?>
+
+<script>
+    var lead_id = '<?php echo get_the_ID() ?>';
+    $('input[name="is_lead"]').val(lead_id);
+</script>
