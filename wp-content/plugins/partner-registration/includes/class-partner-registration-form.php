@@ -25,8 +25,9 @@ class Partner_Registration_Form
             SELECT ID, post_title 
             FROM {$wpdb->posts} 
             WHERE post_type = 'lead_generation' 
-            AND post_status == 'publish'
+            AND post_status = 'publish'
         ");
+
 
         ob_start();
 
