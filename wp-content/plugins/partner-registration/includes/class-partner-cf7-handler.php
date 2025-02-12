@@ -58,10 +58,16 @@ class Partner_CF7_Handler {
         }
     
         // Send email to approved service providers
+        $approved_partners_emails = [];
         if (!empty($approved_partners)) {
             foreach ($approved_partners as $partner) {
-                $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
+                $approved_partners_emails[] = $partner->email;
             }
+        }
+
+        // Send email to the customer
+        if (!empty($approved_partners_emails)) {
+            $this->pr_send_yeemail($approved_partners_emails, $provider_template_id, $posted_data, 'provider');
         }
     
         // Send email to the customer
@@ -70,65 +76,30 @@ class Partner_CF7_Handler {
         }
     }
 
-    // public function send_cf7_to_approved_partners($cf7) {
-    //     global $wpdb;
-
-    //     // Target specific form by ID (update this to your actual form ID)
-    //     // $target_form_id = 123; // Replace with your Contact Form 7 form ID
-    //     // if ($cf7->id() != $target_form_id) {
-    //     //     return;
-    //     // }
-
-    //     // Fetch approved service partners from the custom table
-    //     $approved_partners = $wpdb->get_col(
-    //         "SELECT email FROM {$wpdb->prefix}service_partners WHERE status = 1"
-    //     );
-
-    //     // If no approved partners, return early
-    //     if (empty($approved_partners)) {
-    //         return;
-    //     }
-
-    //     // Extract form submission data
-    //     $submission = WPCF7_Submission::get_instance();
-    //     if ($submission) {
-    //         $form_data = $submission->get_posted_data();
-    //         $user_email = sanitize_email($form_data['your-email']); // Replace 'your-email' with your actual CF7 field name
-    //     }
-
-    //     $recipients = $approved_partners;
-    //     if (!empty($user_email)) {
-    //         $recipients[] = $user_email;
-    //     }
-
-    //     // Get the current mail properties
-    //     $mail = $cf7->prop('mail');
-
-    //     // Set the recipient emails to approved partners
-    //     $mail['recipient'] = implode(',', $recipients);
-
-    //     // Update the mail properties
-    //     $cf7->set_properties(['mail' => $mail]);
-    // }
-
     public function pr_send_yeemail($to, $template_id, $email_data, $from = 'provider') {
-        if (class_exists('YeeMail')) {
-            $email = new YeeMail();
-            $email->set_template($template_id);
-            $email->set_to($to);
-            if ($from == 'provider') {
-                $email->set_subject("New Inquiry Received");
-            } else {
-                $email->set_subject("Thank you for submitting quote");
-            }
-    
-            // Pass CF7 form fields dynamically into the email content
-            $email->set_content($email_data);
-    
-            $email->send();
-
-            echo "aayu";
-            exit;
+        
+        if ($from == 'provider') {
+            $subject = "New Quote Received";
+        } else {
+            $subject = "Thank you for submitting quote";
         }
+
+        $content = Yeemail_Builder_Frontend_Functions::creator_template(array(
+            "id_template" => $template_id,
+            "type" => "full",
+            "html" => "",
+            "datas" => $email_data,
+        ));
+
+        $template_data = [];
+        foreach ($email_data as $key => $value) {
+            $template_data["[" . $key . "]"] = $value; // Convert to {key} format
+        }
+
+        // Replace placeholders manually (if not working inside the function)
+        $content = str_replace(array_keys($template_data), array_values($template_data), $content);
+
+		$data = wp_mail( $to, $subject, $content );
+        
     }
 }
