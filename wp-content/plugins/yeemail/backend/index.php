@@ -609,7 +609,7 @@ class Yeemail_Settings_Builder_Backend {
                     'add_new' => __( 'New Template',"yeemail" ),
                     'search_items' => __( 'Seach Templates',"yeemail" ),
                     'not_found' => __( 'No template found',"yeemail" ),
-                    'menu_name' => 'YeeMail',
+                    'menu_name' => 'Email Templates',
                 ),
                 'public' => true,
                 'has_archive' => true,
