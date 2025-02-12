@@ -63,7 +63,7 @@ class Partner_Registration_Form
             </p>
 
             <p><label>Select Leads:</label></p>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;margin-bottom:10px;">
+            <div style="align-items: center;margin-bottom:10px;">
                 <?php foreach ($leads as $lead): ?>
                     <label style="display: flex; align-items: center; gap: 5px;">
                         <input type="checkbox" name="lead_ids[]" value="<?php echo esc_attr($lead->ID); ?>" 

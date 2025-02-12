@@ -29,7 +29,18 @@ class Partner_Admin
     {
         global $wpdb;
         $service_partners_table = $wpdb->prefix . 'service_partners';
-        $partners = $wpdb->get_results("SELECT * FROM $service_partners_table");
+        $lead_partners_table = $wpdb->prefix . 'lead_partners';
+        $wp_posts_table = $wpdb->prefix . 'posts';
+
+        // $partners = $wpdb->get_results("SELECT * FROM $service_partners_table");
+        $partners = $wpdb->get_results("
+            SELECT sp.*, 
+                   GROUP_CONCAT(p.ID, '|', p.post_title SEPARATOR ',') AS leads
+            FROM {$service_partners_table} sp
+            LEFT JOIN {$lead_partners_table} lp ON sp.id = lp.partner_id
+            LEFT JOIN {$wp_posts_table} p ON lp.lead_id = p.ID AND p.post_type = 'lead_generation'
+            GROUP BY sp.id
+        ");
 ?>
         <div class="wrap">
             <h1>Providers</h1>
@@ -41,6 +52,7 @@ class Partner_Admin
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Address</th>
+                        <th>Lead</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -53,12 +65,28 @@ class Partner_Admin
                             <td><?php echo $partner->email; ?></td>
                             <td><?php echo $partner->phone; ?></td>
                             <td><?php echo $partner->address; ?></td>
+                            <td>
+                            <?php if (!empty($partner->leads)): 
+                                    $leads = explode(',', $partner->leads);
+                                    foreach ($leads as $lead_data): 
+                                        list($lead_id, $lead_name) = explode('|', $lead_data);
+                                        ?>
+                                        <a href="<?php echo esc_url(get_permalink($lead_id)); ?>" target="_blank">
+                                            <?php echo esc_html($lead_name); ?>
+                                        </a><br>
+                                    <?php endforeach;
+                                else: ?>
+                                    No Leads Assigned
+                                <?php endif; ?>
+                            </td>
                             <td><?php echo $partner->status == 1 ? 'Approved' : ($partner->status == 2 ? 'Rejected' : 'Pending'); ?></td>
                             <td>
                                 <?php if ($partner->status == 0): ?>
                                     <a href="?page=service-partners&action=approve&id=<?php echo $partner->id; ?>" class="button">Approve</a>
                                     <a href="?page=service-partners&action=reject&id=<?php echo $partner->id; ?>" class="button">Reject</a>
                                 <?php endif; ?>
+
+                                <a href="?page=service-partners&action=delete&id=<?php echo $partner->id; ?>" class="button">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -76,6 +104,7 @@ class Partner_Admin
         if (isset($_GET['action']) && isset($_GET['id'])) {
             global $wpdb;
             $service_partners_table = $wpdb->prefix . 'service_partners';
+            $lead_partners_table = $wpdb->prefix . 'lead_partners';
             $partner_id = intval($_GET['id']);
 
             if ($_GET['action'] === 'approve') {
@@ -98,6 +127,17 @@ class Partner_Admin
                     ['%d'],
                     ['%d']
                 );
+                wp_redirect(admin_url('admin.php?page=service-partners'));
+                exit;
+            }
+
+            if ($_GET['action'] === 'delete') {
+                // First, delete related leads
+                $wpdb->delete($lead_partners_table, ['partner_id' => $partner_id], ['%d']);
+    
+                // Then, delete the service partner itself
+                $wpdb->delete($service_partners_table, ['id' => $partner_id], ['%d']);
+    
                 wp_redirect(admin_url('admin.php?page=service-partners'));
                 exit;
             }
