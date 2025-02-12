@@ -19,6 +19,7 @@ require_once PR_PLUGIN_DIR . 'includes/class-partner-registration-form.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-admin.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-cf7-handler.php';
 
+
 class Partner_Registration_Plugin {
     public function __construct() {
         new Partner_Registration_Form();
