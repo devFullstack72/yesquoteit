@@ -141,7 +141,16 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
     <!-- Overlay Form -->
     <div class="cs-lp-form">
         <div class="cls_htlfinder-align desktop_cls_htlfinder">
-            <h1 id="head_text" class="htlfndr-slider-title cls_tit1-cnt">Get the right <?php echo get_the_title(); ?> for your needs.</h1><br>
+        <?php
+            $custom_text = get_post_meta(get_the_ID(), '_lead_title_text', true);
+            if (empty($custom_text)) {
+                $custom_text = 'Get the right '.get_the_title().' for your needs.';
+            } else {
+                $custom_text = esc_html($custom_text);
+            }
+        ?>
+
+            <h1 id="head_text" class="htlfndr-slider-title cls_tit1-cnt"><?php echo $custom_text ?></h1><br>
             <div class="cls_under cls_center-under">
                 <div class="htlfndr-slider-under-title-line"></div>
             </div>

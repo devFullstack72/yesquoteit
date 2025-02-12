@@ -338,3 +338,32 @@ function save_lead_form_shortcode_meta($post_id) {
     }
 }
 add_action('save_post', 'save_lead_form_shortcode_meta');
+
+function lead_generation_add_custom_meta_box() {
+    add_meta_box(
+        'lead_title_meta_box',
+        'Title', // Title of the new section
+        'lead_title_meta_box_callback',
+        'lead_generation', // Change if your post type is different
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'lead_generation_add_custom_meta_box');
+
+function lead_title_meta_box_callback($post) {
+    $custom_text = get_post_meta($post->ID, '_lead_title_text', true);
+    ?>
+    <p>
+        <label for="lead_title_input">Enter Title:</label>
+        <textarea id="lead_title_input" name="lead_title_input" rows="3" style="width:100%;"><?php echo esc_textarea($custom_text); ?></textarea>
+    </p>
+    <?php
+}
+
+function lead_generation_save_custom_meta_box_data($post_id) {
+    if (array_key_exists('lead_title_input', $_POST)) {
+        update_post_meta($post_id, '_lead_title_text', sanitize_textarea_field($_POST['lead_title_input']));
+    }
+}
+add_action('save_post', 'lead_generation_save_custom_meta_box_data');

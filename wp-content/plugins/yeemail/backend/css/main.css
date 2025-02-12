@@ -1,0 +1,1314 @@
+.post-type-yeemail_template.post-php #wpadminbar, 
+.post-type-yeemail_template.post-php #adminmenuwrap,
+.post-type-yeemail_template.post-php #adminmenuback,
+.post-type-yeemail_template.post-php .notice,
+.post-type-yeemail_template.post-php .error,
+.post-type-yeemail_template.post-php #screen-meta-links,
+.post-type-yeemail_template.post-php .postbox-header,
+.post-type-yeemail_template.post-php #submitdiv,
+.post-type-yeemail_template.post-php #wpfooter,
+.post-type-yeemail_template.post-php .wp-heading-inline,
+.post-type-yeemail_template.post-php #titlediv .inside,
+.post-type-yeemail_template.post-php #authordiv,
+.post-type-yeemail_template.post-php .postbox-container-1,
+.post-type-yeemail_template.post-php .wp-heading-inline+a{
+    display: none !important;
+}
+.post-type-yeemail_template.post-php #wpbody-content>div:not(.wrap),
+.post-type-yeemail_template.post-php #wpbody-content #postbox-container-2 #normal-sortables>div:not(#yeemail-builder-main) {
+  display: none;
+}
+.post-type-yeemail_template.post-php #poststuff #post-body.columns-2 {
+  margin-right: 0;
+}
+.post-type-yeemail_template .row-actions .view {
+    display: none;
+}
+.post-type-yeemail_template.post-php #poststuff{
+    padding-top: 40px;
+}
+#yeemail-builder-main {
+    background: none;
+    border: none;
+}
+.yeemail-builder-main {
+    background-color: #c3ccd5;
+    position: relative;
+    padding-top: 75px;
+    padding-bottom: 75px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin: 0 auto;
+    min-width: 700px;
+    font-size: 14px;
+    line-height: 21px;
+    font-family: "Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+    color: #636363;
+}
+.yeemail-builder-main p{
+  font-size: 14px;
+  line-height: 21px;
+}
+.yeemail-builder-main div{
+  font-size: 14px;
+  line-height: 21px;
+}
+.yeemail-builder-main .yeemail-builder-main-change_backgroud {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99;
+}
+.yeemail-builder-main table {
+    width: 100% !important;
+}
+.post-type-yeemail_template.post-php #wpcontent {
+	margin-left: 0;
+}
+.post-type-yeemail_template.post-php #wpcontent {
+	padding-left: 440px;
+}
+.yeemail-builder-main-change_backgroud {
+    padding: 5px 10px;
+    display: inline-block;
+    background: #e0e1e2;
+    border-radius: 2px;
+}
+.yeemail-builder-main-change_backgroud:hover{
+    opacity: 0.7;
+    cursor: pointer;
+}
+.builder-row-inner {
+	padding: 5px 5px 5px 0;
+	border: 1px solid #666;
+	border-radius: 5px;
+	display: flex;
+	margin-bottom: 10px;
+}
+.builder-row-inner span{
+	background: #666;
+	height: 25px;
+	display: inline-block;
+	border-radius: 3px;
+	margin-left: 5px;
+	flex-grow: 1;
+}
+.builder-row-inner .bd-row-2,
+.builder-row-container .bd-row-2 {
+ flex-grow: 2;
+}
+.builder-elements hr {
+    padding: 15px 0;
+}
+.builder-elements img {
+    vertical-align: middle;
+    max-height: 100%;
+}
+#builder-header {
+    top: 0;
+    position: fixed;
+    width: 100%;
+    background: #4e5965;
+    height: 50px;
+    left: 0;
+    z-index: 100;
+    box-sizing: content-box;
+}
+div#header-left {
+    float: left;
+    width: 40%;
+}
+div#header-left a {
+    padding-left: 330px;
+}
+#header-right {
+    width: 50%;
+	text-align: right;
+    float: right;
+}
+#header-right div{
+    display: inline-block;
+}
+#header-right .button{
+    margin-top: 10px;
+    margin-right: 3px;
+}
+#header-right .button a{
+    background: #f3f5f6;
+    border-color: #7e8993;
+    font-size: 13px;
+    color: #0071a1;
+}
+#header-right-text {
+    float: right;
+    height: 50px;
+    -webkit-transition: background 0.5s;
+    -moz-transition: background 0.5s;
+    -o-transition: background 0.5s;
+    transition: background 0.5s;
+}
+#header-right-icon {
+    float: right;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    background-color: #35759F;
+    -webkit-transition: background 0.5s;
+    -moz-transition: background 0.5s;
+    -o-transition: background 0.5s;
+    transition: background 0.5s;
+    font-size: 18px;
+    line-height: 50px;
+    margin-left: 5px;
+}
+#builder-header a {
+    color: rgba(255,255,255,1);
+    text-decoration: none;
+    display: block;
+    font-size: 15px;
+}
+#header-right-text a {
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-left: 10px;
+}
+#header-left-icon i {
+    line-height: 50px;
+    font-size: 20px;
+}
+.builder-row-container {
+	display: flex;
+    position: relative;
+}
+.builder-row-container-row {
+    padding: 15px 30px;
+    width: 600px;
+    display: block;
+    position: relative;
+    margin: 0 auto;
+}
+.builder-row {	
+	min-height: 50px;
+    box-sizing: border-box;
+    height: 100%;
+}
+.builder-row-container-row2 .builder-row{
+    width: 50%;
+    float: left;
+}
+.builder-row-container-row3 .builder-row, .builder-row-container-row4 .builder-row{ 
+    width: 35%;
+    float: left;
+}
+.builder-row-container-row3 .bd-row-2, .builder-row-container-row4 .bd-row-2 {
+    width: 65%;
+    float: left
+}
+.builder-row-container-row5 .builder-row{
+    float: left;
+    width: 33.33%;
+}
+.builder-row-container-row6 .builder-row{
+    float: left;
+    width: 25%;
+}
+.builder-actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 99999999;
+    background: #3f8dbf;
+    width: 350px;
+    height: 50px;
+    text-align: center;
+}
+.momongaPresets li{
+	display: inline-block;
+	width: 50%;
+	float: left;
+}
+.momongaPresets li>div {
+	border-radius: 3px;
+	border: 1px solid #666;
+	margin: 10px 0px 5px 10px;
+	text-align: center;
+}
+.builder__list {
+    height: auto;
+    margin: 0 auto;
+    padding-bottom: 15px;
+    min-height: 200px;
+}
+.yeemail-builder-slide {
+    width: 200px;
+    background: #FFF;
+    height: 100vh;
+    position: fixed;
+    top: 50px;
+    z-index: 2;
+    right: 0;
+}
+.yeemail-builder-row-tool {
+    margin: 15px 10px;
+}
+.yeemail-builder-row-tool label{
+    font-size: 17px;
+    font-weight: bold;
+}
+.yeemail-builder-row-tool select {
+    width: 100%;
+}
+.list-view-templates {
+    display: flex;
+    flex-wrap: wrap; 
+}
+.list-view-templates li{
+    width: 100%;
+    flex: 0 25%;
+    border: 1px solid #e7e7e7;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    box-sizing: border-box;
+    position: relative;
+}
+.list-view-templates li img{
+    width: 100%;
+    height: 200px;
+}
+.builder-elements p {
+    padding: 0;
+    margin: 0;
+}
+.builder-actions>div {
+    margin-top:  10px !important;
+}
+.yeemail-builder-preview-content {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    border: 1px solid #e7e7e7;
+}
+.clear {
+    clear: both;
+}
+.builder-elements {
+    position: relative;
+}
+.builder__editor--padding > div {
+    box-sizing: border-box;
+}
+.yeemail_builder_focus,.yeemail_builder_show  {
+    border: 1px solid #3f8dbf;
+}
+.builder-row-empty, .yeemail_builder_hover{
+    border: 1px dashed #3f8dbf;
+}
+.builder-row-container-row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.yeemail_button {
+    display: inline-block;
+    padding: 10px 30px;
+    text-decoration: none;
+    text-align: center;
+    max-width: 100%;
+    background-color: #dddddd;
+    border-radius: 3px;
+}
+.builder_hover {
+    border: 1px solid red;
+}
+.builder-row {
+    min-height: 20px;
+}
+.builder-row-container-row {
+    width: 600px;
+    box-sizing: border-box;
+}
+.builder-row-inner.ul-draggable-dragging {
+    background: red !important;
+    width: 200px !important;
+    height: 50px !important;
+    display: block !important;
+}
+.ui-draggable-dragging{
+    box-shadow:0 0 2px #000;
+}
+.builder-row-insert {
+    width: 100%;
+    height: 40px;
+    background: #666;
+    display: block;
+}
+.builder-hr {
+    width: 100%;
+    height: 1px;
+    background: #666;
+}
+.momongaPresets i {
+    font-size: 18px;
+}
+.yeemail-tool-text {
+    font-size: 16px;
+    font-weight: 600;
+    padding-bottom: 5px;
+}
+.yeemail-builder-container .builder-content {
+    text-align: center;
+    font-size: 18px;
+    background: #666;
+    padding: 50px 15px;
+    color: #fff;
+}
+.yeemail-menu a{ 
+    display: block;
+    text-decoration: none;
+}
+.yeemail-video {
+    width: 100%;
+    height: 100%;
+    min-height: 50px;
+    background: #666;
+}
+.show-email table{
+    border: 1px solid #666 !important;
+}
+.menu-content-tool ul ul li:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.menu-content-tool ul ul label{
+    width: 25%;
+    display: inline-block;
+    float: left;
+}
+.menu-content-tool ul ul input, .menu-content-tool .wp-picker-container {
+    width: 68%;
+    float: right;
+}
+.yeemail_builder_add_menu{
+    width: 100%;
+    text-align: center;
+}
+.builder-elements-content a{
+    text-decoration: none;
+}
+.rednumber-show-active p {
+    text-align: center;
+}
+.rednumber-show-active .ntf {
+     font-size: 50px;
+}
+.rednumber-show-active img {
+    width: 100%;
+}
+.yeemail-builder-row-tool .button{
+    width:  100%;
+    text-align: center;
+}
+.yeemail-builder-row-tool input{
+    width: 100%;
+}
+.builder-elements,.builder-row-container{
+    width: auto !important;
+    height: auto !important;
+}
+.yeemailemail-temp {
+   width: 80px !important;
+   height: 34px !important;
+   text-indent: 99999px;
+   background: #666;
+   overflow: hidden;
+}
+@media only screen and (min-width: 1400px) {
+  .yeemail-builder-slide {
+    width: 250px;
+  }
+}
+.list-view-templates .grid-item{
+    margin-right: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 .125rem .5rem rgba(0,0,0,.2);
+}
+.demo_content {
+    padding: 10px;
+}
+.yeemail-builder-actions .demo-fl{
+    width: 50%;
+    float: left;
+}
+.yeemail-builder-actions .demo-fr{
+    width: 50%;
+    float: right;
+    text-align: right;
+}
+.yeemail-builder-actions-design{
+    display: none !important;
+}
+.demo-title {
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+.yeemail-builder-expand-shrink {
+    float: right;
+}
+.yeemail-builder-expand-title {
+   float: left; 
+}
+.yeemail-builder-expand a, .yeemail_builder-expand-right a{
+    text-decoration: none;
+    background: #fff;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.24);
+    min-height: 31px;
+    min-width: 70px;
+    padding: 2px 16px;
+    text-align: center;
+    text-shadow: none;
+    text-transform: uppercase;
+    transition: all 280ms cubic-bezier(.4,0,.2,1);
+    color: #212121;
+    box-sizing: border-box;
+    cursor: pointer;
+    -webkit-appearance: none;
+    display: inline-block;
+    vertical-align: middle;
+    font: 500 14px/31px Roboto,sans-serif!important;
+}
+.yeemail-builder-expand a:hover,.yeemail_builder-expand-right a:hover{
+    opacity: 0.7;
+}
+.hidden{
+    display: none;
+}
+.post-type-yeemail_template .hidden {
+    display: none !important;  
+}
+.yeemail_builder-expand-right {
+    width: 120px;
+    height: 30px;
+    position: fixed;
+    top: 50px;
+    right: -20px;
+    z-index: 9999;
+}
+.yeemail_builder-expand-right a{
+    padding: 0px 16px;
+}
+.builder__editor--js {
+    width: 100%;
+}
+.yeemail-builder-addons-container {
+    padding: 10px;
+}
+.yeemail-builder-slide h3{
+    margin: 5px 0;
+}
+.builder__editor--item .yeemail-switch {
+  margin-left: 15px;
+}
+.yeemail-switch {
+  position: relative !important;
+  display: inline-block !important;
+  width: 50px;
+  height: 25px;
+  padding: 0 !important;
+}
+.yeemail-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+.yeemail-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+.yeemail-slider:before {
+    position: absolute;
+    content: "";
+    height: 17px;
+    width: 17px;
+    left: 6px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  input:checked + .yeemail-slider {
+    background-color: #2196F3;
+  }
+  input:focus + .yeemail-slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  input:checked + .yeemail-slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  /* Rounded sliders */
+  .yeemail-slider.yeemail-round{
+    border-radius: 34px;
+  }
+  .yeemail-slider.yeemail-round:before {
+    border-radius: 50%;
+  }
+  .yeemail-container-switch {
+    padding: 10px 0;
+  }
+  .builder__toolbar div:hover {
+    cursor: pointer;
+  }
+  .builder__toolbar div.momongaDragHandle:hover {
+    cursor: move;
+  }
+#builder-header {
+    -webkit-box-shadow: 0 0 0 1px #e2e4e7;
+    box-shadow: 0 0 0 1px #e2e4e7;
+    background: #fff;
+}
+#header-right .button {
+    background: #efefef;
+    border-color: #efefef;
+    color: #6f6f6f;
+}
+#header-right .button:hover {
+    background: #f9f9f9;
+    border-color: #f1f1f1;
+}
+#header-right-icon:hover {
+    opacity: 0.8;
+}
+#header-right-icon:hover a {
+    font-size: 17px;
+}
+#header-right .button a {
+    background:none;
+    border-color: none;
+    color: #0071a1;
+}
+#header-right {
+    width: 100%;
+    float: none;
+    padding-left: 450px;
+    text-align: left;
+    display: flex;
+    box-sizing: border-box;
+}
+#header-right>div{
+    width: 100%;
+    display: flex;
+}
+#header-right>div>div{
+    padding-left: 10px;
+}
+.yeemail-builder-container .builder_main_info {
+    height: 50px;
+    background-color: #35759F;
+    color: #fff;
+    display: flex;
+}
+.yeemail-builder-container .builder_main_info .builder_main_info_text{
+    color: #fff;
+    font-size: 17px;
+    padding-left: 15px;
+    font-weight: 600;
+    padding-top: 12px;
+    width: 100%;
+}
+.yeemail-builder-container .builder_main_info .builder_main_info_icon a{
+  display: block;
+  height: 50px;
+  padding-top: 15px;
+  padding-right: 15px;
+}
+.yeemail-builder-container .builder_main_info .builder_main_info_icon {
+  text-align: right;
+  width: 30%;
+}
+.yeemail-builder-container .builder_main_info .builder_main_info_icon:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+.yeemail-builder-container .builder_main_info .builder_main_info_icon span {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 400;
+}
+.builder__widget,.builder__tab {
+    background-color: #222527;
+}
+.builder_main_footer {
+    position: absolute;
+    bottom: 13px;
+    width: 100%;
+    display: flex;
+    background: #212527;
+    padding: 10px 0;
+}
+.builder_main_footer a {
+    text-decoration: none;
+}
+.builder_main_footer .builder_main_footer_text {
+    padding-left: 15px;
+    padding-top: 6px;
+    width: 100%;
+    font-weight: 600;
+}
+.builder_main_footer .builder_main_footer_icon {
+    width: 50%;
+    text-align: right;
+    padding-right: 15px;
+}
+  .yeemail-builder-expand {
+    position: absolute;
+    top:50%;
+    right: -9px;
+  }
+  .yeemail-builder-expand a, .yeemail_builder-expand-right a {
+    background-color: #222527;
+    color: #fff;
+    min-width: 10px; 
+    padding: 0;
+  }
+  #header-right .button span{
+    padding-top: 6px;
+  }
+  #header-right .button-icon {
+    margin-top: 10px;
+    margin-right: 3px;
+  }
+  #header-right .button-icon span{
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    padding: 4px 15px;
+    border-radius: 5px;
+    color: #6f6f6f;
+  }
+  #header-right .button-icon:hover span{
+    border: 1px solid #135e96;
+    opacity: 0.8;
+    cursor: pointer;
+  }
+  .select_icon_data {
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    vertical-align: middle;
+    border-radius: 50%;
+    margin-left: 10px;
+    background: rgb(217, 217, 217);
+  }
+  .select_icon_enable{
+    background: rgb(82, 196, 26);
+  }
+  .button-select {
+    width: 200px;
+    text-align: left;
+    margin-top:4px;
+  }
+  .button-select .select2 {
+    margin-top: 7px;
+    width: 100% !important;
+    max-width: 250px;
+  }
+  .button-select select {
+    width: 100%;
+  }
+  .select2-results__option{
+    position: relative;
+  }
+  .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable,.select2-container--default .select2-results__option--selected {
+    background-color: #ddd;
+    border-radius: 0 5px 5px 0;
+  }
+  #header-right .yeemail-container-switch{
+    margin-top: 11px;
+    padding: 0;
+  }
+  .header-right-r {
+    justify-content: flex-end;
+  }
+  #header-right .button {
+    margin-top: 7px;
+  }
+  #header-right .button-primary-ok {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: none;
+    padding: 0 20px;
+  }
+  #header-right .button-primary-ok:hover {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+  }
+  .builder__tab li a {
+    background-color: #222527;
+  }
+  .builder__tab {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 15px;
+  }
+  .builder__tab li a {
+    color: #fff;
+    height: 40px;
+    border-radius: 5px;
+  }
+  .builder__tab li a i {
+    display: none;
+  }
+  .builder__tab li a span {
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .builder__tab li a:hover {
+        opacity: 0.8;
+  }
+  .yeemail-builder-container .builder__widget_tab {
+    background: #2d3032;
+    color: #fff;
+    border-radius: 7px 7px 0 0;
+    padding-top: 5px;
+    margin-bottom: 15px;
+  }
+  .yeemail-builder-container .builder__widget_tab span {
+    color: #fff;
+    padding-left: 15px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .yeemail-builder-container .builder__widget_tab .momongaPresets_data{
+    background: #2d3032;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+	flex-wrap: wrap;
+  }
+  .yeemail-builder-container .builder__widget_tab .momongaPresets_data li {
+    width: 120px;
+  }
+  .momongaPresets_data li>div {
+    border: none;
+    background-color: #383b3c;
+    border-radius: 5px;
+    color: #b9b9b9;
+    padding: 5px 0;
+  }
+  .momongaPresets_data li>div:hover {
+    cursor: pointer;
+    box-shadow: 3px 4px 4px rgba(35, 40, 45, .4588235294);
+    -webkit-box-shadow: 3px 4px 4px rgba(35, 40, 45, .4588235294);
+    -moz-box-shadow: 3px 4px 4px rgba(35, 40, 45, .4588235294);
+    background: #47494b;
+  }
+  .momongaPresets_data li .yeemail-tool-text {
+    color: #b9b9b9;
+  }
+  .builder__widget_tab_title {
+    border-bottom: 1px solid hsla(0, 0%, 100%, .03);
+    padding-bottom: 5px;
+    position: relative;
+  }
+  .builder__widget_tab_title:hover {
+    cursor: pointer;
+    background-color: #313336;
+  }
+  .yeemail-builder-container .builder__widget_tab .builder__widget_tab_title_icon {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    font-size: 12px;
+    color: hsla(0, 0%, 100%, .5);
+  }
+  .yeemail-builder-container .builder__widget_tab .momongaPresets_data.builder-row-tool {
+    justify-content: center;
+  } 
+  .yeemail-builder-container .builder__widget_tab .momongaPresets_data.builder-row-tool  li {
+    width: 150px;
+    margin-right: 10px;
+  }
+  .yeemail-builder-container .builder__editor--item {
+    background: #2d3032;
+    color: #fff;
+    border-radius: 7px 7px 0 0;
+    padding-top: 5px;
+    border: none;
+  }
+  .yeemail-builder-container .builder__editor--item label{
+    background: #2d3032;
+    padding-bottom: 5px;
+    position: relative;
+    color: #b9b9b9;
+  }
+  .yeemail-builder-container .builder__editor--item>div>label{
+    border-bottom: 1px solid hsla(0, 0%, 100%, .03);
+  }
+  .builder__editor--item input[type="text"],.builder__editor--item textarea{
+    height: 30px;
+    padding: 0 11px;
+    background-color: transparent;
+    border: 0;
+    border-radius: 4px;
+    outline: 0;
+    -webkit-transition: all .3s linear;
+    transition: all .3s linear;
+    -moz-appearance: textfield !important;
+    border: none;
+    background: #000;
+    color: #fff;
+  }
+  .builder__editor--button-settings {
+    padding: 0 10px;
+  }
+  .builder__editor--item textarea {
+    width: 100%;
+    min-height: 50px;
+  }
+  .builder__editor--item select{
+    height: 30px;
+    padding: 0 11px;
+    border: 0;
+    border-radius: 4px;
+    outline: 0;
+    -webkit-transition: all .3s linear;
+    transition: all .3s linear;
+    -moz-appearance: textfield !important;
+    border: none;
+    width: 80% !important;
+  }
+
+  .input-group-btn.input-group-append {
+    right: 43px;
+  }
+  .builder__editor--align a {
+    border-color: #b9b9b9;
+    color: #b9b9b9;
+  }
+  .builder__editor--item .wp-picker-container button {
+    border-color: #b9b9b9;
+  }
+  .builder__editor .button{
+    background-color: #858585;
+    color: #fff;
+    border:none;
+  }
+  .builder__editor--align a:hover{
+    opacity: 0.8;
+  }
+  .button__align.active{
+    color: #000;
+  }
+  .tab__inner {
+    max-height: 82vh;
+  }
+  .list-view-short-templates-r {
+    display: flex;
+  }
+  .list-view-short-templates-r>div{
+    width: 100%;
+  }
+  .list-view-short-templates-k {
+    padding-left: 15px;
+  }
+  .yeemail-tooltip {
+    background: #000;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 99999;
+    padding: 5px 15px;
+    color: #fff;
+    border-radius: 5px;
+  }
+  .builder__settings_templates_item {
+    display: flex;
+    padding: 3px;
+  }
+  .builder__settings_templates_item .builder__settings_templates_item_label{
+    width: 100%;
+  }
+  .builder__settings_templates_item .builder__settings_templates_item_input .yeemail-switch{
+    float: right;
+  }
+  .builder__settings_templates_item .builder__settings_templates_item_input .yeemail-switch{
+      padding: 0;
+  }
+  .yeemail-tooltip-show {
+    margin-right: 10px;
+  }
+  .builder_main_info_icon a {
+    text-decoration: none;
+  }
+  .yeemail-builder-container {
+    background-color: #c3ccd5;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .yeemail-message-notice-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .yeemail-builder-main {
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+  .yeemail-builder-container a:focus {
+    box-shadow:none;
+  }
+  .builder__editor--item textarea.builder__editor_html {
+    height: 100px;
+  }
+  .yeemail-builder-goback {
+      padding: 15px 0;
+  }
+  .yeemail-builder-goback:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  .yeemail-builder-goback span {
+    color: #fff;
+    text-transform: capitalize;
+  }
+  .post-type-yeemail_template.post-php #wpcontent {
+    padding-left: 460px;
+  }
+  .yeemail-builder-container .builder__widget_tab .builder-row-templates li {
+    width: 120px;
+    display: inline-block;
+    float: left;
+  }
+  .yeemail-builder-container .builder__widget_tab .builder-row-templates li>div {
+    margin: 10px 0px 5px 10px;
+    text-align: center;
+  }
+  .momongaPresets_data [data-type="html"] i,
+  .momongaPresets_data [data-type="menu"] i{
+    font-size: 25px;
+    width: 25px;
+    padding-bottom: 4px;
+    padding-top: 3px;
+  }
+  .builder-row-templates i {
+    padding-top: 3px;
+  }
+  .yeemail-builder-container .builder__widget_addons .momongaPresets_data li{
+    width: 170px;
+    margin-right: 10px;
+  }
+  .momongaPresets_data li .yeemail-tool-text {
+    font-size: 12px;
+  }
+  .builder__widget_tab_title .dashicons-arrow-down-alt2,.builder__widget_tab_title.yeemail_tab_hide .dashicons-arrow-up-alt2 {
+    display: none;
+  }
+  .builder__widget_tab_title.yeemail_tab_hide .dashicons-arrow-down-alt2 {
+    display: inline-block;
+  }
+  .post-type-yeemail_template .tablenav,.post-type-yeemail_template .row-actions{
+    display: none;
+  }
+  .post-type-yeemail_template .column-title strong{
+    padding-bottom: 10px;
+  }
+  .list-view-templates .grid-item {
+    width: 31%;
+  }
+  .yeemail-builder-side p, .yeemail-builder-side div {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #666666;
+  }
+  .yeemail-builder-main #addresses address {
+      -webkit-text-size-adjust: 100%;
+      padding: 12px;
+      border: 1px solid #e5e5e5;
+  }
+  .yeemail-woocommerce-style td {
+    /* padding: 48px 48px 32px; */
+  }
+  .yeemail-woocommerce-style td td {
+    padding: 12px;
+  }
+  .yeemail-woocommerce-style td th {
+    padding: 12px;
+  }
+  .yeemail_hook {
+    text-align: center;
+    border: 1px dotted red;
+    font-weight: bold;
+    padding: 5px;
+  }
+  .builder-elements-content .text-content ul{
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+    unicode-bidi: isolate;
+  }
+  .builder__editor--item-border-conditional_logic {
+      text-align: center;
+      padding: 15px;
+  }
+  .yeemail-popup-content {
+    padding: 15px;
+  }
+  .yeemail-popup-content-button {
+    text-align: center;
+    padding: 15px;
+  }
+  .yeemail-logic-item {
+    display: flex;
+    padding-bottom: 10px;
+  }
+  .yeemail-logic-item>div {
+    width: 100%;
+    padding: 0 8px;
+  }
+  .yeemail-logic-item select, .yeemail-logic-item input{
+    width: 100%;
+  }
+  .yeemail-popup-layout-settings {
+    width: 50px !important;
+  }
+  .yeemail-popup-minus {
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    padding: 4px 15px;
+    border-radius: 5px;
+    color: #6f6f6f;
+    text-decoration: none;
+    display: block;
+  }
+  [data-condition]:not([data-condition=""])::after {
+    content: " Conditional Logic";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #e7e7e7;
+    padding: 3px;
+    opacity: 0.5;
+  }
+  .post-type-yeemail_template  #wpwrap {
+    overflow-x: hidden;
+  }
+  .list-view-templates, .list-view-short-templates {
+    height: 575px;
+  }
+  .post-type-yeemail_template .select2-container--open .select2-dropdown--below {
+    width: 260px !important;
+  }
+  .list-view-templates-test-email .yeemail-builder-row-tool .button {
+    width: auto;
+  }
+  .yeemail-builder-main h1,
+  .yeemail-builder-main h2,
+  .yeemail-builder-main h3,
+  .yeemail-builder-main h4,
+  .yeemail-builder-main h5,
+  .yeemail-builder-main h6 {
+    padding: 0 !important;
+  }
+  .yeemail-table {
+    border: 1px solid #e5e5e5;
+  }
+  .yeemail-table th,
+  .yeemail-table td {
+    border: 1px solid #e5e5e5;
+    vertical-align: middle;
+    padding: 12px;
+  }
+  .yeemail-builder-container .momongaPresets_data li:hover {
+      opacity: 0.8;
+      cursor: pointer;  
+  }
+  .builder__editor--item-social>div{
+    border-bottom: 1px solid #000;
+  }
+  .yeemail-message-notice-content {
+    background: #fff;
+    padding: 15px 0;
+  }
+  .yeemail-message-notice-content span{
+    color: #d63638;
+  }
+  .yeemail_type_main_builder #titlediv {
+    display: none;
+  }
+  .yeemail_builder_addons_header {
+    padding-top: 10px;
+    max-width: 150px;
+  }
+  @media only screen and (max-width: 1310px) {
+    #header-right {
+      flex-direction: column;
+    }
+    #builder-header {
+      height: 100px;
+    }
+  }
+  .tab__inner::-webkit-scrollbar {
+    width: 10px;
+  }
+  /* Track */
+  .tab__inner::-webkit-scrollbar-track {
+    background: #222527; 
+  }
+  /* Handle */
+  .tab__inner::-webkit-scrollbar-thumb {
+    background: #888 !important; 
+  }
+  /* Handle on hover */
+  .tab__inner::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+  .yeemail_builder_addons_header {
+    padding-right: 10px;
+  }
+
+
+
+  .yeemail-builder-container .builder__editor--item input[type="text"],
+  .yeemail-builder-container .builder__editor--item input[type="number"],
+  .yeemail-builder-container .builder__editor--item textarea,
+  .yeemail-builder-container .builder__editor--item select {
+    height: 30px;
+    padding: 0 11px;
+    background-color: transparent;
+    border: 0;
+    border-radius: 4px;
+    outline: 0;
+    -webkit-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+    -moz-appearance: textfield !important;
+    border: none;
+    background: #000;
+    color: #fff;
+    width: 100%;
+  }
+  .wp-picker-container input {
+    width: 70px !important;
+  }
+  .yeemail-builder-container .builder__editor--item textarea {
+    min-height: 100px;
+  }
+  .yeemail-builder-container .builder__editor--item {
+    background: #2d3032;
+    color: #fff;
+    border-radius: 7px 7px 0 0;
+    padding-top: 5px;
+    border: none;
+  }
+  .yeemail-builder-container .builder__editor--item > div > label {
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.03);
+  }
+  .yeemail-builder-container .builder__editor--item label {
+    background: #2d3032;
+    padding-bottom: 5px;
+    position: relative;
+    color: #b9b9b9;
+  }
+  .yeemail-builder-container .input-group-btn.input-group-append {
+    right: 43px;
+  }
+  .yeemail-builder-container .builder__editor--align a {
+    border-color: #b9b9b9;
+    color: #b9b9b9;
+  }
+  .yeemail-builder-container .builder__editor--align a:hover {
+    opacity: 0.8;
+  }
+
+  .builder__editor--item .wp-picker-container button {
+    border: 1px solid #000;
+  }
+  .builder__editor--item .wp-picker-container span.wp-color-result-text,
+  .builder__editor--item .wp-picker-container .wp-picker-clear {
+    display: none;
+  }
+  .builder__editor--item .wp-picker-container .wp-picker-input-wrap label {
+    display: inline-block;
+    padding: 0;
+  }
+  .builder__editor--item .wp-picker-container .wp-picker-input-wrap {
+    display: inline !important;
+  }
+
+  .yeemail_setting_group {
+    grid-row-gap: .75rem;
+    border-bottom: 1px solid #4e4e4e;
+    flex-direction: column;
+    margin-bottom: .625rem;
+    padding-bottom: .625rem;
+    display: flex;
+  }
+  .yeemail_setting_row {
+    grid-column-gap: .375rem;
+    justify-content: flex-start;
+    align-items: center;
+    display: flex;
+  }
+  .yeemail_settings_group-wrapper {
+    flex: 1;
+  }
+  .yeemail_checkbox_label {
+    letter-spacing: .05em;
+    margin-bottom: 0;
+    font-size: .6rem;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .yeemail_setting_input-wrapper {
+    flex: 0 32%;
+    margin-top: 3px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+  }
+  .yeemail_setting_input {
+    border: 1px solid #343434;
+    background-color: #696969;
+    color: var(--white);
+    align-items: center;
+    height: 26px;
+    margin-bottom: 0;
+    padding: 0 0 0 .5rem;
+    font-size: .75rem;
+    width:100%;
+  }
+  select.yeemail_setting_input:not(.is-select) {
+    background-image: url(../images/select.png);
+    background-position: calc(100% - 0.5rem) 50%;
+    background-size: 10px;
+    background-repeat: no-repeat;
+  }
+.menu-content-tool {
+    padding: 0 10px;
+}
+[data-sku="hidden"],[data-showimg="hidden"],[data-showdes="hidden"],[data-totals="hidden"] {
+  display: none !important;
+}
+table{
+  border-collapse: collapse;
+}
