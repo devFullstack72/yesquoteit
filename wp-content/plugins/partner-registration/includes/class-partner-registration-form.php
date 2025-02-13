@@ -97,7 +97,7 @@ class Partner_Registration_Form
 
              <!-- Display Map Image -->
              <div id="map-preview" style="margin-top: 10px;">
-                <img id="map-image" src="" style="display: none; width: 100%; max-height: 400px;; border-radius: 5px;">
+                <img id="map-image" src="" style="display: none; width: 100%; border-radius: 5px;">
             </div>
  
             <br>

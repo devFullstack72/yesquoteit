@@ -63,7 +63,7 @@ function initAutocomplete() {
         document.getElementById('state').value = addressData.state;
         document.getElementById('country').value = addressData.country;
 
-        var mapImageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${place.geometry.location.lat()},${place.geometry.location.lng()}&zoom=15&size=400x300&maptype=roadmap&markers=color:red%7Clabel:S%7C${place.geometry.location.lat()},${place.geometry.location.lng()}&key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc`;
+        var mapImageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${place.geometry.location.lat()},${place.geometry.location.lng()}&zoom=15&size=800x300&maptype=roadmap&markers=color:red%7Clabel:S%7C${place.geometry.location.lat()},${place.geometry.location.lng()}&key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc`;
 
         document.getElementById('map-image').src = mapImageUrl;
         document.getElementById('map-image').style.display = 'block';
