@@ -11,7 +11,22 @@ class Partner_Registration_Form
         add_shortcode('partner_registration_form', [$this, 'render_registration_form']);
         add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
         add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
+
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
     }
+
+    public function enqueue_scripts()
+    {
+        // Ensure jQuery is included
+        wp_enqueue_script('jquery');
+
+        // Enqueue Google Maps API
+        wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc&libraries=places', [], null, true);
+
+        // Custom script for autocomplete
+        wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-maps-api'], null, true);
+    }
+
 
     public function render_registration_form()
     {
@@ -59,10 +74,6 @@ class Partner_Registration_Form
             <span class="wpcf7-form-control-wrap" data-name="phone"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="phone" aria-required="true" aria-invalid="false" value="" type="text" name="phone"></span> </label>
             </p>
 
-            <p><label>Address<br>
-            <span class="wpcf7-form-control-wrap" data-name="address"><textarea size="40" maxlength="400" rows="3" cols="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="address" required aria-required="true" aria-invalid="false" value="" type="text" name="address"></textarea></span> </label>
-            </p>
-
             <p><label>Select Leads:</label></p>
             <div style="align-items: center;margin-bottom:10px;">
                 <?php foreach ($leads as $lead): ?>
@@ -73,6 +84,86 @@ class Partner_Registration_Form
                     </label>
                 <?php endforeach; ?>
             </div>
+
+            <!-- <p><label>Address<br>
+            <span class="wpcf7-form-control-wrap" data-name="address"><textarea size="40" maxlength="400" rows="3" cols="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="address" required aria-required="true" aria-invalid="false" value="" type="text" name="address"></textarea></span> </label>
+            </p> -->
+
+            <p><label>Address<br>
+            <span class="wpcf7-form-control-wrap" data-name="address">
+                <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="off" id="autocomplete" aria-required="true" aria-invalid="false" type="text" name="address">
+            </span> </label>
+            </p>
+
+             <!-- Display Map Image -->
+             <div id="map-preview" style="margin-top: 10px;">
+                <img id="map-image" src="" style="display: none; width: 100%; max-height: 400px;; border-radius: 5px;">
+            </div>
+ 
+            <br>
+            <p>
+                <label>Latitude<br>
+                    <span class="wpcf7-form-control-wrap" data-name="latitude">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="latitude" name="latitude">
+                    </span>
+                </label>
+            </p>
+
+            <p>
+                <label>Longitude<br>
+                    <span class="wpcf7-form-control-wrap" data-name="longitude">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="longitude" name="longitude">
+                    </span>
+                </label>
+            </p>
+
+            <p>
+                <label>Street Number<br>
+                    <span class="wpcf7-form-control-wrap" data-name="street_number">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="street_number" name="street_number">
+                    </span>
+                </label>
+            </p>
+
+            <p>
+                <label>Address 1<br>
+                    <span class="wpcf7-form-control-wrap" data-name="route">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="route" name="route">
+                    </span>
+                </label>
+            </p>
+
+            <p>
+                <label>Address 2<br>
+                    <span class="wpcf7-form-control-wrap" data-name="address2">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="address2" name="address2">
+                    </span>
+                </label>
+            </p>
+
+            <p>
+                <label>Postal Code<br>
+                    <span class="wpcf7-form-control-wrap" data-name="postal_code">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="postal_code" name="postal_code">
+                    </span>
+                </label>
+            </p>
+
+            <p>
+                <label>State<br>
+                    <span class="wpcf7-form-control-wrap" data-name="state">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="state" name="state">
+                    </span>
+                </label>
+            </p>
+
+            <p>
+                <label>Country<br>
+                    <span class="wpcf7-form-control-wrap" data-name="country">
+                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="country" name="country">
+                    </span>
+                </label>
+            </p>
 
 
 
@@ -97,7 +188,15 @@ class Partner_Registration_Form
             $name = sanitize_text_field($_POST['name']);
             $email = sanitize_email($_POST['email']);
             $phone = sanitize_text_field($_POST['phone']);
-            $address = sanitize_textarea_field($_POST['address']);
+            $address = sanitize_text_field($_POST['address']);
+            $latitude = sanitize_text_field($_POST['latitude']);
+            $longitude = sanitize_text_field($_POST['longitude']);
+            $street_number = sanitize_text_field($_POST['street_number']);
+            $route = sanitize_text_field($_POST['route']);
+            $address2 = sanitize_text_field($_POST['address2']);
+            $postal_code = sanitize_text_field($_POST['postal_code']);
+            $state = sanitize_text_field($_POST['state']);
+            $country = sanitize_text_field($_POST['country']);
             $lead_ids = isset($_POST['lead_ids']) ? array_map('intval', $_POST['lead_ids']) : [];
 
 
@@ -109,6 +208,14 @@ class Partner_Registration_Form
                 'email' => $email,
                 'phone' => $phone,
                 'address' => $address,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'street_number' => $street_number,
+                'route' => $route,
+                'address2' => $address2,
+                'postal_code' => $postal_code,
+                'state' => $state,
+                'country' => $country,
                 'status' => 0
             ]);
 

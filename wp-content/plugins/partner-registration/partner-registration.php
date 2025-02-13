@@ -43,6 +43,14 @@ class Partner_Registration_Plugin {
             email VARCHAR(255) NOT NULL,
             phone VARCHAR(50) NOT NULL,
             address TEXT NOT NULL,
+            latitude VARCHAR(50) NULL,
+            longitude VARCHAR(50) NULL,
+            street_number VARCHAR(50) NULL,
+            route VARCHAR(255) NULL,
+            address2 VARCHAR(255) NULL,
+            postal_code VARCHAR(50) NULL,
+            state VARCHAR(100) NULL,
+            country VARCHAR(100) NULL,
             status TINYINT(1) DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) $charset_collate;";
