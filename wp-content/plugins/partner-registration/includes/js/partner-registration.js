@@ -73,3 +73,27 @@ function initAutocomplete() {
 document.addEventListener("DOMContentLoaded", function () {
     initAutocomplete();
 });
+
+function on_country()
+{
+    var country = $('#country').val();
+    $('#other_country option[value="' + country + '"]').remove();
+}
+
+$('#radius').on('change', function() {
+    if ( this.value == 'other')
+    {
+    $("#show_country").show();
+    }
+    else
+    {
+    $("#show_country").hide();
+    }
+});
+
+$('#radius').on('change', function() {
+	if($('#radius').val()=='no_service')
+	{ 
+        alert('No problems, after registering you will be able to add as many service locations in other areas as required');
+	}
+});

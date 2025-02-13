@@ -51,6 +51,8 @@ class Partner_Registration_Plugin {
             postal_code VARCHAR(50) NULL,
             state VARCHAR(100) NULL,
             country VARCHAR(100) NULL,
+            service_area VARCHAR(100) NULL,
+            other_country VARCHAR(100) NULL,
             status TINYINT(1) DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) $charset_collate;";
