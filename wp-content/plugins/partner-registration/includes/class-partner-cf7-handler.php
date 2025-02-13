@@ -67,7 +67,7 @@ class Partner_CF7_Handler {
 
         // Send email to the customer
         if (!empty($approved_partners_emails)) {
-            $this->pr_send_yeemail($approved_partners_emails, $provider_template_id, $posted_data, 'provider');
+            $this->pr_send_yeemail($approved_partners_emails, $provider_template_id, $email_data, 'provider');
         }
     
         // Send email to the customer
