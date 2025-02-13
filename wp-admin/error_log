@@ -1,1 +1,6 @@
 [06-Feb-2025 06:38:46 UTC] PHP Warning:  Attempt to read property "title" on null in /home/j2u22yv61knn/public_html/dev.wisencode.com/yesquoteit/wp-includes/class-wp-customize-widgets.php on line 923
+[12-Feb-2025 14:31:16 UTC] PHP Warning:  require_once(/home/j2u22yv61knn/public_html/dev.wisencode.com/yesquoteit/wp-load.php): Failed to open stream: No such file or directory in /home/j2u22yv61knn/public_html/dev.wisencode.com/yesquoteit/wp-admin/admin-ajax.php on line 22
+[12-Feb-2025 14:31:16 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/j2u22yv61knn/public_html/dev.wisencode.com/yesquoteit/wp-load.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/j2u22yv61knn/public_html/dev.wisencode.com/yesquoteit/wp-admin/admin-ajax.php:22
+Stack trace:
+#0 {main}
+  thrown in /home/j2u22yv61knn/public_html/dev.wisencode.com/yesquoteit/wp-admin/admin-ajax.php on line 22
