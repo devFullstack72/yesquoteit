@@ -88,7 +88,7 @@ class Partner_Registration_Form
             <!-- <p><label>Address<br>
             <span class="wpcf7-form-control-wrap" data-name="address"><textarea size="40" maxlength="400" rows="3" cols="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="address" required aria-required="true" aria-invalid="false" value="" type="text" name="address"></textarea></span> </label>
             </p> -->
-
+            <br>       
             <p><label>Address<br>
             <span class="wpcf7-form-control-wrap" data-name="address">
                 <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="off" id="autocomplete" aria-required="true" aria-invalid="false" type="text" name="address">
