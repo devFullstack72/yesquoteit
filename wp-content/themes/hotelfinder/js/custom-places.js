@@ -1,6 +1,13 @@
 function initialize() {
     var input = document.getElementById('autocomplete_shortcode');
-    var default_address = input.value;
+
+    if (!input) {
+        return;
+    }
+
+    var default_address = input.value || ''; // Avoid errors if empty
+
+    // var default_address = input.value;
     var autocomplete = new google.maps.places.Autocomplete(input);
     
     var map = new google.maps.Map(document.getElementById('map'), {
