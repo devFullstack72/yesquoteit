@@ -311,6 +311,109 @@ function lead_generation_cards_shortcode($atts) {
 add_shortcode('lead_generation_cards', 'lead_generation_cards_shortcode');
 
 
+
+function category_generation_cards_shortcode($atts) {
+   
+    $atts = shortcode_atts(
+        array(
+            'posts_per_page' => 6, // Default number of posts to show
+            'category' => !empty($atts['category']) ? intval($atts['category']) : 0,
+            'search'         => !empty($atts['search']) ? sanitize_text_field($atts['search']) : '',
+        ),
+        $atts,
+        'category_generation_cards'
+    );
+
+    $output = '<div class="container" style="margin:0;"><div class="row">'; // Single row for both categories & leads
+
+    // Get all categories from custom taxonomy "lead_category"
+    $categories = get_terms(array(
+        'taxonomy'   => 'lead_category',
+        'parent'     => !empty($atts['category']) ? intval($atts['category']) : 0,
+        'hide_empty' => false, // Show categories even if no leads
+    ));
+
+
+    if (!empty($categories) && !is_wp_error($categories)) {
+        foreach ($categories as $category) {
+            $category_link  = get_term_link($category);
+            $category_name  = esc_html($category->name);
+            $category_image = get_term_meta($category->term_id, 'lead_category_image', true);
+
+            // ✅ Fix: Set default image if no category image found
+            if (!$category_image) {
+                $category_image = 'http://localhost/wordpress/wp-content/uploads/2025/02/1581618767-1-1024x683.jpeg';
+            }
+
+            // Generate category HTML
+            $output .= '<div class="col-sm-4 col-xs-6">';
+            $output .= '<div class="htlfndr-category-box">';
+            $output .= '<img src="' . esc_url($category_image) . '" alt="' . esc_attr($category_name) . '" />';
+            $output .= '<div class="category-description">';
+            $output .= '<h3 class="subcategory-name">' . $category_name . '</h3>';
+            $output .= '<h5 class="category-name">' . $category_name . '</h3>';
+            $output .= '<a href="' . esc_url($category_link) . '" class="htlfndr-category-permalink"></a>';
+            $output .= '</div>'; // .category-description
+            $output .= '</div>'; // .htlfndr-category-box
+            $output .= '</div>'; // .col-sm-4
+        }
+    }
+
+    if (empty($categories)) {
+        // WP Query to fetch Uncategorized Leads
+        $args = array(
+            'post_type'      => 'lead_generation',  
+            'posts_per_page' => $atts['posts_per_page'],
+            'post_status'    => 'publish',
+            's'             => $atts['search'],
+            'term_taxonomy_id' => $atts['category'],
+            'tax_query'      => array(
+                array(
+                    'taxonomy' => 'lead_category',
+                    'field'    => 'term_id',   // Match with term ID
+                    'terms'    => $atts['category'], // Get specific category
+                ),
+            ),
+        );
+
+        $query = new WP_Query($args);
+
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $image = get_the_post_thumbnail_url(get_the_ID(), 'large');
+                $post_link = get_permalink();
+                $title = get_the_title();
+
+                // ✅ Fix: Set default image if no featured image found
+                if (!$image) {
+                    $image = 'http://localhost/wordpress/wp-content/uploads/2025/02/1581618767-1-1024x683.jpeg';
+                }
+
+                $output .= '<div class="col-sm-4 col-xs-6">';
+                $output .= '<div class="htlfndr-category-box">';
+                $output .= '<img src="' . esc_url($image) . '" alt="' . esc_attr($title) . '" />';
+                $output .= '<div class="category-description">';
+                $output .= '<h3 class="subcategory-name">' . esc_html($title) . '</h3>';
+                $output .= '<h5 class="category-name">' . esc_html($title) . '</h3>';
+                $output .= '<a href="' . esc_url($post_link) . '" class="htlfndr-category-permalink"></a>';
+                $output .= '</div>'; // .category-description
+                $output .= '</div>'; // .htlfndr-category-box
+                $output .= '</div>'; // .col-sm-4
+            }
+        }
+    }
+
+    $output .= '</div></div>'; // Close Row & Container
+
+    wp_reset_postdata();
+    return $output;
+}
+
+
+add_shortcode('category_generation_cards', 'category_generation_cards_shortcode');
+
+
 function add_lead_generation_meta_box() {
     add_meta_box(
         'lead_form_shortcode_meta_box', 
