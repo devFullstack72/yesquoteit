@@ -182,6 +182,8 @@ if (!$category_image) {
     
     <div class="row">
 
+    
+
         <?php echo do_shortcode('[category_generation_cards category="' . $term->term_id . '"]');  ?>
 
 
