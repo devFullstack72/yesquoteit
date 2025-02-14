@@ -424,3 +424,9 @@ function save_lead_email_templates($post_id) {
     }
 }
 add_action('save_post', 'save_lead_email_templates');
+
+
+function add_recaptcha_script() {
+    echo '<script src="https://www.google.com/recaptcha/api.js" async defer></script>';
+}
+add_action('wp_head', 'add_recaptcha_script');
