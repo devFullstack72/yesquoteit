@@ -2,9 +2,15 @@ function initAutocomplete() {
     var input = document.getElementById('autocomplete');
     if (!input) return; // Ensure the input field exists
 
-    var autocomplete = new google.maps.places.Autocomplete(input, {
-        types: ['geocode'],
-        componentRestrictions: { country: "us" }
+    var autocomplete = new google.maps.places.Autocomplete(input);
+
+    var map = new google.maps.Map(document.getElementById('map-preview'), {
+        zoom: 15,
+        center: { lat: 40.7128, lng: -74.0060 } // Default to New York
+    });
+
+    var marker = new google.maps.Marker({
+        map: map
     });
 
     autocomplete.addListener('place_changed', function () {
@@ -63,10 +69,14 @@ function initAutocomplete() {
         document.getElementById('state').value = addressData.state;
         document.getElementById('country').value = addressData.country;
 
-        var mapImageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${place.geometry.location.lat()},${place.geometry.location.lng()}&zoom=15&size=800x300&maptype=roadmap&markers=color:red%7Clabel:S%7C${place.geometry.location.lat()},${place.geometry.location.lng()}&key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc`;
+        // var mapImageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${place.geometry.location.lat()},${place.geometry.location.lng()}&zoom=15&size=800x300&maptype=roadmap&markers=color:red%7Clabel:S%7C${place.geometry.location.lat()},${place.geometry.location.lng()}&key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc`;
 
-        document.getElementById('map-image').src = mapImageUrl;
-        document.getElementById('map-image').style.display = 'block';
+        // document.getElementById('map-image').src = mapImageUrl;
+        // document.getElementById('map-image').style.display = 'block';
+
+        // Update map position
+        map.setCenter(place.geometry.location);
+        marker.setPosition(place.geometry.location);
     });
 }
 

@@ -115,7 +115,7 @@ $category_image = get_term_meta($category_id, 'lead_category_image', true);
 
 // Default image agar koi category image na ho
 if (!$category_image) {
-    $category_image = 'http://localhost/wordpress/wp-content/uploads/2025/02/1581618767-1-1024x683.jpeg';
+    $category_image = 'https://www.jqueryscript.net/demo/Responsive-Full-Width-jQuery-Image-Slider-Plugin-skdslider/slides/1.jpg';
 }
 ?>
 <!-- Featured Image Section with Overlay -->
