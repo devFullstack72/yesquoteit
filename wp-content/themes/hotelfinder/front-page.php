@@ -58,6 +58,7 @@
                             <?php
                             $categories = get_terms(array(
                                 'taxonomy'   => 'lead_category',
+                                'parent'   => 0,
                                 'hide_empty' => false,
                             ));
                             if (!empty($categories) && !is_wp_error($categories)) {
@@ -123,7 +124,8 @@
             <h2 class="htlfndr-section-title bigger-title">Leads</h2>
             <div class="htlfndr-section-under-title-line"></div>
             <div class="container">
-                <?php echo do_shortcode('[lead_generation_cards]'); ?>
+                <?php echo do_shortcode('[category_generation_cards category="0"]'); ?>
+                <?php // echo do_shortcode('[lead_generation_cards]'); ?>
                      </div>
                  </section><!-- .container-fluid.htlfndr-categories-portfolio -->
 
