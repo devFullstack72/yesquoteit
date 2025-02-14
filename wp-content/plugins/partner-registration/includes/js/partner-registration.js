@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initAutocomplete();
 });
 
+jQuery(document).ready(function ($) {
 function on_country()
 {
     var country = $('#country').val();
@@ -96,4 +97,5 @@ $('#radius').on('change', function() {
 	{ 
         alert('No problems, after registering you will be able to add as many service locations in other areas as required');
 	}
+});
 });
