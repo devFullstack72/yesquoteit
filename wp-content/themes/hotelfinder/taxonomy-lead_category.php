@@ -123,51 +123,57 @@ if (!$category_image) {
             </div>
         </div>
         <div class="cls_searchhotl cs-cont-btn">
-            <div id="htlfndr-input-5">
+            <!-- <div id="htlfndr-input-5">
                 <input id="scroll-to-content-btn" type="Submit" value="Looking for <?php echo single_term_title(); ?> leads">
-            </div>
-        </div>
+            </div> -->
+            <?php if (!empty($categories)) {  ?>
+            <!-- Search form aside start -->
+            <aside class="htlfndr-form-in-slider htlfndr-search-form-inline" style="background-color: transparent;">
+                <div class="container">
+                    <!-- <h5>Where are you looking for?</h5> -->
+                        <form action="<?php echo esc_url(get_post_type_archive_link('lead_generation')); ?>" method="GET" name="search-lead" id="search-lead" class="htlfndr-search-form">
+                            <div id="htlfndr-input-category" class="htlfndr-input-wrapper">
+                                <label for="htlfndr-category" class="sr-only">Select Category</label>
+                                <select name="htlfndr-category" id="htlfndr-category" class="htlfndr-dropdown">
+                                    <option value="">Select Category</option>
+                                    <?php
+                                    $categories = get_terms(array(
+                                        'taxonomy'   => 'lead_category',
+                                        'parent'   => $term->term_id,
+                                        'hide_empty' => false,
+                                    ));
+                                    if (!empty($categories) && !is_wp_error($categories)) {
+                                        foreach ($categories as $category) {
+                                            echo '<option value="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</option>';
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                <span id="category-error" class="error-message" style="color: red; display: none;">Please select a category or enter a search lead text.</span>
+                            </div>
 
+                            <div id="htlfndr-input-search" class="htlfndr-input-wrapper">
+                                <input type="text" name="htlfndr-search" id="htlfndr-search" class="search-hotel-input" placeholder="Search by lead name" />
+                            </div>
+
+                            <div id="htlfndr-input-5" style="margin:1px;">
+                                <input type="submit" value="Search" />
+                            </div>
+                        </form>
+
+
+                </div><!-- .container -->
+            </aside><!-- .htlfndr-form-in-slider.container-fluid -->
+            <?php } ?>
+
+        </div>
     </div>
+
+ 
+
 </div>
 
- <!-- Search form aside start -->
- <aside class="htlfndr-form-in-slider htlfndr-search-form-inline">
-    <div class="container">
-        <h5>Where are you looking for?</h5>
-            <form action="<?php echo esc_url(get_post_type_archive_link('lead_generation')); ?>" method="GET" name="search-lead" id="search-lead" class="htlfndr-search-form">
-                <div id="htlfndr-input-category" class="htlfndr-input-wrapper">
-                    <label for="htlfndr-category" class="sr-only">Select Category</label>
-                    <select name="htlfndr-category" id="htlfndr-category" class="htlfndr-dropdown">
-                        <option value="">Select Category</option>
-                        <?php
-                        $categories = get_terms(array(
-                            'taxonomy'   => 'lead_category',
-                            'parent'   => $term->term_id,
-                            'hide_empty' => false,
-                        ));
-                        if (!empty($categories) && !is_wp_error($categories)) {
-                            foreach ($categories as $category) {
-                                echo '<option value="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</option>';
-                            }
-                        }
-                        ?>
-                    </select>
-                    <span id="category-error" class="error-message" style="color: red; display: none;">Please select a category or enter a search lead text.</span>
-                </div>
 
-                <div id="htlfndr-input-search" class="htlfndr-input-wrapper">
-                    <input type="text" name="htlfndr-search" id="htlfndr-search" class="search-hotel-input" placeholder="Search by lead name" />
-                </div>
-
-                <div id="htlfndr-input-5" style="margin:1px;">
-                    <input type="submit" value="Search" />
-                </div>
-            </form>
-
-
-    </div><!-- .container -->
-</aside><!-- .htlfndr-form-in-slider.container-fluid -->
 <!-- Search form aside stop -->
 <div class="container" style="margin-bottom:100px;">
     
