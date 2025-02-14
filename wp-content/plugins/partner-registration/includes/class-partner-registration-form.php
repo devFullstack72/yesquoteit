@@ -17,14 +17,18 @@ class Partner_Registration_Form
 
     public function enqueue_scripts()
     {
-        // Ensure jQuery is included
-        wp_enqueue_script('jquery');
+        if ( is_page('Become a Partner') ) {
+            // Ensure jQuery is included
+            wp_enqueue_script('jquery');
 
-        // Enqueue Google Maps API
-        wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc&libraries=places', [], null, true);
+            // Enqueue Google Maps API
+            // wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc&libraries=places', [], null, true);
 
-        // Custom script for autocomplete
-        wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-maps-api'], null, true);
+            // Custom script for autocomplete
+            wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-places'], null, true);
+            
+            wp_enqueue_style('partner-registration-css', plugin_dir_url(__FILE__) . 'css/partner-registration.css');
+        }
     }
 
 
@@ -102,9 +106,7 @@ class Partner_Registration_Form
             </p>
 
              <!-- Display Map Image -->
-             <div id="map-preview" style="margin-top: 10px;">
-                <img id="map-image" src="" style="display: none; width: 100%; border-radius: 5px;">
-            </div>
+             <div id="map-preview" style="margin-top: 10px;"></div>
  
             <br>
             <p>

@@ -604,3 +604,44 @@ function save_lead_email_templates($post_id) {
     }
 }
 add_action('save_post', 'save_lead_email_templates');
+
+function google_places_form_shortcode($atts) {
+    $atts = shortcode_atts([
+        'address' => 'Enter address',  // Default value
+    ], $atts, 'google_places_form'); // 'google_places_form' is the shortcode name
+
+    // Get the values
+    $default_address = esc_attr($atts['address']);
+    ob_start();
+    ?>
+    <div class="address-wrapper">
+        <div class="address-container">
+            <input type="text" id="autocomplete_shortcode" value="<?php echo $default_address ?>" placeholder="Enter address" />
+            <input type="text" id="street_number" placeholder="Street Number" readonly />
+            <input type="text" id="route" placeholder="Street Name" readonly />
+            <input type="text" id="locality" placeholder="City" readonly />
+            <input type="text" id="administrative_area_level_1" placeholder="State" readonly />
+            <input type="text" id="postal_code" placeholder="Postal Code" readonly />
+            <input type="text" id="country" placeholder="Country" readonly />
+        </div>
+        <div id="map"></div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('google_places_form', 'google_places_form_shortcode');
+
+function load_google_maps_api() {
+    wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc&libraries=places', array(), null, true);
+
+    if ( !is_page('Become a Partner') ) {
+        wp_enqueue_script('custom-places-script', get_template_directory_uri() . '/js/custom-places.js', array('jquery', 'google-places'), null, true);
+    }
+
+}
+add_action('wp_enqueue_scripts', 'load_google_maps_api');
+
+function enqueue_custom_styles() {
+    wp_enqueue_style('custom-places-css', get_template_directory_uri() . '/css/custom-places.css');
+}
+add_action('wp_enqueue_scripts', 'enqueue_custom_styles');
