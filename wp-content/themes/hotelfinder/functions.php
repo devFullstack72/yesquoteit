@@ -645,3 +645,7 @@ function enqueue_custom_styles() {
     wp_enqueue_style('custom-places-css', get_template_directory_uri() . '/css/custom-places.css');
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_styles');
+
+add_filter('wpcf7_form_elements', function ($content) {
+    return do_shortcode($content);
+});
