@@ -723,14 +723,28 @@ function google_places_form_shortcode($atts) {
 }
 add_shortcode('google_places_form', 'google_places_form_shortcode');
 
+// function load_google_maps_api() {
+    
+//     wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places&callback=initAutocomplete', array(), null, true);
+
+//     if ( !is_page('Become a Provider') ) {
+//         wp_enqueue_script('custom-places-script', get_template_directory_uri() . '/js/custom-places.js', array('jquery', 'google-places'), null, true);
+//     }
+
+// }
+
 function load_google_maps_api() {
+
+    $current_page_slug = get_post_field('post_name', get_queried_object_id()); // Get the current page slug
+
     wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places', array(), null, true);
 
-    if ( !is_page('Become a Partner') ) {
+    if ($current_page_slug !== "become-a-provider") {
         wp_enqueue_script('custom-places-script', get_template_directory_uri() . '/js/custom-places.js', array('jquery', 'google-places'), null, true);
     }
 
 }
+
 add_action('wp_enqueue_scripts', 'load_google_maps_api');
 
 function enqueue_custom_styles() {
