@@ -28,3 +28,7 @@
     margin-top: 10px;
     border-radius: 10px;
 }
+
+.pac-container {
+    z-index: 1051 !important; /* Ensures it's above the Bootstrap modal */
+}
