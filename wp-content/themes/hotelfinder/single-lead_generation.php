@@ -130,12 +130,8 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
     }
 
     .associated-leads-container {
-            margin-top: 50px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
+        margin-top: 50px;
+    }
 
         .associated-leads-title {
             text-align: center;
@@ -238,19 +234,36 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
             }
             
             ?>
+        <?php if(!empty($lead_ids)) { ?>    
+            <div class="associated-leads-container">
+                <h5 class="associated-leads-title">Associated Leads</h5>
+                <div class="htlfndr-section-under-title-line"></div>
+                <div class="associated-leads-list">
+                    <div class="row">
+                        <?php
+                        foreach ($lead_ids as $lead_id) {
+                            $image = get_the_post_thumbnail_url($lead_id, 'medium');
+                            $title = get_the_title($lead_id);
+                            $post_link = get_permalink($lead_id);
 
-        <div class="associated-leads-container">
-            <h5 class="associated-leads-title">Associated Leads</h5>
-            <div class="associated-leads-list">
-                <ul>
-                    <?php
-                    foreach ($lead_ids as $lead_id) {
-                        echo '<li><a href="' . get_permalink($lead_id) . '">' . get_the_title($lead_id) . '</a></li>';
-                    }
-                    ?>
-                </ul>
+                            if (!$image) {
+                                $image = 'http://localhost/wordpress/wp-content/uploads/2025/02/1581618767-1-1024x683.jpeg';
+                            }
+
+                            echo '<div class="col-sm-4 col-xs-6">';
+                            echo '<div class="htlfndr-category-box">';
+                            echo '<img src="' . esc_url($image) . '" alt="' . esc_attr($title) . '" />';
+                            echo '<div class="category-description">';
+                            echo '<h3 class="subcategory-name">' . esc_html($title) . '</h3>';
+                            echo '<h5 class="category-name">' . esc_html($title) . '</h5>';
+                            echo '<a href="' . esc_url($post_link) . '" class="htlfndr-category-permalink"></a>';
+                            echo '</div></div></div>';
+                        }
+                        ?>
+                    </div>
+                </div>
             </div>
-        </div>
+    <?php } ?>
         </article>
         <?php do_action('neve_do_sidebar', 'single-lead_generation', 'right'); ?>
     </div>

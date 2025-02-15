@@ -17,7 +17,11 @@ class Partner_Registration_Form
 
     public function enqueue_scripts()
     {
-        if ( is_page('Become a Partner') ) {
+        $current_page_slug = get_post_field('post_name', get_queried_object_id()); // Get the current page slug
+
+       
+
+    if ($current_page_slug == "register-your-business") {
             // Ensure jQuery is included
             wp_enqueue_script('jquery');
 
