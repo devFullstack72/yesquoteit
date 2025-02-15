@@ -22,7 +22,7 @@ class Partner_Registration_Form
             wp_enqueue_script('jquery');
 
             // Enqueue Google Maps API
-            // wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc&libraries=places', [], null, true);
+            // wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places', [], null, true);
 
             // Custom script for autocomplete
             wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-places'], null, true);
