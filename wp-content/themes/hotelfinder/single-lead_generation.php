@@ -237,6 +237,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
         <?php if(!empty($lead_ids)) { ?>    
             <div class="associated-leads-container">
                 <h5 class="associated-leads-title">Associated Leads</h5>
+                <div class="htlfndr-section-under-title-line"></div>
                 <div class="associated-leads-list">
                     <div class="row">
                         <?php
