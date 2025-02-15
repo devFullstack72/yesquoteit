@@ -693,7 +693,7 @@ function google_places_form_shortcode($atts) {
 add_shortcode('google_places_form', 'google_places_form_shortcode');
 
 function load_google_maps_api() {
-    wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoh4RV3jwuAD72LBq02e3rx4-iZa-wLc&libraries=places', array(), null, true);
+    wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places', array(), null, true);
 
     if ( !is_page('Become a Partner') ) {
         wp_enqueue_script('custom-places-script', get_template_directory_uri() . '/js/custom-places.js', array('jquery', 'google-places'), null, true);
