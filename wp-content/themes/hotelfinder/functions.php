@@ -723,15 +723,6 @@ function google_places_form_shortcode($atts) {
 }
 add_shortcode('google_places_form', 'google_places_form_shortcode');
 
-// function load_google_maps_api() {
-    
-//     wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places&callback=initAutocomplete', array(), null, true);
-
-//     if ( !is_page('Become a Provider') ) {
-//         wp_enqueue_script('custom-places-script', get_template_directory_uri() . '/js/custom-places.js', array('jquery', 'google-places'), null, true);
-//     }
-
-// }
 
 function load_google_maps_api() {
 
@@ -739,7 +730,7 @@ function load_google_maps_api() {
 
     wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places', array(), null, true);
 
-    if ($current_page_slug !== "become-a-provider") {
+    if ($current_page_slug !== "register-your-business") {
         wp_enqueue_script('custom-places-script', get_template_directory_uri() . '/js/custom-places.js', array('jquery', 'google-places'), null, true);
     }
 
