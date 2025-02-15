@@ -548,6 +548,63 @@ function lead_generation_save_custom_meta_box_data($post_id) {
 }
 add_action('save_post', 'lead_generation_save_custom_meta_box_data');
 
+function lead_generation_add_associated_leads_meta_box() {
+    add_meta_box(
+        'associated_leads_meta_box',
+        'Associated Leads', // Title of the section
+        'associated_leads_meta_box_callback',
+        'lead_generation', // Post type
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'lead_generation_add_associated_leads_meta_box');
+
+function associated_leads_meta_box_callback($post) {
+    // Get all lead_generation posts
+    $args = [
+        'post_type'      => 'lead_generation',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'exclude'        => [$post->ID], // Exclude the current post from the list
+    ];
+    $leads = get_posts($args);
+
+    // Get previously selected associated leads (comma-separated)
+    $selected_leads = get_post_meta($post->ID, '_associated_leads', true);
+    $selected_leads_array = !empty($selected_leads) ? explode(',', $selected_leads) : [];
+
+    if ($leads) {
+        echo '<p><strong>Select Associated Leads:</strong></p>';
+        foreach ($leads as $lead) {
+            $checked = in_array($lead->ID, $selected_leads_array) ? 'checked' : '';
+            echo '<p>';
+            echo '<input type="checkbox" name="associated_leads[]" value="' . esc_attr($lead->ID) . '" ' . $checked . '>';
+            echo '<label>' . esc_html($lead->post_title) . '</label>';
+            echo '</p>';
+        }
+    } else {
+        echo '<p>No other leads available.</p>';
+    }
+}
+
+function save_associated_leads_meta_boxes($post_id) {
+    // Verify nonce to prevent CSRF
+    if (!isset($_POST['post_ID']) || !wp_verify_nonce($_POST['_wpnonce'], 'update-post_' . $post_id)) {
+        return;
+    }
+
+    // Save the associated leads as a comma-separated string
+    if (isset($_POST['associated_leads'])) {
+        $associated_leads = implode(',', array_map('sanitize_text_field', $_POST['associated_leads']));
+        update_post_meta($post_id, '_associated_leads', $associated_leads);
+    } else {
+        delete_post_meta($post_id, '_associated_leads'); // Remove meta if no checkboxes are selected
+    }
+}
+add_action('save_post', 'save_associated_leads_meta_boxes');
+
+
 function add_lead_email_template_metabox() {
     add_meta_box(
         'lead_email_template',
