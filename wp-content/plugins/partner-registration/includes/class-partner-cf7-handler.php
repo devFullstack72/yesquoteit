@@ -32,21 +32,61 @@ class Partner_CF7_Handler {
         // Get user email from the form (modify the key based on your CF7 form)
         $user_email = isset($posted_data['your-email']) ? sanitize_email($posted_data['your-email']) : '';
 
+        $customer_lat = isset($posted_data['google_places_form_latitude']) ? sanitize_email($posted_data['google_places_form_latitude']) : '';
+        $customer_lng = isset($posted_data['google_places_form_longitude']) ? sanitize_email($posted_data['google_places_form_longitude']) : '';
+        $customer_state = isset($posted_data['google_places_form_state']) ? sanitize_email($posted_data['google_places_form_state']) : '';
+        $customer_country = isset($posted_data['google_places_form_country']) ? sanitize_email($posted_data['google_places_form_country']) : '';
+        
+      
         global $wpdb;
         $service_partners_table = $wpdb->prefix . 'service_partners'; // Main partners table
         $lead_partners_table = $wpdb->prefix . 'lead_partners'; // Junction table
 
+        // $approved_partners = $wpdb->get_results(
+        //     $wpdb->prepare(
+        //         "SELECT sp.email 
+        //         FROM $service_partners_table AS sp
+        //         INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
+        //         WHERE lp.lead_id = %d AND sp.status = 1",
+        //         $lead_id
+        //     )
+        // );
+
+
         $approved_partners = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT sp.email 
+            $wpdb->prepare("
+                SELECT sp.email, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
+                    (6371 * acos(
+                        cos(radians(%f)) * cos(radians(sp.latitude)) *
+                        cos(radians(sp.longitude) - radians(%f)) +
+                        sin(radians(%f)) * sin(radians(sp.latitude))
+                    )) AS distance
                 FROM $service_partners_table AS sp
                 INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
-                WHERE lp.lead_id = %d AND sp.status = 1",
-                $lead_id
+                WHERE lp.lead_id = %d 
+                    AND sp.status = 1
+                    AND (
+                        (sp.service_area IS NULL OR sp.service_area = '') -- No restriction
+                        OR (sp.service_area = 'entire' AND sp.country = %s) -- Entire country
+                        OR (sp.service_area = 'state' AND sp.state = %s) -- Entire state
+                        OR (sp.service_area = 'other' AND sp.country != %s) -- Other countries
+                        OR (sp.service_area = 'every') -- Serves everywhere
+                        OR (sp.service_area REGEXP '^[0-9]+$' AND CAST(sp.service_area AS UNSIGNED) > 0 
+                            AND (6371 * acos(
+                                cos(radians(%f)) * cos(radians(sp.latitude)) *
+                                cos(radians(sp.longitude) - radians(%f)) +
+                                sin(radians(%f)) * sin(radians(sp.latitude))
+                            )) <= CAST(sp.service_area AS UNSIGNED) -- Numeric radius filtering
+                        )
+                    )
+            ", 
+            $customer_lat, $customer_lng, $customer_lat, 
+            $lead_id, 
+            $customer_country, $customer_state, $customer_country, 
+            $customer_lat, $customer_lng, $customer_lat
             )
         );
 
-        
         // Prepare data for email template
         $email_data = [];
         foreach ($posted_data as $key => $value) {

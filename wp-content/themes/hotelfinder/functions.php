@@ -616,13 +616,17 @@ function google_places_form_shortcode($atts) {
     ?>
     <div class="address-wrapper">
         <div class="address-container">
-            <input type="text" id="autocomplete_shortcode" name="google_places_form_address" placeholder="Enter address" />
+            <input type="text" id="autocomplete_shortcode" name="google_places_form_address" value="<?php echo $default_address;  ?>" placeholder="Enter address" />
             <input type="text" id="street_number" name="google_places_form_street_number" placeholder="Street Number" readonly />
             <input type="text" id="route" name="google_places_form_street" placeholder="Street Name" readonly />
             <input type="text" id="locality" name="google_places_form_city" placeholder="City" readonly />
             <input type="text" id="administrative_area_level_1" name="google_places_form_state" placeholder="State" readonly />
             <input type="text" id="postal_code" placeholder="Postal Code" name="google_places_form_postalcode" readonly />
             <input type="text" id="country" placeholder="Country" name="google_places_form_country" readonly />
+
+            <!-- Hidden Latitude and Longitude Fields -->
+            <input type="hidden" id="latitude" name="google_places_form_latitude" />
+            <input type="hidden" id="longitude" name="google_places_form_longitude" />
         </div>
         <div id="map"></div>
     </div>
