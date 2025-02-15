@@ -21,7 +21,7 @@ class Partner_Registration_Form
 
        
 
-    if ($current_page_slug == "become-a-provider") {
+    if ($current_page_slug == "register-your-business") {
             // Ensure jQuery is included
             wp_enqueue_script('jquery');
 
