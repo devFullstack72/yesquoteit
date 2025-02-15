@@ -37,6 +37,9 @@ function initialize() {
             return;
         }
 
+        document.getElementById('latitude').value = place.geometry.location.lat();
+        document.getElementById('longitude').value = place.geometry.location.lng();
+
         var addressComponents = place.address_components;
         
         setAddressData(addressComponents);
