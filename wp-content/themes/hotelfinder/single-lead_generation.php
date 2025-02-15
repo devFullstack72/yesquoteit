@@ -128,6 +128,44 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
         font-size: 30px;
         font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif
     }
+
+    .associated-leads-container {
+            margin-top: 50px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .associated-leads-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .associated-leads-list ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .associated-leads-list ul li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .associated-leads-list ul li a {
+            text-decoration: none;
+            color: #08c1da;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .associated-leads-list ul li a:hover {
+            color: #067c9a;
+        }
 </style>
 
 <!-- Featured Image Section with Overlay -->
@@ -191,7 +229,28 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
             }
 
             do_action('neve_after_post_content');
+
+            // Fetch Associated Leads
+            $associated_leads = get_post_meta(get_the_ID(), '_associated_leads', true);
+
+            if (!empty($associated_leads)) {
+                $lead_ids = explode(',', $associated_leads);
+            }
+            
             ?>
+
+        <div class="associated-leads-container">
+            <h5 class="associated-leads-title">Associated Leads</h5>
+            <div class="associated-leads-list">
+                <ul>
+                    <?php
+                    foreach ($lead_ids as $lead_id) {
+                        echo '<li><a href="' . get_permalink($lead_id) . '">' . get_the_title($lead_id) . '</a></li>';
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
         </article>
         <?php do_action('neve_do_sidebar', 'single-lead_generation', 'right'); ?>
     </div>
