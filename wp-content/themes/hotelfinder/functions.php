@@ -157,16 +157,41 @@ add_action('init', 'create_lead_categories_taxonomy');
 // Add Image Upload Field in Lead Categories
 function add_lead_category_image_field($term) {
     $image_id = get_term_meta($term->term_id, 'lead_category_image', true);
+    $category_page_title = get_term_meta($term->term_id, 'category_page_title', true);
+    $category_page_leads_section_title = get_term_meta($term->term_id, 'category_page_leads_section_title', true);
     ?>
-    <div class="form-field">
-        <label for="lead_category_image"><?php _e('Category Image', 'text-domain'); ?></label>
-        <input type="text" id="lead_category_image" name="lead_category_image" value="<?php echo esc_attr($image_id); ?>" />
-        <button class="upload_image_button button"><?php _e('Upload Image', 'text-domain'); ?></button>
-        <br>
-        <?php if ($image_id) { ?>
-            <img src="<?php echo esc_url($image_id); ?>" style="max-width: 200px; display: block; margin-top: 10px;">
-        <?php } ?>
-    </div>
+    <table class="form-table">
+        <tr class="form-field form-required term-name-wrap">
+            <th scope="row">
+                <label for="lead_category_image"><?php _e('Category Image', 'text-domain'); ?></label>
+            </th>
+            <td>
+                <input type="text" id="lead_category_image" name="lead_category_image" value="<?php echo esc_attr($image_id); ?>" />
+                <button class="upload_image_button button"><?php _e('Upload Image', 'text-domain'); ?></button>
+                <br>
+                <?php if ($image_id) { ?>
+                    <img src="<?php echo esc_url($image_id); ?>" style="max-width: 200px; display: block; margin-top: 10px;">
+                <?php } ?>
+            </td>
+        </tr>
+        <tr class="form-field form-required term-name-wrap">
+            <th scope="row">
+                <label for="category_page_title"><?php _e('Page Title', 'text-domain'); ?></label>
+            </th>
+            <td>
+                <input type="text" id="category_page_title" name="category_page_title" value="<?php echo esc_attr($category_page_title); ?>" />
+            </td>
+        </tr>
+        <tr class="form-field form-required term-name-wrap">
+            <th scope="row">
+                <label for="category_page_leads_section_title"><?php _e('Leads section title', 'text-domain'); ?></label>
+            </th>
+            <td>
+                <input type="text" id="category_page_leads_section_title" name="category_page_leads_section_title" value="<?php echo esc_attr($category_page_leads_section_title); ?>" />
+            </td>
+        </tr>
+    </table>
+
     <?php
 }
 add_action('lead_category_add_form_fields', 'add_lead_category_image_field', 10);
@@ -174,13 +199,19 @@ add_action('lead_category_edit_form_fields', 'add_lead_category_image_field', 10
 
 
 // Save Category Image Field
-function save_lead_category_image($term_id) {
+function save_lead_category_custom_fields($term_id) {
     if (isset($_POST['lead_category_image'])) {
         update_term_meta($term_id, 'lead_category_image', esc_url($_POST['lead_category_image']));
     }
+    if (isset($_POST['category_page_title'])) {
+        update_term_meta($term_id, 'category_page_title', sanitize_text_field($_POST['category_page_title']));
+    }
+    if (isset($_POST['category_page_leads_section_title'])) {
+        update_term_meta($term_id, 'category_page_leads_section_title', sanitize_text_field($_POST['category_page_leads_section_title']));
+    }
 }
-add_action('edited_lead_category', 'save_lead_category_image', 10, 2);
-add_action('created_lead_category', 'save_lead_category_image', 10, 2);
+add_action('edited_lead_category', 'save_lead_category_custom_fields', 10, 2);
+add_action('created_lead_category', 'save_lead_category_custom_fields', 10, 2);
 
 
 function enqueue_admin_scripts($hook) {

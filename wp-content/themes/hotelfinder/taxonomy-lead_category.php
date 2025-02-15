@@ -103,6 +103,8 @@ $categories = get_terms(array(
 ));
 
 $category_image = get_term_meta($term->term_id, 'lead_category_image', true);
+$category_page_title = get_term_meta($term->term_id, 'category_page_title', true);
+$category_page_leads_section_title = get_term_meta($term->term_id, 'category_page_leads_section_title', true);
 
 // Default image agar koi category image na ho
 if (!$category_image) {
@@ -117,7 +119,13 @@ if (!$category_image) {
      <!-- Overlay Form -->
     <div class="cs-lp-form">
         <div class="cls_htlfinder-align desktop_cls_htlfinder">
-            <h1 id="head_text" class="htlfndr-slider-title cls_tit1-cnt">Get the right <?php echo single_term_title(); ?> leads for your needs.</h1><br>
+            <h1 id="head_text" class="htlfndr-slider-title cls_tit1-cnt">
+                <?php if (!empty($category_page_title)): ?>
+                    <?php echo $category_page_title ?>
+                <?php else: ?>
+                    Get the right <?php echo single_term_title(); ?> leads for your needs.
+                <?php endif; ?>
+            </h1><br>
             <div class="cls_under cls_center-under">
                 <div class="htlfndr-slider-under-title-line"></div>
             </div>
@@ -177,7 +185,13 @@ if (!$category_image) {
 <!-- Search form aside stop -->
 <div class="container" style="margin-bottom:100px;">
     
-    <h2 class="htlfndr-section-title bigger-title" id="lead-generation-content-details"><?php single_term_title(); ?> Leads</h2>
+    <h2 class="htlfndr-section-title bigger-title" id="lead-generation-content-details">
+        <?php if (!empty($category_page_leads_section_title)): ?>
+            <?php echo $category_page_leads_section_title ?>
+        <?php else: ?>
+            <?php single_term_title(); ?> Leads
+        <?php endif; ?>
+    </h2>
     <div class="htlfndr-section-under-title-line"></div>
     
     <div class="row">
