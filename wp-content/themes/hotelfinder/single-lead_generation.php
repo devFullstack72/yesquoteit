@@ -238,7 +238,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
             }
             
             ?>
-
+        <?php if(!empty($lead_ids)) { ?>    
         <div class="associated-leads-container">
             <h5 class="associated-leads-title">Associated Leads</h5>
             <div class="associated-leads-list">
@@ -251,6 +251,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                 </ul>
             </div>
         </div>
+    <?php } ?>
         </article>
         <?php do_action('neve_do_sidebar', 'single-lead_generation', 'right'); ?>
     </div>
