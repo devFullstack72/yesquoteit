@@ -9,6 +9,18 @@ function initialize() {
 
     // var default_address = input.value;
     var autocomplete = new google.maps.places.Autocomplete(input);
+
+    // Ensure the suggestions appear properly in the modal
+    google.maps.event.addDomListener(input, 'keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission on Enter key
+        }
+    });
+
+    // Move the suggestion box to the body
+    setTimeout(function() {
+        $(".pac-container").appendTo("body");
+    }, 500);
     
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 15,
@@ -83,3 +95,15 @@ function setAddressData(addressComponents) {
         }
     }
 }
+
+
+$(document).on('focus', '#autocomplete_shortcode', function () {
+    setTimeout(function () {
+        $('.pac-container').css({
+            top: $("#autocomplete_shortcode").offset().top + $("#autocomplete_shortcode").outerHeight(),
+            left: $("#autocomplete_shortcode").offset().left,
+            width: $("#autocomplete_shortcode").outerWidth(),
+            position: "absolute"
+        });
+    }, 500);
+});
