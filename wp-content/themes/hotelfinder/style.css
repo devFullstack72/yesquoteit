@@ -260,7 +260,7 @@ Version: 1.0
 
 /*About us Cover image */
 
-.about-us-page{
+.about-us-page, .register-your-business{
     width: 100vw !important;
     max-width: 100% !important;
     margin: 0 !important;

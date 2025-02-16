@@ -32,6 +32,15 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 $total_steps = 4;
 ?>
 
+<style>
+    .register-your-business {
+        background-image: url('<?php echo get_template_directory_uri() . '/images/bgimgfull.jpg' ?>');
+        background-size: cover;  /* Scales the image to cover the entire container */
+        background-position: center;  /* Centers the image */
+        background-repeat: no-repeat;  /* Prevents image repetition */
+    }
+</style>
+
 <?php if ($current_step == 1) : ?>
 <form class="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
     <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
@@ -106,7 +115,7 @@ $total_steps = 4;
     <div class="wpcf7-form">
         <div class="step step-2">
             <div class="step-header">
-                <small>Step 1 of <?php echo $total_steps ?></small>
+                <small>Step 2 of <?php echo $total_steps ?></small>
                 <h5 class="text-center">Connect with the right customers by adding your service categories...</h5>
             </div>
             <div class="form-body">
@@ -139,12 +148,12 @@ $total_steps = 4;
     <div class="wpcf7-form">
         <div class="step step-3">
             <div class="step-header">
-                <small>Step 1 of <?php echo $total_steps ?></small>
-                <h5 class="text-center">Get relevant jobs in the area you prefer</h5>
+                <small>Step 3 of <?php echo $total_steps ?></small>
+                <h5 class="text-center">What locations does your business service</h5>
             </div>
             <div class="form-body">
                 <span class="wpcf7-form-control-wrap" data-name="address">
-                    <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" id="autocomplete" aria-required="true" aria-invalid="false" type="text" name="address">
+                    <input class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" id="autocomplete" aria-required="true" aria-invalid="false" type="text" name="address">
                     <span class="error"><?php echo $errors['address'] ?? ''; ?></span>
                 </span>
 
@@ -269,7 +278,7 @@ $total_steps = 4;
     <div class="wpcf7-form">
         <div class="step step-3">
             <div class="step-header">
-                <small>Step 1 of <?php echo $total_steps ?></small>
+                <small>Step 4 of <?php echo $total_steps ?></small>
                 <h5 class="text-center">Submit your brand identity</h5>
             </div>
             <div class="form-body">
