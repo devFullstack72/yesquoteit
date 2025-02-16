@@ -28,6 +28,8 @@ class Partner_Admin
 
         // Custom script for autocomplete
         wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-maps-api'], null, true);
+
+        wp_enqueue_script('partner-registration-admin-script', plugin_dir_url(__FILE__) . 'js/admin-custom.js', ['jquery'], null, true);
     }
 
 
@@ -63,7 +65,7 @@ class Partner_Admin
 ?>
         <div class="wrap">
             <h1>Providers</h1>
-            <table class="wp-list-table widefat fixed striped">
+            <table class="wp-list-table widefat striped" id="service-providers-list">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -83,21 +85,41 @@ class Partner_Admin
                             <td><?php echo $partner->name; ?></td>
                             <td><?php echo $partner->email; ?></td>
                             <td><?php echo $partner->phone; ?></td>
-                            <td><?php echo $partner->address; ?></td>
                             <td>
-                            <?php if (!empty($partner->leads)): 
+                                <?php
+                                $full_address = esc_html($partner->address);
+                                $short_address = mb_strimwidth($full_address, 0, 20, '...');
+                                ?>
+                                <span class="short-address"><?php echo $short_address; ?></span>
+                                <span class="full-address" style="display: none;"><?php echo $full_address; ?></span>
+                                <?php if (strlen($full_address) > 20) : ?>
+                                    <a href="#" class="toggle-address">More</a>
+                                <?php endif; ?>
+                            </td>
+
+                            <td>
+                                <?php if (!empty($partner->leads)): 
                                     $leads = explode(',', $partner->leads);
-                                    foreach ($leads as $lead_data): 
-                                        list($lead_id, $lead_name) = explode('|', $lead_data);
+                                    $total_leads = count($leads);
+                                ?>
+                                    <div class="lead-toggle" style="cursor: pointer; color: #0073aa; font-weight: bold;">
+                                        <span class="lead-summary"><?php echo $total_leads; ?> Leads</span>
+                                        <i class="dashicons dashicons-arrow-down"></i>
+                                    </div>
+                                    <div class="lead-details" style="display: none; margin-top: 5px;">
+                                        <?php foreach ($leads as $lead_data): 
+                                            list($lead_id, $lead_name) = explode('|', $lead_data);
                                         ?>
-                                        <a href="<?php echo esc_url(get_permalink($lead_id)); ?>" target="_blank">
-                                            <?php echo esc_html($lead_name); ?>
-                                        </a><br>
-                                    <?php endforeach;
-                                else: ?>
+                                            <a href="<?php echo esc_url(get_permalink($lead_id)); ?>" target="_blank">
+                                                <?php echo esc_html($lead_name); ?>
+                                            </a><br>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php else: ?>
                                     No Leads Assigned
                                 <?php endif; ?>
                             </td>
+
                             <td><?php echo $partner->status == 1 ? 'Approved' : ($partner->status == 2 ? 'Rejected' : 'Pending'); ?></td>
                             <td>
                                 <?php if ($partner->status == 0): ?>
