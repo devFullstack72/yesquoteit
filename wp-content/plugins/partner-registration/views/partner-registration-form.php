@@ -254,6 +254,7 @@ $total_steps = 4;
                 <p id="show_country" style="display:none;">
                     <label>Service provided in other Country<br>
                         <select class="cls_slect-radius" name="other_country" id="other_country">
+                            <option value="0">Select</option>
                             <?php foreach ($countries as $country) { ?>
                                 <option value="<?php echo $country->code ?>"><?php echo $country->name ?></option>
                             <?php } ?>

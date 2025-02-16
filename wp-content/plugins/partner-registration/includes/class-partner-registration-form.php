@@ -328,6 +328,9 @@ class Partner_Registration_Form
         $service_area = sanitize_text_field($_POST['service_area']);
         $other_country = sanitize_text_field($_POST['other_country']);
 
+        if ($other_country == 0) {
+            $other_country = null;
+        }
 
         // Validation errors array
         $errors = [];
@@ -393,6 +396,8 @@ class Partner_Registration_Form
         }
 
         global $wpdb;
+
+
 
         $wpdb->update($this->service_partners_table, [
             'address' => $address,

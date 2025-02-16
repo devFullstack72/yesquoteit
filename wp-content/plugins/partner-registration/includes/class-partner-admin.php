@@ -361,6 +361,7 @@ class Partner_Admin
                         <th><label>Service provided in other Country</label></th>
                         <td>
                             <select name="other_country" id="other_country" class="cls_slect-radius">
+                                <option value="">Select</option>
                                 <?php foreach($countries as $country) { ?>
                                     <option value="<?php echo $country->code; ?>" <?php echo ($partner->other_country == $country->code) ? 'selected' : ''; ?>>
                                         <?php echo esc_html($country->name); ?>
