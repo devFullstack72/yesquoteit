@@ -118,3 +118,12 @@ $('#radius').on('change', function() {
 	}
 });
 });
+
+
+jQuery(document).ready(function($) {
+    $('.partner-registration-form').on('submit', function() {
+        var $btn = $(this).find('button[type="submit"]');
+        $btn.prop('disabled', true); // Disable button
+        $btn.html('<i class="fa fa-spinner fa-spin"></i> Processing...'); // Change button text
+    });
+});
