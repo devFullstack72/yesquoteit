@@ -156,9 +156,10 @@ add_action('init', 'create_lead_categories_taxonomy');
 
 // Add Image Upload Field in Lead Categories
 function add_lead_category_image_field($term) {
-    $image_id = get_term_meta($term->term_id, 'lead_category_image', true);
-    $category_page_title = get_term_meta($term->term_id, 'category_page_title', true);
-    $category_page_leads_section_title = get_term_meta($term->term_id, 'category_page_leads_section_title', true);
+    $category_id = !empty($term->term_id) ? $term->term_id : '';
+    $image_id = get_term_meta($category_id, 'lead_category_image', true);
+    $category_page_title = get_term_meta($category_id, 'category_page_title', true);
+    $category_page_leads_section_title = get_term_meta($category_id, 'category_page_leads_section_title', true);
     ?>
     <table class="form-table">
         <tr class="form-field form-required term-name-wrap">

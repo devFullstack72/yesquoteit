@@ -6,13 +6,37 @@ if (!defined('ABSPATH')) {
 class Partner_Registration_Form
 {
 
+    public $service_partners_table;
+    public $lead_partners_table;
+
     public function __construct()
     {
         add_shortcode('partner_registration_form', [$this, 'render_registration_form']);
-        add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
-        add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
+        // add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
+        // add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
+
+        add_action('admin_post_nopriv_pr_partner_form_submission_step_1', [$this, 'handle_pr_partner_form_submission_step_1']);
+        add_action('admin_post_pr_partner_form_submission_step_1', [$this, 'handle_pr_partner_form_submission_step_1']);
+
+        add_action('admin_post_nopriv_pr_partner_form_submission_step_2', [$this, 'handle_pr_partner_form_submission_step_2']);
+        add_action('admin_post_pr_partner_form_submission_step_2', [$this, 'handle_pr_partner_form_submission_step_2']);
+
+        add_action('admin_post_nopriv_pr_partner_form_submission_step_3', [$this, 'handle_pr_partner_form_submission_step_3']);
+        add_action('admin_post_pr_partner_form_submission_step_3', [$this, 'handle_pr_partner_form_submission_step_3']);
+
+        add_action('admin_post_nopriv_pr_partner_form_submission_step_4', [$this, 'handle_pr_partner_form_submission_step_4']);
+        add_action('admin_post_pr_partner_form_submission_step_4', [$this, 'handle_pr_partner_form_submission_step_4']);
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
+
+        if (!session_id()) {
+            session_start();
+        }
+
+        global $wpdb;
+
+        $this->service_partners_table = $wpdb->prefix . 'service_partners';
+        $this->lead_partners_table = $wpdb->prefix . 'lead_partners';
     }
 
     public function enqueue_scripts()
@@ -21,7 +45,7 @@ class Partner_Registration_Form
 
        
 
-    if ($current_page_slug == "register-your-business") {
+        // if ($current_page_slug == "register-your-business") {
             // Ensure jQuery is included
             wp_enqueue_script('jquery');
 
@@ -32,7 +56,7 @@ class Partner_Registration_Form
             wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-places'], null, true);
             
             wp_enqueue_style('partner-registration-css', plugin_dir_url(__FILE__) . 'css/partner-registration.css');
-        }
+        // }
     }
 
 
@@ -58,159 +82,21 @@ class Partner_Registration_Form
             FROM {$countries_table}
         ");
 
+        // Start output buffering
         ob_start();
 
-?>
-        <h2 class="htlfndr-section-title bigger-title">Become Partner</h2><div class="htlfndr-section-under-title-line"></div>
-         <div class="wpcf7 js" style="margin-bottom:100px; padding: 20px;">
-            <?php
-            // Check for success message
-            if (isset($_GET['success']) && $_GET['success'] == 1) {
-                echo '<div class="notice notice-success" style="padding: 10px; border: 1px solid #46b450; background-color: #dff0d8; color: #3c763d; margin-bottom: 15px;">
-                        Thank you for registering! We will review it shortly.
-                    </div>';
-            }
-            ?>
-        <form id="partner-registration-form" method="POST" class="wpcf7-form" action="<?php echo esc_url(admin_url('admin-post.php')); ?>"  style="min-width:100%">
-            <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
-            <input type="hidden" name="action" value="pr_partner_form_submission">
+        // Define path to the view file
+        $view_path = plugin_dir_path(__FILE__) . '../views/partner-registration-form.php';
 
-            <input type="hidden" name="lead_id" value="<?php echo !empty($_GET['lead_id']) ? $_GET['lead_id'] : '' ?>">
+        // Ensure file exists before including
+        if (file_exists($view_path)) {
+            include $view_path;
+        } else {
+            echo "<p>Error: View file not found!</p>";
+        }
 
-            <p><label>Name<br>
-            <span class="wpcf7-form-control-wrap" data-name="name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="name" aria-required="true" aria-invalid="false" value="" type="text" name="name"></span> </label>
-            </p>
-            <p><label>Email<br>
-            <span class="wpcf7-form-control-wrap" data-name="email"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="email" aria-required="true" aria-invalid="false" value="" type="email" id="email" name="email"></span> </label>
-            </p>
-
-            <p><label>Phone<br>
-            <span class="wpcf7-form-control-wrap" data-name="phone"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required autocomplete="phone" aria-required="true" aria-invalid="false" value="" type="text" name="phone"></span> </label>
-            </p>
-
-            <p><label>Select Leads:</label></p>
-            <div style="align-items: center;margin-bottom:10px;">
-                <?php foreach ($leads as $lead): ?>
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" name="lead_ids[]" value="<?php echo esc_attr($lead->ID); ?>" 
-                        <?php echo (!empty($selected_lead_id) && $selected_lead_id == $lead->ID) ? 'checked' : ''; ?>>
-                        <?php echo esc_html($lead->post_title); ?>
-                    </label>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- <p><label>Address<br>
-            <span class="wpcf7-form-control-wrap" data-name="address"><textarea size="40" maxlength="400" rows="3" cols="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="address" required aria-required="true" aria-invalid="false" value="" type="text" name="address"></textarea></span> </label>
-            </p> -->
-            <br>       
-            <p><label>Address<br>
-            <span class="wpcf7-form-control-wrap" data-name="address">
-                <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" required id="autocomplete" aria-required="true" aria-invalid="false" type="text" name="address">
-            </span> </label>
-            </p>
-
-             <!-- Display Map Image -->
-             <div id="map-preview" style="margin-top: 10px;"></div>
- 
-            <br>
-            <p>
-                <label>Latitude<br>
-                    <span class="wpcf7-form-control-wrap" data-name="latitude">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="latitude" name="latitude">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>Longitude<br>
-                    <span class="wpcf7-form-control-wrap" data-name="longitude">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="longitude" name="longitude">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>Street Number<br>
-                    <span class="wpcf7-form-control-wrap" data-name="street_number">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="street_number" name="street_number">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>Address 1<br>
-                    <span class="wpcf7-form-control-wrap" data-name="route">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="route" name="route">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>Address 2<br>
-                    <span class="wpcf7-form-control-wrap" data-name="address2">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="address2" name="address2">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>Postal Code<br>
-                    <span class="wpcf7-form-control-wrap" data-name="postal_code">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="postal_code" name="postal_code">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>State<br>
-                    <span class="wpcf7-form-control-wrap" data-name="state">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="state" name="state">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>Country<br>
-                    <span class="wpcf7-form-control-wrap" data-name="country">
-                        <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="country" name="country">
-                    </span>
-                </label>
-            </p>
-
-            <p>
-                <label>Service Area<br>
-                <select class="cls_slect-radius" onchange="on_country()" name="service_area" id="radius">
-                    <option value="5"> 5 KM </option>
-                    <option value="10"> 10 KM </option>
-                    <option value="25"> 25 KM </option>
-                    <option value="50"> 50 KM </option>
-                    <option value="100"> 100 KM </option>
-                    <option value="250"> 250 KM </option>								
-                    <option value="500"> 500 KM </option>
-                    <option value="entire"> Entire Country </option>
-                    <option value="state"> Entire State </option>
-                    <option value="other"> Other Country </option>
-                    <option value="every"> Every Where </option>
-                    <option value="no_service">Not at this location </option>
-                </select>
-                </label>
-            </p>
-
-            <p id="show_country" style="display:none;">
-                <label>Service provided in other Country<br>
-                    <select class="cls_slect-radius" name="other_country" id="other_country">
-                        <?php foreach($countries as $country){ ?>
-                            <option value="<?php echo $country->code ?>"><?php echo $country->name ?></option>
-                        <?php } ?>
-                    </select>
-                </label>
-            </p>
-
-            <p><input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" name="partner_submit" value="Register"></p>
-        </form>
-    </div>
-<?php
         return ob_get_clean();
+        
     }
 
     public function handle_form_submission()
@@ -245,7 +131,7 @@ class Partner_Registration_Form
             $service_partners_table = $wpdb->prefix . 'service_partners';
             $lead_partners_table = $wpdb->prefix . 'lead_partners';
 
-            $wpdb->insert($service_partners_table, [
+            $wpdb->insert($this->service_partners_table, [
                 'name' => $name,
                 'email' => $email,
                 'phone' => $phone,
@@ -271,7 +157,7 @@ class Partner_Registration_Form
             //     'created_at' => current_time('mysql')
             // ]);
             foreach ($lead_ids as $lead_id) {
-                $wpdb->insert($lead_partners_table, [
+                $wpdb->insert($this->lead_partners_table, [
                     'lead_id' => $lead_id,
                     'partner_id' => $partner_id,
                     'created_at' => current_time('mysql')
@@ -281,6 +167,338 @@ class Partner_Registration_Form
             wp_redirect(add_query_arg('success', '1', $_SERVER['HTTP_REFERER']));
             exit;
         }
+    }
+
+    public function handle_pr_partner_form_submission_step_1() {
+        // Verify nonce for security
+        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+            wp_die('Security check failed.');
+        }
+
+        global $wpdb;
+
+        $name = sanitize_text_field($_POST['name']);
+        $business_trading_name = sanitize_text_field($_POST['business_trading_name']);
+        $email = sanitize_email($_POST['email']);
+        $confirm_email = sanitize_email($_POST['c_email']);
+        $password = sanitize_text_field($_POST['password']);
+        $phone = sanitize_text_field($_POST['phone']);
+
+        // Validation errors array
+        $errors = [];
+
+        // Required field validation
+        if (empty($name)) {
+            $errors['name'] = "Name is required.";
+        }
+        if (empty($business_trading_name)) {
+            $errors['business_trading_name'] = "Business Trading Name is required.";
+        }
+        if (empty($email)) {
+            $errors['email'] = "Email is required.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = "Invalid email format.";
+        }
+        if (empty($confirm_email)) {
+            $errors['confirm_email'] = "Confirm Email is required.";
+        } elseif ($email !== $confirm_email) {
+            $errors['confirm_email'] = "Email and Confirm Email do not match.";
+        }
+        if (empty($password)) {
+            $errors['password'] = "Password is required.";
+        } elseif (strlen($password) < 8) {
+            $errors['password'] = "Password must be at least 8 characters.";
+        }
+        if (empty($phone)) {
+            $errors['phone'] = "Phone number is required.";
+        }
+
+        // If there are errors, redirect back with errors
+        if (!empty($errors)) {
+            $_SESSION['form_errors'] = $errors;
+            $_SESSION['form_data'] = $_POST; // Store old values
+            wp_safe_redirect(add_query_arg('form_error', '1', wp_get_referer()));
+            exit;
+        }
+
+        // If no errors, process the form (e.g., insert into database, send email, etc.)
+        global $wpdb;
+
+        $wpdb->insert($this->service_partners_table, [
+            'name' => $name,
+            'business_trading_name' => $business_trading_name,
+            'email' => $email,
+            'password' => wp_hash_password($password),
+            'phone' => $phone,
+            'status' => 0
+        ]);
+
+        $partner_id = $wpdb->insert_id;
+        
+        // After successful form submission, clear session data
+        unset($_SESSION['form_errors']);
+        unset($_SESSION['form_data']);
+
+        $_SESSION['partner_id'] = $partner_id;
+
+        // Redirect with both parameters (next-step and partner_id)
+        $redirect_url = add_query_arg([
+            'next_step' => '2'
+        ], wp_get_referer());
+
+        wp_safe_redirect($redirect_url);
+        exit;
+
+    }
+
+    public function handle_pr_partner_form_submission_step_2() {
+        // Verify nonce for security
+        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+            wp_die('Security check failed.');
+        }
+
+        global $wpdb;
+
+        $lead_ids = isset($_POST['lead_ids']) ? array_map('intval', $_POST['lead_ids']) : [];
+
+        // Validation errors array
+        $errors = [];
+
+        // Required field validation
+        if (empty($lead_ids) || !array_filter($lead_ids)) {
+            $errors['services'] = "Select atlease one service";
+        }
+
+        // If there are errors, redirect back with errors
+        if (!empty($errors)) {
+            $_SESSION['form_errors'] = $errors;
+            $_SESSION['form_data'] = $_POST; // Store old values
+            // Redirect with both parameters (next-step and partner_id)
+            $redirect_url = add_query_arg([
+                'form_error' => 1,
+                'next_step' => 2
+            ], wp_get_referer());
+
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
+        // If no errors, process the form (e.g., insert into database, send email, etc.)
+        global $wpdb;
+
+        foreach ($lead_ids as $lead_id) {
+            $wpdb->insert($this->lead_partners_table, [
+                'lead_id' => $lead_id,
+                'partner_id' => $_SESSION['partner_id'],
+                'created_at' => current_time('mysql')
+            ]);
+        }
+        
+        // After successful form submission, clear session data
+        unset($_SESSION['form_errors']);
+        unset($_SESSION['form_data']);
+
+        // Redirect with both parameters (next-step and partner_id)
+        $redirect_url = add_query_arg([
+            'next_step' => 3
+        ], wp_get_referer());
+
+        wp_safe_redirect($redirect_url);
+        exit;
+
+
+    }
+
+    public function handle_pr_partner_form_submission_step_3() {
+        // Verify nonce for security
+        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+            wp_die('Security check failed.');
+        }
+
+        $address = sanitize_text_field($_POST['address']);
+        $latitude = sanitize_text_field($_POST['latitude']);
+        $longitude = sanitize_text_field($_POST['longitude']);
+        $street_number = sanitize_text_field($_POST['street_number']);
+        $route = sanitize_text_field($_POST['route']);
+        $address2 = sanitize_text_field($_POST['address2']);
+        $postal_code = sanitize_text_field($_POST['postal_code']);
+        $state = sanitize_text_field($_POST['state']);
+        $country = sanitize_text_field($_POST['country']);
+
+        $service_area = sanitize_text_field($_POST['service_area']);
+        $other_country = sanitize_text_field($_POST['other_country']);
+
+
+        // Validation errors array
+        $errors = [];
+
+        if (empty($address)) {
+            $errors['address'] = "Address is required.";
+        }
+
+        if (empty($latitude)) {
+            $errors['address'] = "Please choose address from google";
+        }
+
+        if (empty($street_number)) {
+            $errors['street_number'] = "Please enter street number";
+        }
+
+        if (empty($route)) {
+            $errors['address_line_1'] = "Please enter address line";
+        }
+
+        if (empty($address2)) {
+            $errors['address_line_2'] = "Please enter address line";
+        }
+
+        if (empty($postal_code)) {
+            $errors['postal_code'] = "Please enter postal code";
+        }
+
+        if (empty($state)) {
+            $errors['state'] = "Please enter state";
+        }
+
+        if (empty($country)) {
+            $errors['country'] = "Please enter country";
+        }
+
+        if (empty($service_area)) {
+            $errors['service_area'] = "Please choose service area";
+        }
+
+        // If there are errors, redirect back with errors
+        if (!empty($errors)) {
+            $_SESSION['form_errors'] = $errors;
+            $_SESSION['form_data'] = $_POST; // Store old values
+            // Redirect with both parameters (next-step and partner_id)
+            $redirect_url = add_query_arg([
+                'form_error' => 1,
+                'next_step' => 3
+            ], wp_get_referer());
+
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
+        if (!isset($_SESSION['partner_id'])) {
+            $redirect_url = add_query_arg([
+                'form_error' => 1,
+                'next_step' => 1
+            ], wp_get_referer());
+
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
+        global $wpdb;
+
+        $wpdb->update($this->service_partners_table, [
+            'address' => $address,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'street_number' => $street_number,
+            'route' => $route,
+            'address2' => $address2,
+            'postal_code' => $postal_code,
+            'state' => $state,
+            'country' => $country,
+            'service_area' => $service_area,
+            'other_country' => $other_country
+        ], [ 'id' => $_SESSION['partner_id'] ]);
+
+        // After successful form submission, clear session data
+        unset($_SESSION['form_errors']);
+        unset($_SESSION['form_data']);
+
+        // Redirect with both parameters (next-step and partner_id)
+        $redirect_url = add_query_arg([
+            'next_step' => 4
+        ], wp_get_referer());
+
+        wp_safe_redirect($redirect_url);
+        exit;
+    }
+
+    public function handle_pr_partner_form_submission_step_4() {
+        // Verify nonce for security
+        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+            wp_die('Security check failed.');
+        }
+
+        $website_url = esc_url_raw($_POST['website_url']);
+
+        // Validation errors array
+        $errors = [];
+
+        if (empty($website_url)) {
+            $errors['website_url'] = "Website URL is required";
+        }
+
+        // Handle Business Logo Upload
+        $business_logo_url = ''; // Default empty value
+        if (!empty($_FILES['business_logo']['name'])) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+
+            $uploaded_file = $_FILES['business_logo'];
+            $upload_overrides = ['test_form' => false]; // Allow uploads outside form validation
+            $movefile = wp_handle_upload($uploaded_file, $upload_overrides);
+
+            if ($movefile && !isset($movefile['error'])) {
+                $business_logo_url = $movefile['url']; // Store uploaded image URL
+            } else {
+                $errors['business_logo'] = 'File upload failed: ' . $movefile['error'];
+            }
+        } else {
+            $errors['business_logo'] = "Business logo is required.";
+        }
+
+        // If there are errors, redirect back with errors
+        if (!empty($errors)) {
+            $_SESSION['form_errors'] = $errors;
+            $_SESSION['form_data'] = $_POST; // Store old values
+            // Redirect with both parameters (next-step and partner_id)
+            $redirect_url = add_query_arg([
+                'form_error' => 1,
+                'next_step' => 4
+            ], wp_get_referer());
+
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
+        global $wpdb;
+
+        // Get Partner ID from session
+        $partner_id = intval($_SESSION['partner_id']);
+        if (!$partner_id) {
+            wp_die('Invalid Partner ID.');
+        }
+
+        // Update database with business logo and website URL
+        $result = $wpdb->update(
+            $this->service_partners_table,
+            [
+                'business_logo' => $business_logo_url,
+                'website_url' => $website_url
+            ],
+            ['id' => $partner_id]
+        );
+
+        if ($result === false) {
+            wp_die('Database update failed: ' . $wpdb->last_error);
+        }
+
+        // Redirect on success
+        $redirect_url = add_query_arg([
+            'success' => 1,
+            'next_step' => 5
+        ], wp_get_referer());
+
+        wp_safe_redirect($redirect_url);
+        exit;
+
     }
 }
 ?>
