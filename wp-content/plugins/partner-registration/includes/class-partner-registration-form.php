@@ -340,29 +340,29 @@ class Partner_Registration_Form
             $errors['address'] = "Please choose address from google";
         }
 
-        if (empty($street_number)) {
-            $errors['street_number'] = "Please enter street number";
-        }
+        // if (empty($street_number)) {
+        //     $errors['street_number'] = "Please enter street number";
+        // }
 
-        if (empty($route)) {
-            $errors['address_line_1'] = "Please enter address line";
-        }
+        // if (empty($route)) {
+        //     $errors['address_line_1'] = "Please enter address line";
+        // }
 
-        if (empty($address2)) {
-            $errors['address_line_2'] = "Please enter address line";
-        }
+        // if (empty($address2)) {
+        //     $errors['address_line_2'] = "Please enter address line";
+        // }
 
-        if (empty($postal_code)) {
-            $errors['postal_code'] = "Please enter postal code";
-        }
+        // if (empty($postal_code)) {
+        //     $errors['postal_code'] = "Please enter postal code";
+        // }
 
-        if (empty($state)) {
-            $errors['state'] = "Please enter state";
-        }
+        // if (empty($state)) {
+        //     $errors['state'] = "Please enter state";
+        // }
 
-        if (empty($country)) {
-            $errors['country'] = "Please enter country";
-        }
+        // if (empty($country)) {
+        //     $errors['country'] = "Please enter country";
+        // }
 
         if (empty($service_area)) {
             $errors['service_area'] = "Please choose service area";
