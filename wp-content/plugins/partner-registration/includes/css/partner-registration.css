@@ -17,7 +17,7 @@
 }
 
 .partner-registration-form .wpcf7-form .form-body {
-    padding: 0px 25px;
+    padding: 15px 25px;
     margin-top: 20px;
     margin-bottom: 20px;
 }
@@ -32,4 +32,12 @@
     margin-right: 0;
 }
 
-.partner-registration-form .error { color: red; display: block; }
+.partner-registration-form .error { color: red; display: block; font-weight:400; font-size:14px; }
+
+.partner-register-thank-you .panel-default>.panel-heading {
+    background-color: #078090;
+}
+
+.partner-register-thank-you .panel-default .btn-primary {
+    color: white !important;
+}

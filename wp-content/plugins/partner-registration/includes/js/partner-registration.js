@@ -4,6 +4,13 @@ function initAutocomplete() {
 
     var autocomplete = new google.maps.places.Autocomplete(input);
 
+    // Ensure the suggestions appear properly in the modal
+    google.maps.event.addDomListener(input, 'keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission on Enter key
+        }
+    });
+
     var map = new google.maps.Map(document.getElementById('map-preview'), {
         zoom: 15,
         center: { lat: 40.7128, lng: -74.0060 } // Default to New York
@@ -84,12 +91,14 @@ document.addEventListener("DOMContentLoaded", function () {
     initAutocomplete();
 });
 
-jQuery(document).ready(function ($) {
 function on_country()
 {
     var country = $('#country').val();
     $('#other_country option[value="' + country + '"]').remove();
 }
+
+jQuery(document).ready(function ($) {
+
 
 $('#radius').on('change', function() {
     if ( this.value == 'other')
