@@ -126,7 +126,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
 
     .htlfndr-slider-title {
         font-size: 30px;
-        font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif
+        font-family: "Roboto", sans-serif
     }
 
     .associated-leads-container {

@@ -89,7 +89,7 @@
 }
 .htlfndr-slider-title{
     font-size: 30px;
-    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif
+    font-family: "Roboto", sans-serif
 }
 </style>
 <?php 
