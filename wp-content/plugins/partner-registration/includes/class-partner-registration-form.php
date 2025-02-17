@@ -203,7 +203,20 @@ class Partner_Registration_Form
             $errors['confirm_email'] = "Confirm Email is required.";
         } elseif ($email !== $confirm_email) {
             $errors['confirm_email'] = "Email and Confirm Email do not match.";
+        } else {
+            // Check if email already exists in database
+            global $wpdb;
+        
+            $existing_email = $wpdb->get_var($wpdb->prepare(
+                "SELECT email FROM {$this->service_partners_table} WHERE email = %s",
+                $email
+            ));
+        
+            if ($existing_email) {
+                $errors['email'] = "This email is already registered.";
+            }
         }
+
         if (empty($password)) {
             $errors['password'] = "Password is required.";
         } elseif (strlen($password) < 8) {

@@ -16,12 +16,14 @@ define('PR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 // Include required files
 require_once PR_PLUGIN_DIR . 'includes/class-partner-registration-form.php';
+require_once PR_PLUGIN_DIR . 'includes/class-partner-login-form.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-admin.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-cf7-handler.php';
 
 class Partner_Registration_Plugin {
     public function __construct() {
         new Partner_Registration_Form();
+        new Partner_Login_Form();
         new Partner_Admin();
         new Partner_CF7_Handler();
     }
@@ -136,10 +138,32 @@ class Partner_Registration_Plugin {
             ]);
         }
     }
+
+    public static function create_partner_login_page() {
+        $page_title = 'Partner Login';
+        $page_slug = 'partner-login';
+        $page_content = '[partner_login]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
 }
 
 // Register activation hook
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_plugin_tables']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_login_page']);
 
 // Initialize the plugin
 new Partner_Registration_Plugin();
