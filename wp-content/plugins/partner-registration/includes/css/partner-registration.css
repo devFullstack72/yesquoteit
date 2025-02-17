@@ -5,34 +5,34 @@
     border-radius: 10px;
 }
 
-.partner-registration-form {
+.partner-registration-form, .partner-login-form {
     margin-top: 20px;
     margin-bottom: 100px;
     min-width: auto !important;
 }
 
-.partner-registration-form .wpcf7-form {
+.partner-registration-form .wpcf7-form, .partner-login-form .wpcf7-form {
     margin: auto;
     padding: 0 !important;
 }
 
-.partner-registration-form .wpcf7-form .form-body {
+.partner-registration-form .wpcf7-form .form-body, .partner-login-form .wpcf7-form .form-body {
     padding: 15px 25px;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
-.partner-registration-form .wpcf7-form .step-header {
+.partner-registration-form .wpcf7-form .step-header, .partner-login-form .wpcf7-form .step-header {
     background-color: #08c1da;
     padding: 7px 8px;
     color: white;
 }
 
-.partner-registration-form .btn-primary {
+.partner-registration-form .btn-primary, .partner-login-form .btn-primary {
     margin-right: 0;
 }
 
-.partner-registration-form .error { color: red; display: block; font-weight:400; font-size:14px; }
+.partner-registration-form .error, .partner-login-form .error { color: red; display: block; font-weight:400; font-size:14px; }
 
 .partner-register-thank-you .panel-default>.panel-heading {
     background-color: #078090;
@@ -40,4 +40,84 @@
 
 .partner-register-thank-you .panel-default .btn-primary {
     color: white !important;
+}
+
+.btn-theme-primary {
+    background: #08c1da none repeat scroll 0 0;
+    border: 1px solid #08c1da;
+    padding-left: 17px;
+    padding-right: 13px;
+    color: #fff;
+    text-align: center;
+    transition: all .3s ease-in-out 0s;
+    padding: 10px 50px;
+}
+
+.btn-theme-primary:hover {
+    color: #fff;
+}
+
+.h-50px {
+    height: 50px;
+}
+
+.partner-login-user-area {
+    text-align: right;
+    padding: 7px;
+    color: white;
+}
+
+.partner-login-user-area a {
+    color: white;
+}
+
+.partner-login-user-area {
+    position: relative;
+    display: inline-block;
+}
+.partner-login-user-area .dropdown-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.partner-login-user-area .dropdown-toggle i {
+    font-size: 18px;
+}
+.partner-login-user-area .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 150px;
+    list-style: none;
+    padding: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 99999;
+}
+.partner-login-user-area .dropdown-menu li {
+    border-bottom: 1px solid #ddd;
+}
+.partner-login-user-area .dropdown-menu li:last-child {
+    border-bottom: none;
+}
+.partner-login-user-area .dropdown-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: background 0.2s;
+}
+.partner-login-user-area .dropdown-menu a:hover {
+    background: #f5f5f5;
+}
+.partner-login-user-area .dropdown.active .dropdown-menu {
+    display: block;
 }

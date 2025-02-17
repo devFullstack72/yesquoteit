@@ -121,9 +121,23 @@ $('#radius').on('change', function() {
 
 
 jQuery(document).ready(function($) {
-    $('.partner-registration-form').on('submit', function() {
+    $('.partner-registration-form, .partner-login-form').on('submit', function() {
         var $btn = $(this).find('button[type="submit"]');
         $btn.prop('disabled', true); // Disable button
         $btn.html('<i class="fa fa-spinner fa-spin"></i> Processing...'); // Change button text
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    let dropdownToggle = document.getElementById('partnerDropdown');
+    let dropdown = dropdownToggle.parentElement;
+
+    dropdownToggle.addEventListener('click', function (event) {
+        event.stopPropagation();
+        dropdown.classList.toggle('active');
+    });
+
+    document.addEventListener('click', function () {
+        dropdown.classList.remove('active');
     });
 });

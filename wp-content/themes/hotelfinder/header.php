@@ -43,20 +43,26 @@
             <div class="htlfndr-top-header">
                 <div class="navbar navbar-default htlfndr-blue-hover-nav">
                     <div class="container">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed hide" data-toggle="collapse" data-target="#htlfndr-first-nav">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <a class="htlfndr-logo navbar-brand" href="<?php echo home_url(); ?>"> <!-- Home link -->
-                                <img src="<?php echo get_template_directory_uri(); ?>/images/header-logo.png" alt="Logo" style="margin-top:5px;" />
-                                <!-- <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p> -->
-                            </a>
-                        </div><!-- .navbar-header -->
-                      
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                <!-- Brand and toggle get grouped for better mobile display -->
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle collapsed hide" data-toggle="collapse" data-target="#htlfndr-first-nav">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                    <a class="htlfndr-logo navbar-brand" href="<?php echo home_url(); ?>"> <!-- Home link -->
+                                        <img src="<?php echo get_template_directory_uri(); ?>/images/header-logo.png" alt="Logo" style="margin-top:5px;" />
+                                        <!-- <p class="htlfndr-logo-text">Yes<span>QuoteIt</span></p> -->
+                                    </a>
+                                </div><!-- .navbar-header -->
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                                <?php do_shortcode('[partner_loggedin_info]'); ?>
+                            </div>
+                        </div>
                     </div><!-- .container -->
                 </div><!-- .navbar.navbar-default.htlfndr-blue-hover-nav-->
             </div><!-- .htlfndr-top-header -->
