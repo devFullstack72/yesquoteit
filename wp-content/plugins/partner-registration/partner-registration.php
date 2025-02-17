@@ -158,12 +158,56 @@ class Partner_Registration_Plugin {
             ]);
         }
     }
+
+    public static function create_partner_register_page() {
+        $page_title = 'Register your business';
+        $page_slug = 'register-your-business';
+        $page_content = '[partner_registration_form]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
+
+    public static function create_partner_profile_page() {
+        $page_title = 'Partner Profile';
+        $page_slug = 'partner-profile';
+        $page_content = '[partner_registration_form profile="true"]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
 }
 
 // Register activation hook
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_plugin_tables']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_login_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_register_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_profile_page']);
 
 // Initialize the plugin
 new Partner_Registration_Plugin();

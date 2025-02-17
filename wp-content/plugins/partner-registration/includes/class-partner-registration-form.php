@@ -60,8 +60,16 @@ class Partner_Registration_Form
     }
 
 
-    public function render_registration_form()
+    public function render_registration_form($atts)
     {
+
+        // Set default attributes and merge with user-specified attributes
+        $atts = shortcode_atts([
+            'profile'    => false, 
+        ], $atts, 'partner_registration_form');
+
+        ob_start(); // Start output buffering
+        
         global $wpdb;
     
         // Get the lead ID from URL
@@ -82,6 +90,29 @@ class Partner_Registration_Form
             SELECT * 
             FROM {$countries_table}
         ");
+
+        $partner = '';
+        $partner_leads = '';
+        if (!empty($_SESSION['partner_id'])) {
+
+            $partner_id = $_SESSION['partner_id'];
+
+            // Fetch partner details
+            $partner = $wpdb->get_row($wpdb->prepare(
+                "SELECT * FROM {$this->service_partners_table} WHERE id = %d",
+                $partner_id
+            ));
+
+            if (!$partner) {
+                return false; // Partner not found
+            }
+
+            // Fetch associated leads
+            $partner_leads = $wpdb->get_col($wpdb->prepare(
+                "SELECT lead_id FROM {$this->lead_partners_table} WHERE partner_id = %d",
+                $partner_id
+            ));
+        }
 
         // Start output buffering
         ob_start();
@@ -181,9 +212,11 @@ class Partner_Registration_Form
         $name = sanitize_text_field($_POST['name']);
         $business_trading_name = sanitize_text_field($_POST['business_trading_name']);
         $email = sanitize_email($_POST['email']);
-        $confirm_email = sanitize_email($_POST['c_email']);
-        $password = sanitize_text_field($_POST['password']);
+        $confirm_email = sanitize_email($_POST['c_email'] ?? '');
+        $password = sanitize_text_field($_POST['password'] ?? '');
         $phone = sanitize_text_field($_POST['phone']);
+
+        $profile_edit_mode = $_POST['profile_edit_mode'];
 
         // Validation errors array
         $errors = [];
@@ -200,27 +233,36 @@ class Partner_Registration_Form
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = "Invalid email format.";
         }
-        if (empty($confirm_email)) {
+        if (empty($confirm_email) && !$profile_edit_mode) {
             $errors['confirm_email'] = "Confirm Email is required.";
-        } elseif ($email !== $confirm_email) {
+        } elseif ($email !== $confirm_email && !$profile_edit_mode) {
             $errors['confirm_email'] = "Email and Confirm Email do not match.";
         } else {
             // Check if email already exists in database
             global $wpdb;
         
-            $existing_email = $wpdb->get_var($wpdb->prepare(
-                "SELECT email FROM {$this->service_partners_table} WHERE email = %s",
-                $email
-            ));
+            if ($profile_edit_mode && isset($_SESSION['partner_id'])) {
+                $existing_email = $wpdb->get_var($wpdb->prepare(
+                    "SELECT email FROM {$this->service_partners_table} WHERE email = %s AND id != %d",
+                    $email,
+                    $_SESSION['partner_id'] // The ID of the partner being updated
+                ));
+            } else {
+                $existing_email = $wpdb->get_var($wpdb->prepare(
+                    "SELECT email FROM {$this->service_partners_table} WHERE email = %s",
+                    $email
+                ));
+            }
+            
         
             if ($existing_email) {
                 $errors['email'] = "This email is already registered.";
             }
         }
 
-        if (empty($password)) {
+        if (empty($password) && !$profile_edit_mode) {
             $errors['password'] = "Password is required.";
-        } elseif (strlen($password) < 8) {
+        } elseif (strlen($password) < 8 && !$profile_edit_mode) {
             $errors['password'] = "Password must be at least 8 characters.";
         }
         if (empty($phone)) {
@@ -238,20 +280,35 @@ class Partner_Registration_Form
         // If no errors, process the form (e.g., insert into database, send email, etc.)
         global $wpdb;
 
-        $wpdb->insert($this->service_partners_table, [
+        $data = [
             'name' => $name,
             'business_trading_name' => $business_trading_name,
             'email' => $email,
-            'password' => wp_hash_password($password),
             'phone' => $phone,
             'status' => 0
-        ]);
+        ];
+
+        if (!$profile_edit_mode) {
+            $data['password'] = wp_hash_password($password);
+            $wpdb->insert($this->service_partners_table, $data);
+        } else {
+            $wpdb->update($this->service_partners_table, $data, [
+                'id' => $_SESSION['partner_id']
+            ]);
+        }
 
         $partner_id = $wpdb->insert_id;
         
         // After successful form submission, clear session data
         unset($_SESSION['form_errors']);
         unset($_SESSION['form_data']);
+
+        if ($profile_edit_mode) {
+            $_SESSION['profile_updated'] = true;
+            $redirect_url = wp_get_referer();
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
 
         $_SESSION['partner_id'] = $partner_id;
 
@@ -300,6 +357,11 @@ class Partner_Registration_Form
         // If no errors, process the form (e.g., insert into database, send email, etc.)
         global $wpdb;
 
+        if (isset($_SESSION['partner_id'])) {
+            // Delete existing records for the partner
+            $wpdb->delete($this->lead_partners_table, ['partner_id' => $_SESSION['partner_id']]);
+        }
+
         foreach ($lead_ids as $lead_id) {
             $wpdb->insert($this->lead_partners_table, [
                 'lead_id' => $lead_id,
@@ -311,6 +373,13 @@ class Partner_Registration_Form
         // After successful form submission, clear session data
         unset($_SESSION['form_errors']);
         unset($_SESSION['form_data']);
+
+        if (isset($_SESSION['partner_id'])) {
+            $_SESSION['profile_updated'] = true;
+            $redirect_url = wp_get_referer();
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
 
         // Redirect with both parameters (next-step and partner_id)
         $redirect_url = add_query_arg([
@@ -431,6 +500,13 @@ class Partner_Registration_Form
         unset($_SESSION['form_errors']);
         unset($_SESSION['form_data']);
 
+        if (isset($_SESSION['partner_id'])) {
+            $_SESSION['profile_updated'] = true;
+            $redirect_url = wp_get_referer();
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
         // Redirect with both parameters (next-step and partner_id)
         $redirect_url = add_query_arg([
             'next_step' => 4
@@ -447,6 +523,8 @@ class Partner_Registration_Form
         }
 
         $website_url = esc_url_raw($_POST['website_url']);
+
+        $profile_edit_mode = $_POST['profile_edit_mode'];
 
         // Validation errors array
         $errors = [];
@@ -470,7 +548,9 @@ class Partner_Registration_Form
                 $errors['business_logo'] = 'File upload failed: ' . $movefile['error'];
             }
         } else {
-            $errors['business_logo'] = "Business logo is required.";
+            if (!$profile_edit_mode) {
+                $errors['business_logo'] = "Business logo is required.";
+            }
         }
 
         // If there are errors, redirect back with errors
@@ -496,17 +576,30 @@ class Partner_Registration_Form
         }
 
         // Update database with business logo and website URL
+
+        $data = [
+            'website_url' => $website_url
+        ];
+
+        if (!empty($business_logo_url)) {
+            $data['business_logo'] = $business_logo_url;
+        }
+
         $result = $wpdb->update(
             $this->service_partners_table,
-            [
-                'business_logo' => $business_logo_url,
-                'website_url' => $website_url
-            ],
+            $data,
             ['id' => $partner_id]
         );
 
         if ($result === false) {
             wp_die('Database update failed: ' . $wpdb->last_error);
+        }
+
+        if (isset($_SESSION['partner_id'])) {
+            $_SESSION['profile_updated'] = true;
+            $redirect_url = wp_get_referer();
+            wp_safe_redirect($redirect_url);
+            exit;
         }
 
         // Redirect on success
