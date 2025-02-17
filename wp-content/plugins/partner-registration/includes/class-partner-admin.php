@@ -273,7 +273,7 @@ class Partner_Admin
         ");
     
         // Get all leads (Post type: 'lead_generation')
-        $all_leads = $wpdb->get_results("SELECT ID, post_title FROM $wp_posts_table WHERE post_type = 'lead_generation'");
+        $all_leads = $wpdb->get_results("SELECT ID, post_title FROM $wp_posts_table WHERE post_type = 'lead_generation' ORDER BY post_title ASC");
     
         // Get assigned leads for this partner
         $assigned_leads = $wpdb->get_col("SELECT lead_id FROM $lead_partners_table WHERE partner_id = {$partner->id}");

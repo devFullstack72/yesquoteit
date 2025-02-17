@@ -73,6 +73,7 @@ class Partner_Registration_Form
             FROM {$wpdb->posts} 
             WHERE post_type = 'lead_generation' 
             AND post_status = 'publish'
+            ORDER BY post_title ASC
         ");
 
         $countries_table = $wpdb->prefix . 'countries';

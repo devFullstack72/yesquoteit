@@ -748,3 +748,68 @@ add_action('wp_enqueue_scripts', 'enqueue_custom_styles');
 add_filter('wpcf7_form_elements', function ($content) {
     return do_shortcode($content);
 });
+
+// Copy Lead 
+
+function add_duplicate_lead_action_link($actions, $post) {
+    if ($post->post_type == 'lead_generation') {
+        $actions['duplicate'] = '<a href="' . wp_nonce_url(admin_url('admin-post.php?action=duplicate_lead&post_id=' . $post->ID), 'duplicate_lead_' . $post->ID) . '" title="Duplicate this lead">Copy Lead</a>';
+    }
+    return $actions;
+}
+add_filter('post_row_actions', 'add_duplicate_lead_action_link', 10, 2);
+
+function duplicate_lead() {
+    if (!isset($_GET['post_id']) || !isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'duplicate_lead_' . $_GET['post_id'])) {
+        wp_die('Security check failed.');
+    }
+
+    $post_id = absint($_GET['post_id']);
+    $post = get_post($post_id);
+
+    if (!$post || $post->post_type !== 'lead_generation') {
+        wp_die('Invalid post type.');
+    }
+
+    // Create new lead post
+    $new_post = [
+        'post_title'   => $post->post_title . ' (Copy)',
+        'post_content' => $post->post_content,
+        'post_status'  => 'draft',
+        'post_type'    => 'lead_generation',
+        'post_author'  => get_current_user_id(),
+    ];
+
+    $new_post_id = wp_insert_post($new_post);
+
+    if ($new_post_id) {
+        // Copy all metadata
+        $meta_data = get_post_custom($post_id);
+        foreach ($meta_data as $meta_key => $meta_values) {
+            foreach ($meta_values as $meta_value) {
+                update_post_meta($new_post_id, $meta_key, maybe_unserialize($meta_value));
+            }
+        }
+
+        // Copy categories and taxonomy terms
+        $taxonomies = get_object_taxonomies('lead_generation');
+        foreach ($taxonomies as $taxonomy) {
+            $terms = wp_get_object_terms($post_id, $taxonomy, ['fields' => 'ids']);
+            wp_set_object_terms($new_post_id, $terms, $taxonomy);
+        }
+
+        // Copy featured image
+        $thumbnail_id = get_post_thumbnail_id($post_id);
+        if ($thumbnail_id) {
+            set_post_thumbnail($new_post_id, $thumbnail_id);
+        }
+
+        // Redirect to edit screen of the new post
+        wp_redirect(admin_url('post.php?action=edit&post=' . $new_post_id));
+        exit;
+    }
+}
+add_action('admin_post_duplicate_lead', 'duplicate_lead');
+
+
+// Copy Lead 
