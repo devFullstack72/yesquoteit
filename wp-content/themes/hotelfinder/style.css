@@ -89,7 +89,7 @@ Version: 1.0
 
 /* Label Styling */
 .wpcf7-form p label {
-    font-weight: 600;
+/*    font-weight: 600;*/
     color: #333;
     display: block;
     margin-bottom: 5px;
