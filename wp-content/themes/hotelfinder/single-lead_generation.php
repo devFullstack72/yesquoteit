@@ -281,6 +281,9 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-12" id="custom-success-message-for-lead" style="display: none;">
+                        <p>Thank you! Your message has been sent successfully.</p>
+                    </div>
                     <div class="col-md-7">
                         <?php echo do_shortcode($custom_field_value); ?>
                     </div>
@@ -305,4 +308,10 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
 <script>
     var lead_id = '<?php echo get_the_ID() ?>';
     $('input[name="is_lead"]').val(lead_id);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('wpcf7mailsent', function(event) {
+            document.getElementById('custom-success-message-for-lead').style.display = 'block';
+        }, false);
+    });
 </script>
