@@ -32,11 +32,10 @@ class Partner_CF7_Handler {
         // Get user email from the form (modify the key based on your CF7 form)
         $user_email = isset($posted_data['your-email']) ? sanitize_email($posted_data['your-email']) : '';
 
-        $customer_lat = isset($posted_data['google_places_form_latitude']) ? sanitize_email($posted_data['google_places_form_latitude']) : '';
-        $customer_lng = isset($posted_data['google_places_form_longitude']) ? sanitize_email($posted_data['google_places_form_longitude']) : '';
-        $customer_state = isset($posted_data['google_places_form_state']) ? sanitize_email($posted_data['google_places_form_state']) : '';
-        $customer_country = isset($posted_data['google_places_form_country']) ? sanitize_email($posted_data['google_places_form_country']) : '';
-        
+        $customer_lat = isset($posted_data['google_places_form_latitude']) ? floatval($posted_data['google_places_form_latitude']) : '';
+        $customer_lng = isset($posted_data['google_places_form_longitude']) ? floatval($posted_data['google_places_form_longitude']) : '';
+        $customer_state = isset($posted_data['google_places_form_state']) ? sanitize_text_field($posted_data['google_places_form_state']) : '';
+        $customer_country = isset($posted_data['google_places_form_country']) ? sanitize_text_field($posted_data['google_places_form_country']) : '';
       
         global $wpdb;
         $service_partners_table = $wpdb->prefix . 'service_partners'; // Main partners table
