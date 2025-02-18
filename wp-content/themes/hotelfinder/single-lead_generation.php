@@ -270,7 +270,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
 </div>
 
 <?php if (!empty($custom_field_value)) : ?>
-<div class="modal fade" id="quoteModalWizard" tabindex="-1" role="dialog" aria-labelledby="quoteModalWizardLabel">
+<div class="modal fade" id="quoteModalWizard" tabindex="-1" role="dialog" aria-labelledby="quoteModalWizardLabel" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="border: none;">
@@ -281,11 +281,31 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12" id="custom-success-message-for-lead" style="display: none;">
-                        <p>Thank you! Your message has been sent successfully.</p>
-                    </div>
                     <div class="col-md-7">
-                        <?php echo do_shortcode($custom_field_value); ?>
+                        <div id="custom-success-message-for-lead" class="wpcf7-form" style="display: none;">
+                            <div class="panel text-center">
+                                <div class="panel-body">
+                                    <h3 style="margin-top: 20px; margin-bottom: 20px;">We are now contacting relevant businesses.</h3>
+                                    <p style="margin-top: 20px; margin-bottom: 20px;">Feel free to request quotes for other products and service that yuo need</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a href="Javascript:void(0);" class="btn btn-theme-primary go-to-associated-leads">Associated Leads</a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="<?php echo home_url() ?>" class="btn btn-theme-primary"><i class="fa fa-home"></i> Home</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 20px;">
+                                        <div class="col-md-12">
+                                            <div class="wpcf7-response-output" aria-hidden="true">Thankyou for requesting a quote through YesQuoteIt</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="quote-form-section">
+                            <?php echo do_shortcode($custom_field_value); ?>
+                        </div>
                     </div>
                     <div class="col-md-5 col-sm-12 col-xl-12 cls_pop_last">
                         <h4 class="text-center">What to expect ?</h4>
@@ -312,6 +332,19 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
     document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('wpcf7mailsent', function(event) {
             document.getElementById('custom-success-message-for-lead').style.display = 'block';
+            document.getElementById('quote-form-section').style.display = 'none';
         }, false);
+    });
+
+    $('.go-to-associated-leads').on('click', function() {
+        $('#quoteModalWizard').modal('hide');
+        $('html, body').animate({
+            scrollTop: ($(".associated-leads-container").offset().top - 50)
+        }, 2000);
+    });
+
+    $('#quoteModalWizard').on('hidden.bs.modal', function () {
+        document.getElementById('custom-success-message-for-lead').style.display = 'none';
+            document.getElementById('quote-form-section').style.display = 'block';
     });
 </script>

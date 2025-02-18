@@ -34,7 +34,7 @@
 
 .partner-registration-form .error, .partner-login-form .error { color: red; display: block; font-weight:400; font-size:14px; }
 
-.partner-register-thank-you .panel-default>.panel-heading {
+.partner-register-thank-you .panel-default>.panel-heading, #custom-success-message-for-lead .panel-default>.panel-heading {
     background-color: #078090;
 }
 
@@ -47,7 +47,7 @@
     border: 1px solid #08c1da;
     padding-left: 17px;
     padding-right: 13px;
-    color: #fff;
+    color: #fff !important;
     text-align: center;
     transition: all .3s ease-in-out 0s;
     padding: 10px 50px;
@@ -120,4 +120,10 @@
 }
 .partner-login-user-area .dropdown.active .dropdown-menu {
     display: block;
+}
+
+.wpcf7-response-output {
+    margin: 2em 0.5em 1em;
+    padding: 0.2em 1em;
+    border: 2px solid #00a0d2;
 }
