@@ -123,7 +123,6 @@
 }
 
 .wpcf7-response-output {
-    margin: 2em 0.5em 1em;
-    padding: 0.2em 1em;
+    padding: 0.2em 1em !important;
     border: 2px solid #00a0d2;
 }
