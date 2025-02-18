@@ -282,8 +282,8 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-7">
-                        <div id="custom-success-message-for-lead" class="wpcf7-form" style="display: none;">
-                            <div class="panel text-center">
+                        <div id="custom-success-message-for-lead" style="display: none;">
+                            <div class="panel text-center wpcf7-form">
                                 <div class="panel-body">
                                     <h3 style="margin-top: 20px; margin-bottom: 20px;">We are now contacting relevant businesses.</h3>
                                     <p style="margin-top: 20px; margin-bottom: 20px;">Feel free to request quotes for other products and service that yuo need</p>
