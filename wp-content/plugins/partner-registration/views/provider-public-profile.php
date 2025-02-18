@@ -198,7 +198,7 @@ header('Content-Type: text/html; charset=UTF-8');
                 </div>
             </div>
             <p>
-                <?php echo do_shortcode('[contact-form-7 id="8d81e81" title="Partner Contact Form"]'); ?>
+                <?php echo do_shortcode(get_option('partner_contact_form_shortcode')); ?>
             </p>
         </div>
     </div>

@@ -810,6 +810,58 @@ function duplicate_lead() {
     }
 }
 add_action('admin_post_duplicate_lead', 'duplicate_lead');
-
-
 // Copy Lead 
+
+function custom_site_info_menu() {
+    add_menu_page(
+        'Site Information',       // Page title
+        'Site Information',       // Menu title
+        'manage_options',         // Capability
+        'site-information',       // Menu slug
+        'custom_site_info_page',  // Callback function
+        'dashicons-admin-site',   // Icon
+        20                        // Position
+    );
+}
+add_action('admin_menu', 'custom_site_info_menu');
+
+function custom_site_info_page() {
+    ?>
+    <div class="wrap">
+        <h1>Site Information</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('site_info_settings');
+            do_settings_sections('site-information');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+function custom_site_info_settings() {
+    register_setting('site_info_settings', 'partner_contact_form_shortcode');
+
+    add_settings_section(
+        'site_info_section',
+        'Settings',
+        function() {
+            echo '<p>Enter the shortcode below:</p>';
+        },
+        'site-information'
+    );
+
+    add_settings_field(
+        'partner_contact_form_shortcode',
+        'Partner Contact Form Shortcode',
+        function() {
+            $value = get_option('partner_contact_form_shortcode', '');
+            echo '<input type="text" name="partner_contact_form_shortcode" value="' . esc_attr($value) . '" class="regular-text">';
+        },
+        'site-information',
+        'site_info_section'
+    );
+}
+add_action('admin_init', 'custom_site_info_settings');
+
