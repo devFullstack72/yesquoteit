@@ -286,7 +286,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                             <div class="panel text-center wpcf7-form">
                                 <div class="panel-body">
                                     <h3 style="margin-top: 20px; margin-bottom: 20px;">We are now contacting relevant businesses.</h3>
-                                    <p style="margin-top: 20px; margin-bottom: 20px;">Feel free to request quotes for other products and service that yuo need</p>
+                                    <p style="margin-top: 20px; margin-bottom: 20px;">Feel free to request quotes for other products and services.</p>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <a href="Javascript:void(0);" class="btn btn-theme-primary go-to-associated-leads">Associated Leads</a>
@@ -297,7 +297,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                                     </div>
                                     <div class="row" style="margin-top: 20px;">
                                         <div class="col-md-12">
-                                            <div class="wpcf7-response-output" aria-hidden="true">Thankyou for requesting a quote through YesQuoteIt</div>
+                                            <div class="wpcf7-response-output" aria-hidden="true">Thankyou for requesting a quote through <a href="<?php echo esc_url(home_url()); ?>">YesQuoteIt.com</a></div>
                                         </div>
                                     </div>
                                 </div>
