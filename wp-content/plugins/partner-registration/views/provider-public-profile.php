@@ -152,7 +152,7 @@ header('Content-Type: text/html; charset=UTF-8');
 <body>
     <div class="container">
         <div class="tabs">
-            <div class="tab active" data-tab="tab1">Personal Information</div>
+            <div class="tab active" data-tab="tab1">Business Information</div>
             <div class="tab" data-tab="tab2">Services</div>
             <div class="tab" data-tab="tab3">Contact</div>
         </div>
@@ -160,8 +160,7 @@ header('Content-Type: text/html; charset=UTF-8');
             <div class="profile-header">
                 <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
                 <div>
-                    <h1><?php echo esc_html($provider->name); ?></h1>
-                    <p><?php echo esc_html($provider->business_trading_name); ?></p>
+                    <h1><?php echo esc_html($provider->business_trading_name); ?></h1>
                 </div>
             </div>
             <p><strong>Country:</strong> <?php echo esc_html($provider->country); ?></p>
