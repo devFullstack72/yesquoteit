@@ -108,9 +108,10 @@ class Partner_Login_Form
             <?php
         } else {
             ?>
-            <div class="partner-login-user-area">
-                <a href="Javascript:void(0);" class="btn theme-link-color-white"><i class="fa fa-user"></i> Customer</a>
-                <a href="<?php echo home_url() . '/partner-login' ?>" class="btn theme-link-color-white"><i class="fa fa-briefcase"></i> Provider</a>
+            <div class="partner-login-user-area partner-non-login-user-area">
+                <span style="margin-right: 5px;">Login: </span>
+                <!-- <a href="Javascript:void(0);" class="theme-link-color-white"><i class="fa fa-user"></i> Customer</a> -->
+                <a href="<?php echo home_url() . '/partner-login' ?>" class="theme-link-color-white"><i class="fa fa-briefcase"></i> Business</a>
             </div>
             <?php
         }
