@@ -101,13 +101,14 @@ class Partner_CF7_Handler {
         if (!empty($approved_partners)) {
             foreach ($approved_partners as $partner) {
                 $approved_partners_emails[] = $partner->email;
+                $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
             }
         }
 
         // Send email to the customer
-        if (!empty($approved_partners_emails)) {
-            $this->pr_send_yeemail($approved_partners_emails, $provider_template_id, $email_data, 'provider');
-        }
+        // if (!empty($approved_partners_emails)) {
+        //     $this->pr_send_yeemail($approved_partners_emails, $provider_template_id, $email_data, 'provider');
+        // }
     
         // Send email to the customer
         if (!empty($user_email)) {
