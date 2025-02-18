@@ -100,9 +100,9 @@ class Partner_Login_Form
                         <i class="fa fa-user"></i> <?php echo esc_html($_SESSION['partner_name']); ?>
                     </button>
                     <ul class="dropdown-menu" id="dropdownMenu">
-                        <li><a href="<?php echo esc_url(site_url('/partner-profile')); ?>">Edit Profile</a></li>
+                        <li><a href="<?php echo esc_url(site_url('/partner-profile')); ?>"><i class="fa fa-pencil"></i> Edit Profile</a></li>
                         <li><a target="_blank" href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $_SESSION['partner_id'] ?>"><i class="fa fa-eye"></i> Public Profile</a></li>
-                        <li><a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>">Logout</a></li>
+                        <li><a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
                 </div>
             </div>
