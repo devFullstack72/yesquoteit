@@ -5,3 +5,5 @@ wp-content/cache/
 wp-content/upgrade/
 node_modules/
 .htaccess
+error_log
+.DS_Store
