@@ -156,7 +156,7 @@ header('Content-Type: text/html; charset=UTF-8');
     <div class="container">
         <div class="tabs">
             <div class="tab active" data-tab="tab1">Business Information</div>
-            <div class="tab" data-tab="tab2">Services</div>
+            <div class="tab" data-tab="tab2">Services Assigned</div>
             <div class="tab" data-tab="tab3">Contact</div>
         </div>
         <div class="tab-content active" id="tab1">
