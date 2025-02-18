@@ -169,6 +169,12 @@ header('Content-Type: text/html; charset=UTF-8');
             <p><strong>Website:</strong> <a href="<?php echo esc_url($provider->website_url); ?>" target="_blank"><?php echo esc_html($provider->website_url); ?></a></p>
         </div>
         <div class="tab-content" id="tab2">
+            <div class="profile-header">
+                <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
+                <div>
+                    <h1><?php echo esc_html($provider->business_trading_name); ?></h1>
+                </div>
+            </div>
             <?php if ($assigned_lead_posts): ?>
                 <ul>
                     <?php foreach ($assigned_lead_posts as $lead): ?>
@@ -182,6 +188,12 @@ header('Content-Type: text/html; charset=UTF-8');
             <?php endif; ?>
         </div>
         <div class="tab-content" id="tab3">
+            <div class="profile-header">
+                <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
+                <div>
+                    <h1><?php echo esc_html($provider->business_trading_name); ?></h1>
+                </div>
+            </div>
             <p>
                 <?php echo do_shortcode('[contact-form-7 id="8d81e81" title="Partner Contact Form"]'); ?>
             </p>
