@@ -109,7 +109,8 @@ class Partner_Login_Form
         } else {
             ?>
             <div class="partner-login-user-area">
-                <a href="<?php echo home_url() . '/partner-login' ?>" class="btn btn-theme-primary">Partner Login</a>
+                <a href="Javascript:void(0);" class="btn theme-link-color-white"><i class="fa fa-user"></i> Customer</a>
+                <a href="<?php echo home_url() . '/partner-login' ?>" class="btn theme-link-color-white"><i class="fa fa-briefcase"></i> Provider</a>
             </div>
             <?php
         }

@@ -272,3 +272,15 @@ Version: 1.0
     width: 50% !important;
     margin: auto;
 }
+
+.theme-link-color {
+    color: #23def7 !important;
+}
+
+.theme-link-color-white {
+    color: #FFF !important;
+}
+
+.theme-link-color-white:hover {
+    color: #23def7 !important;
+}
