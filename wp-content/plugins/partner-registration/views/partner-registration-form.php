@@ -95,9 +95,6 @@ include plugin_dir_path(__FILE__) . '../views/partner-register/services.php';
 
 <?php if ($edit_profile_page == true): ?>
 <div class="row">
-    <div class="col-md-12 text-right">
-        <a href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $_SESSION['partner_id'] ?>"><i class="fa fa-eye"></i> public page</a>
-    </div>
     <div class="col-md-6">
         <?php
         $partner_register_page_title = 'Update Personal Info';

@@ -101,10 +101,10 @@ class Partner_Login_Form
                     </button>
                     <ul class="dropdown-menu" id="dropdownMenu">
                         <li><a href="<?php echo esc_url(site_url('/partner-profile')); ?>">Edit Profile</a></li>
+                        <li><a target="_blank" href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $_SESSION['partner_id'] ?>"><i class="fa fa-eye"></i> Public Profile</a></li>
                         <li><a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>">Logout</a></li>
                     </ul>
                 </div>
-                <a href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $_SESSION['partner_id'] ?>"><i class="fa fa-eye"></i> Public Profile</a>
             </div>
             <?php
         } else {
