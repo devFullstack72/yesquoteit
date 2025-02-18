@@ -54,7 +54,10 @@ header('Content-Type: text/html; charset=UTF-8');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo esc_html($provider->name); ?> - Profile</title>
+    <title>Yes Quote It</title>
+    <link rel="icon" href="http://dev.wisencode.com/yesquoteit/wp-content/uploads/2025/02/cropped-webaddress-32x32.jpg" sizes="32x32" />
+    <link rel="icon" href="http://dev.wisencode.com/yesquoteit/wp-content/uploads/2025/02/cropped-webaddress-192x192.jpg" sizes="192x192" />
+    <link rel="apple-touch-icon" href="http://dev.wisencode.com/yesquoteit/wp-content/uploads/2025/02/cropped-webaddress-180x180.jpg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
