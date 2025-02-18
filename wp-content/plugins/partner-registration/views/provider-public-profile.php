@@ -26,9 +26,7 @@ $lead_partners_table = $wpdb->prefix . 'lead_partners';
 
 // Fetch all lead posts (post type: 'lead_generation')
 $all_leads = $wpdb->get_results(
-    $wpdb->prepare(
-        "SELECT ID, post_title, post_content FROM {$wp_posts_table} WHERE post_type = 'lead_generation' AND post_status = 'publish'  ORDER BY post_title ASC"
-    )
+    "SELECT ID, post_title, post_content FROM {$wp_posts_table} WHERE post_type = 'lead_generation' AND post_status = 'publish' ORDER BY post_title ASC"
 );
 
 // Fetch assigned leads for this partner
