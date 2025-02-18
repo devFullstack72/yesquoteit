@@ -20,6 +20,33 @@ if (!$provider) {
     wp_die('Provider not found');
 }
 
+
+$wp_posts_table = $wpdb->prefix . 'posts';
+$lead_partners_table = $wpdb->prefix . 'lead_partners';
+
+// Fetch all lead posts (post type: 'lead_generation')
+$all_leads = $wpdb->get_results(
+    $wpdb->prepare(
+        "SELECT ID, post_title, post_content FROM {$wp_posts_table} WHERE post_type = 'lead_generation' AND post_status = 'publish'  ORDER BY post_title ASC"
+    )
+);
+
+// Fetch assigned leads for this partner
+$assigned_leads = $wpdb->get_col(
+    $wpdb->prepare(
+        "SELECT lead_id FROM {$lead_partners_table} WHERE partner_id = %d",
+        $provider_id
+    )
+);
+
+// If there are assigned leads, filter them from all leads
+$assigned_lead_posts = [];
+foreach ($all_leads as $lead) {
+    if (in_array($lead->ID, $assigned_leads)) {
+        $assigned_lead_posts[] = $lead; // Store the assigned lead
+    }
+}
+
 // Set Content-Type
 header('Content-Type: text/html; charset=UTF-8');
 
@@ -30,29 +57,150 @@ header('Content-Type: text/html; charset=UTF-8');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo esc_html($provider->name); ?> - Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; background: #f8f8f8; }
-        .profile-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
-        .profile-header { text-align: center; }
-        .profile-header h1 { margin-bottom: 10px; }
-        .profile-details { margin-top: 20px; }
-        .profile-details p { font-size: 16px; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+        .profile-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .tabs {
+            display: flex;
+            margin-top: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .tab.active {
+            background: #6e7e8f;
+            color: white;
+        }
+        .tab:hover {
+            background:rgb(151, 166, 182);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .wpcf7 form {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wpcf7 input[type="text"], 
+        .wpcf7 input[type="email"], 
+        .wpcf7 textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .wpcf7 input[type="submit"] {
+            background-color: #6e7e8f;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .wpcf7 input[type="submit"]:hover {
+            background-color: #5a677b;
+        }
+
     </style>
 </head>
 <body>
-
-<div class="profile-container">
-    <div class="profile-header">
-        <h1><?php echo esc_html($provider->name); ?></h1>
-        <p><?php echo esc_html($provider->business_trading_name); ?></p>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="tab1">Personal Information</div>
+            <div class="tab" data-tab="tab2">Services</div>
+            <div class="tab" data-tab="tab3">Contact</div>
+        </div>
+        <div class="tab-content active" id="tab1">
+            <div class="profile-header">
+                <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
+                <div>
+                    <h1><?php echo esc_html($provider->name); ?></h1>
+                    <p><?php echo esc_html($provider->business_trading_name); ?></p>
+                </div>
+            </div>
+            <p><strong>Country:</strong> <?php echo esc_html($provider->country); ?></p>
+            <p><strong>Address:</strong> <?php echo esc_html($provider->address); ?></p>
+            <p><strong>Phone:</strong> <?php echo esc_html($provider->phone); ?></p>
+            <p><strong>Website:</strong> <a href="<?php echo esc_url($provider->website_url); ?>" target="_blank"><?php echo esc_html($provider->website_url); ?></a></p>
+        </div>
+        <div class="tab-content" id="tab2">
+            <?php if ($assigned_lead_posts): ?>
+                <ul>
+                    <?php foreach ($assigned_lead_posts as $lead): ?>
+                        <li>
+                            <h3><?php echo esc_html($lead->post_title); ?></h3>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>No services assigned to this partner.</p>
+            <?php endif; ?>
+        </div>
+        <div class="tab-content" id="tab3">
+            <p>
+                <?php echo do_shortcode('[contact-form-7 id="8d81e81" title="Partner Contact Form"]'); ?>
+            </p>
+        </div>
     </div>
-    
-    <div class="profile-details">
-        <p><strong>Email:</strong> <?php echo esc_html($provider->email); ?></p>
-        <p><strong>Phone:</strong> <?php echo esc_html($provider->phone); ?></p>
-        <p><strong>Status:</strong> <?php echo $provider->status ? 'Active' : 'Pending'; ?></p>
-    </div>
-</div>
+    <script>
 
+        document.querySelector('input[name="is_partner_contact_form"]').value = '<?php echo $provider->email; ?>';
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>

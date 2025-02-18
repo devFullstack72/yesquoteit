@@ -7,8 +7,24 @@ if (!defined('ABSPATH')) {
 class Partner_CF7_Handler {
 
     public function __construct() {
-        // add_action('wpcf7_before_send_mail', [$this, 'send_cf7_to_approved_partners']);
+        add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
+    }
+
+    public function submit_partner_contact_inquiry($contact_form) {
+        
+        if (!empty($_POST['is_partner_contact_form'])) {
+
+            $mail = $contact_form->prop('mail');
+
+            // Modify the 'To' email address to the provider's email
+            $mail['to'] = sanitize_email($_POST['is_partner_contact_form']); // Assuming the provider's email is stored in the `email` field
+
+            // Set the modified email back to the contact form object
+            $contact_form->set_properties(['mail' => $mail]);
+
+        }
+
     }
 
     public function pr_send_custom_cf7_emails($contact_form) {
