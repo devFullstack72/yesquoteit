@@ -104,6 +104,7 @@ class Partner_Login_Form
                         <li><a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>">Logout</a></li>
                     </ul>
                 </div>
+                <a href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $_SESSION['partner_id'] ?>"><i class="fa fa-eye"></i> Public Profile</a>
             </div>
             <?php
         } else {
