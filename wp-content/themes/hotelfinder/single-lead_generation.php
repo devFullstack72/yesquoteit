@@ -297,7 +297,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                                     </div>
                                     <div class="row" style="margin-top: 20px;">
                                         <div class="col-md-12">
-                                            <div class="wpcf7-response-output" aria-hidden="true">Thankyou for requesting a quote through <a href="<?php echo esc_url(home_url()); ?>">YesQuoteIt.com</a></div>
+                                            <div class="wpcf7-response-output" aria-hidden="true">Thank you for requesting a quote through <a href="<?php echo esc_url(home_url()); ?>">YesQuoteIt.com</a></div>
                                         </div>
                                     </div>
                                 </div>
