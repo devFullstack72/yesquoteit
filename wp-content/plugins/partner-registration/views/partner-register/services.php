@@ -1,6 +1,7 @@
 <form class="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
     <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
     <input type="hidden" name="action" value="pr_partner_form_submission_step_2">
+    <input type="hidden" name="profile_edit_mode" value="<?php echo $edit_profile_page ?>">
 
     <input type="hidden" name="lead_id" value="<?php echo !empty($_GET['lead_id']) ? $_GET['lead_id'] : '' ?>">
     <div class="wpcf7-form">

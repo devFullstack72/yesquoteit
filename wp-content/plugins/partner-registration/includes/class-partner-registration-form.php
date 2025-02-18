@@ -332,6 +332,8 @@ class Partner_Registration_Form
 
         $lead_ids = isset($_POST['lead_ids']) ? array_map('intval', $_POST['lead_ids']) : [];
 
+        $profile_edit_mode = $_POST['profile_edit_mode'];
+
         // Validation errors array
         $errors = [];
 
@@ -374,7 +376,7 @@ class Partner_Registration_Form
         unset($_SESSION['form_errors']);
         unset($_SESSION['form_data']);
 
-        if (isset($_SESSION['partner_id'])) {
+        if ($profile_edit_mode && isset($_SESSION['partner_id'])) {
             $_SESSION['profile_updated'] = true;
             $redirect_url = wp_get_referer();
             wp_safe_redirect($redirect_url);
@@ -410,6 +412,8 @@ class Partner_Registration_Form
 
         $service_area = sanitize_text_field($_POST['service_area']);
         $other_country = sanitize_text_field($_POST['other_country']);
+
+        $profile_edit_mode = $_POST['profile_edit_mode'];
 
         if ($other_country == 0) {
             $other_country = null;
@@ -500,7 +504,7 @@ class Partner_Registration_Form
         unset($_SESSION['form_errors']);
         unset($_SESSION['form_data']);
 
-        if (isset($_SESSION['partner_id'])) {
+        if ($profile_edit_mode && isset($_SESSION['partner_id'])) {
             $_SESSION['profile_updated'] = true;
             $redirect_url = wp_get_referer();
             wp_safe_redirect($redirect_url);
@@ -595,7 +599,7 @@ class Partner_Registration_Form
             wp_die('Database update failed: ' . $wpdb->last_error);
         }
 
-        if (isset($_SESSION['partner_id'])) {
+        if ($profile_edit_mode && isset($_SESSION['partner_id'])) {
             $_SESSION['profile_updated'] = true;
             $redirect_url = wp_get_referer();
             wp_safe_redirect($redirect_url);
