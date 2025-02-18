@@ -162,6 +162,36 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
         .associated-leads-list ul li a:hover {
             color: #067c9a;
         }
+
+        /* Make form slightly transparent when submitting */
+        .wpcf7-form.wpcf7-submitting {
+            opacity: 0.5; /* Reduce form visibility */
+            pointer-events: none; /* Disable interactions */
+        }
+
+        /* Position the spinner at the center of the page */
+        .wpcf7-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(0, 150, 255, 0.3); /* Light blue outer ring */
+            border-top-color: #0096ff; /* Solid blue top for animation */
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+
+        /* Animation for spinning effect */
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+
 </style>
 
 <!-- Featured Image Section with Overlay -->
