@@ -149,6 +149,7 @@ header('Content-Type: text/html; charset=UTF-8');
         }
 
     </style>
+    <?php wp_head(); ?>
 </head>
 <body>
     <div class="container">
@@ -189,6 +190,7 @@ header('Content-Type: text/html; charset=UTF-8');
             </p>
         </div>
     </div>
+    <?php wp_footer(); ?>
     <script>
 
         document.querySelector('input[name="is_partner_contact_form"]').value = '<?php echo $provider->email; ?>';
