@@ -19,6 +19,7 @@ require_once PR_PLUGIN_DIR . 'includes/class-partner-registration-form.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-login-form.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-admin.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-cf7-handler.php';
+require_once PR_PLUGIN_DIR . 'includes/class-partner-profile-page.php';
 
 class Partner_Registration_Plugin {
     public function __construct() {
@@ -26,6 +27,7 @@ class Partner_Registration_Plugin {
         new Partner_Login_Form();
         new Partner_Admin();
         new Partner_CF7_Handler();
+        new Partner_Public_Profile();
     }
 
     public static function create_plugin_tables() {
@@ -208,6 +210,7 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_register_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_profile_page']);
+
 
 // Initialize the plugin
 new Partner_Registration_Plugin();
