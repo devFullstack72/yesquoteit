@@ -190,6 +190,7 @@ header('Content-Type: text/html; charset=UTF-8');
             </p>
         </div>
     </div>
+    <script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/jquery-1.11.3.min.js"></script>
     <?php wp_footer(); ?>
     <script>
 
