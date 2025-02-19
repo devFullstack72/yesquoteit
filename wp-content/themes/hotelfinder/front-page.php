@@ -1,50 +1,29 @@
 <?php get_header(); ?>
 <!-- Start of slider section -->
 <section class="htlfndr-slider-section">
-    <div class="owl-carousel">
-        <div class="htlfndr-slide-wrapper">
-            <img src="https://www.jqueryscript.net/demo/Responsive-Full-Width-jQuery-Image-Slider-Plugin-skdslider/slides/1.jpg" alt="img-1" />
-            <div class="htlfndr-slide-data container">      
-                <div class="htlfndr-slide-rating-stars">
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                </div><!-- .htlfndr-slide-rating-stars -->
-                <h1 class="htlfndr-slider-title">find your perfect quote</h1>
-                <div class="htlfndr-slider-under-title-line"></div>
-            </div><!-- .htlfndr-slide-data.container -->
-        </div><!-- .htlfndr-slide-wrapper-->
-        <div class="htlfndr-slide-wrapper">
-            <img src="https://www.jqueryscript.net/demo/Responsive-Full-Width-jQuery-Image-Slider-Plugin-skdslider/slides/1.jpg" alt="img-2" />
-            <div class="htlfndr-slide-data container">      
-                <div class="htlfndr-slide-rating-stars">
-                    <i class="fa fa-star-o htlfndr-star-color"></i>
-                    <i class="fa fa-star-o htlfndr-star-color"></i>
-                    <i class="fa fa-star-o htlfndr-star-color"></i>
-                    <i class="fa fa-star-o htlfndr-star-color"></i>
-                    <i class="fa fa-star-o"></i>
-                </div><!-- .htlfndr-slide-rating-stars -->
-                <h1 class="htlfndr-slider-title">find your perfect quote</h1>
-                <div class="htlfndr-slider-under-title-line"></div>
-            </div><!-- .htlfndr-slide-data.container -->
-        </div><!-- .htlfndr-slide-wrapper-->
-        <div class="htlfndr-slide-wrapper">
-            <img src="https://www.jqueryscript.net/demo/Responsive-Full-Width-jQuery-Image-Slider-Plugin-skdslider/slides/1.jpg" alt="img-3" />
-            <div class="htlfndr-slide-data container">      
-                <div class="htlfndr-slide-rating-stars">
-                    <i class="fa fa-star-o htlfndr-star-color"></i>
-                    <i class="fa fa-star-o htlfndr-star-color"></i>
-                    <i class="fa fa-star-o htlfndr-star-color"></i>
-                    <i class="fa fa-star-o"></i>
-                    <i class="fa fa-star-o"></i>
-                </div><!-- .htlfndr-slide-rating-stars -->
-                <h1 class="htlfndr-slider-title">find your perfect quote</h1>
-                <div class="htlfndr-slider-under-title-line"></div>
-            </div><!-- .htlfndr-slide-data.container -->
-        </div><!-- .htlfndr-slide-wrapper-->
-    </div>
+    <?php 
+    $slider_items = get_option('custom_slider_items', []);
+
+    if (!empty($slider_items)) : ?>
+        <div class="owl-carousel">
+            <?php foreach ($slider_items as $slide) : ?>
+                <div class="htlfndr-slide-wrapper">
+                    <img src="<?php echo esc_url($slide['image']); ?>" alt="<?php echo esc_attr($slide['title']); ?>" />
+                    <div class="htlfndr-slide-data container">      
+                    <div class="htlfndr-slide-rating-stars">
+                        <i class="fa fa-star-o htlfndr-star-color"></i>
+                        <i class="fa fa-star-o htlfndr-star-color"></i>
+                        <i class="fa fa-star-o htlfndr-star-color"></i>
+                        <i class="fa fa-star-o htlfndr-star-color"></i>
+                        <i class="fa fa-star-o"></i>
+                    </div><!-- .htlfndr-slide-rating-stars -->
+                        <h1 class="htlfndr-slider-title"><?php echo esc_html($slide['title']); ?></h1>
+                        <div class="htlfndr-slider-under-title-line"></div>
+                    </div><!-- .htlfndr-slide-data.container -->
+                </div><!-- .htlfndr-slide-wrapper -->
+            <?php endforeach; ?>
+        </div><!-- .owl-carousel -->
+    <?php endif; ?>
 
     <!-- Search form aside start -->
     <aside class="htlfndr-form-in-slider htlfndr-search-form-inline">
