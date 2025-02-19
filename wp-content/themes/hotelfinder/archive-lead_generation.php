@@ -102,15 +102,17 @@ $slug = $selected_category; // Replace with actual slug
 
 $term = get_term_by('slug', $slug, 'lead_category');
 
-$term_link = get_term_link($term);
+if (!empty($term)) {
+    $term_link = get_term_link($term);
 
-if (!empty($search_query)) {
-    $term_link .= '?search_query=' . $search_query;
-}
-
-if (!empty($term_link)) {
-    echo "<script>window.location.href = '" . esc_url($term_link) . "';</script>";
-    exit;
+    if (!empty($search_query)) {
+        $term_link .= '?search_query=' . $search_query;
+    }
+    
+    if (!empty($term_link)) {
+        echo "<script>window.location.href = '" . esc_url($term_link) . "';</script>";
+        exit;
+    }
 }
 
 $category_id = $term->term_id ?? 0;
