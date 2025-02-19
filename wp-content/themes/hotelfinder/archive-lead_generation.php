@@ -197,7 +197,7 @@ if (!$category_image) {
 <!-- Search form aside stop -->
 <div class="container" style="margin-bottom:100px;">
     
-    <h2 class="htlfndr-section-title bigger-title" id="lead-generation-content-details"><?php single_term_title(); ?> Leads</h2>
+    <h2 class="htlfndr-section-title" id="lead-generation-content-details" style="font-size: 21px;"><?php single_term_title(); ?> Leads</h2>
     <div class="htlfndr-section-under-title-line"></div>
     
     <div class="row">

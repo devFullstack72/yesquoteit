@@ -865,3 +865,138 @@ function custom_site_info_settings() {
 }
 add_action('admin_init', 'custom_site_info_settings');
 
+
+function custom_slider_menu() {
+    add_menu_page(
+        'Home Page Settings', 
+        'Home Page Settings', 
+        'manage_options', 
+        'home-page-settings', 
+        'custom_slider_settings_page', 
+        'dashicons-images-alt2', 
+        20
+    );
+}
+add_action('admin_menu', 'custom_slider_menu');
+
+function custom_slider_settings_page() {
+    $slider_items = get_option('custom_slider_items', []);
+
+    // Handle form submission
+    if (isset($_POST['save_slider'])) {
+        $new_slider_items = [];
+
+        if (!empty($_POST['slider_title'])) {
+            require_once(ABSPATH . 'wp-admin/includes/file.php');
+
+            foreach ($_POST['slider_title'] as $index => $title) {
+                $title = sanitize_text_field($title);
+                $existing_image = $_POST['existing_slider_image'][$index] ?? '';
+
+                if (!empty($_FILES['slider_image']['name'][$index])) {
+                    $file = [
+                        'name'     => $_FILES['slider_image']['name'][$index],
+                        'type'     => $_FILES['slider_image']['type'][$index],
+                        'tmp_name' => $_FILES['slider_image']['tmp_name'][$index],
+                        'error'    => $_FILES['slider_image']['error'][$index],
+                        'size'     => $_FILES['slider_image']['size'][$index]
+                    ];
+
+                    $upload_overrides = ['test_form' => false];
+                    $movefile = wp_handle_upload($file, $upload_overrides);
+
+                    if ($movefile && !isset($movefile['error'])) {
+                        $image_url = esc_url($movefile['url']);
+                    } else {
+                        $image_url = $existing_image; // Keep the old image if upload fails
+                    }
+                } else {
+                    $image_url = $existing_image; // Keep the old image if no new image is uploaded
+                }
+
+                $new_slider_items[] = [
+                    'title' => $title,
+                    'image' => $image_url
+                ];
+            }
+        }
+
+        update_option('custom_slider_items', $new_slider_items);
+        echo '<div class="updated"><p>Settings saved.</p></div>';
+
+        // Redirect after saving to reflect changes
+        echo '<script>window.location.href = window.location.href;</script>';
+        exit;
+    }
+    ?>
+
+    <div class="wrap">
+        <h2>Home Page Slider Settings</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <table class="form-table" id="slider-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($slider_items)) : ?>
+                        <?php foreach ($slider_items as $index => $slide) : ?>
+                            <tr>
+                                <td>
+                                    <input type="text" name="slider_title[]" value="<?php echo esc_attr($slide['title']); ?>" class="regular-text">
+                                </td>
+                                <td>
+                                    <input type="file" name="slider_image[]">
+                                    <input type="hidden" name="existing_slider_image[]" value="<?php echo esc_attr($slide['image']); ?>">
+                                    <?php if (!empty($slide['image'])) : ?>
+                                        <br><img src="<?php echo esc_url($slide['image']); ?>" width="100">
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <button type="button" class="remove-slide button">Remove</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <button type="button" id="add-slide" class="button button-secondary">Add New Slide</button>
+            <br><br>
+            <?php submit_button('Save Changes', 'primary', 'save_slider'); ?>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('add-slide').addEventListener('click', function () {
+                let table = document.getElementById('slider-table').getElementsByTagName('tbody')[0];
+                let row = table.insertRow();
+                
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                let cell3 = row.insertCell(2);
+
+                cell1.innerHTML = '<input type="text" name="slider_title[]" class="regular-text">';
+                cell2.innerHTML = '<input type="file" name="slider_image[]"><input type="hidden" name="existing_slider_image[]" value="">';
+                cell3.innerHTML = '<button type="button" class="remove-slide button">Remove</button>';
+
+                row.querySelector('.remove-slide').addEventListener('click', function () {
+                    row.remove();
+                });
+            });
+
+            document.querySelectorAll('.remove-slide').forEach(button => {
+                button.addEventListener('click', function () {
+                    this.closest('tr').remove();
+                });
+            });
+        });
+    </script>
+
+    <?php
+}
+
