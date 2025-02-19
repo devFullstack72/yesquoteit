@@ -22,7 +22,7 @@
                         <img id="image-preview" style="max-width: 100%; height: auto;">
                     </div>
                     
-                    <button type="button" id="crop-button" style="display: none;">Crop & Upload</button>
+                    <button type="button" id="crop-button" class="btn btn-warning" style="display: none;">Crop & Upload</button>
 
                     <input type="hidden" name="cropped_image" id="cropped_image">
                     
