@@ -160,7 +160,7 @@ if (!$category_image) {
                                     <span id="category-error" class="error-message" style="color: red; display: none;">Please select a category or enter a search lead text.</span>
                                 </div>
 
-                                <div id="htlfndr-input-5" style="margin:1px;margin-right: 10px;">
+                                <div id="htlfndr-input-5" style="margin:1px;margin-right: 10px;width: auto !important;">
                                     <input type="submit" value="Go" />
                                 </div>
 
@@ -168,7 +168,7 @@ if (!$category_image) {
                                     <input type="text" name="htlfndr-search" id="htlfndr-search" class="search-hotel-input" placeholder="Search by lead name" />
                                 </div>
 
-                                <div id="htlfndr-input-5" style="margin:1px;">
+                                <div id="htlfndr-input-5" style="margin:1px;width: auto !important;">
                                     <input type="submit" value="Search" />
                                 </div>
                             </form>
