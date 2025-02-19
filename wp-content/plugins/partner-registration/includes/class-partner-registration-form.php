@@ -520,101 +520,186 @@ class Partner_Registration_Form
         exit;
     }
 
+    // public function handle_pr_partner_form_submission_step_4() {
+    //     // Verify nonce for security
+    //     if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+    //         wp_die('Security check failed.');
+    //     }
+
+    //     $website_url = esc_url_raw($_POST['website_url']);
+
+    //     $profile_edit_mode = $_POST['profile_edit_mode'];
+
+    //     // Validation errors array
+    //     $errors = [];
+
+    //     if (empty($website_url)) {
+    //         $errors['website_url'] = "Website URL is required";
+    //     }
+
+    //     // Handle Business Logo Upload
+    //     $business_logo_url = ''; // Default empty value
+    //     if (!empty($_FILES['business_logo']['name'])) {
+    //         require_once ABSPATH . 'wp-admin/includes/file.php';
+
+    //         $uploaded_file = $_FILES['business_logo'];
+    //         $upload_overrides = ['test_form' => false]; // Allow uploads outside form validation
+    //         $movefile = wp_handle_upload($uploaded_file, $upload_overrides);
+
+    //         if ($movefile && !isset($movefile['error'])) {
+    //             $business_logo_url = $movefile['url']; // Store uploaded image URL
+    //         } else {
+    //             $errors['business_logo'] = 'File upload failed: ' . $movefile['error'];
+    //         }
+    //     } else {
+    //         if (!$profile_edit_mode) {
+    //             $errors['business_logo'] = "Business logo is required.";
+    //         }
+    //     }
+
+    //     // If there are errors, redirect back with errors
+    //     if (!empty($errors)) {
+    //         $_SESSION['form_errors'] = $errors;
+    //         $_SESSION['form_data'] = $_POST; // Store old values
+    //         // Redirect with both parameters (next-step and partner_id)
+    //         $redirect_url = add_query_arg([
+    //             'form_error' => 1,
+    //             'next_step' => 4
+    //         ], wp_get_referer());
+
+    //         wp_safe_redirect($redirect_url);
+    //         exit;
+    //     }
+
+    //     global $wpdb;
+
+    //     // Get Partner ID from session
+    //     $partner_id = intval($_SESSION['partner_id']);
+    //     if (!$partner_id) {
+    //         wp_die('Invalid Partner ID.');
+    //     }
+
+    //     // Update database with business logo and website URL
+
+    //     $data = [
+    //         'website_url' => $website_url
+    //     ];
+
+    //     if (!empty($business_logo_url)) {
+    //         $data['business_logo'] = $business_logo_url;
+    //     }
+
+    //     $result = $wpdb->update(
+    //         $this->service_partners_table,
+    //         $data,
+    //         ['id' => $partner_id]
+    //     );
+
+    //     if ($result === false) {
+    //         wp_die('Database update failed: ' . $wpdb->last_error);
+    //     }
+
+    //     if ($profile_edit_mode && isset($_SESSION['partner_id'])) {
+    //         $_SESSION['profile_updated'] = true;
+    //         $redirect_url = wp_get_referer();
+    //         wp_safe_redirect($redirect_url);
+    //         exit;
+    //     }
+
+    //     // Redirect on success
+    //     $redirect_url = add_query_arg([
+    //         'success' => 1,
+    //         'next_step' => 5
+    //     ], wp_get_referer());
+
+    //     wp_safe_redirect($redirect_url);
+    //     exit;
+
+    // }
+
     public function handle_pr_partner_form_submission_step_4() {
         // Verify nonce for security
         if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
             wp_die('Security check failed.');
         }
-
+    
         $website_url = esc_url_raw($_POST['website_url']);
-
         $profile_edit_mode = $_POST['profile_edit_mode'];
-
-        // Validation errors array
         $errors = [];
-
+    
         if (empty($website_url)) {
             $errors['website_url'] = "Website URL is required";
         }
-
-        // Handle Business Logo Upload
-        $business_logo_url = ''; // Default empty value
-        if (!empty($_FILES['business_logo']['name'])) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-
-            $uploaded_file = $_FILES['business_logo'];
-            $upload_overrides = ['test_form' => false]; // Allow uploads outside form validation
-            $movefile = wp_handle_upload($uploaded_file, $upload_overrides);
-
-            if ($movefile && !isset($movefile['error'])) {
-                $business_logo_url = $movefile['url']; // Store uploaded image URL
+    
+        // Handle Cropped Image Upload
+        $business_logo_url = '';
+        if (!empty($_POST['cropped_image'])) {
+            $upload_dir = wp_upload_dir();
+            $upload_path = $upload_dir['path'] . '/';
+            $upload_url = $upload_dir['url'] . '/';
+            
+            $cropped_image_data = $_POST['cropped_image'];
+            $image_name = 'cropped_' . time() . '.jpg';
+            $image_path = $upload_path . $image_name;
+            $image_url = $upload_url . $image_name;
+    
+            // Remove base64 header and decode image
+            $cropped_image_data = str_replace('data:image/jpeg;base64,', '', $cropped_image_data);
+            $cropped_image_data = base64_decode($cropped_image_data);
+    
+            // Save the cropped image
+            if (file_put_contents($image_path, $cropped_image_data)) {
+                $business_logo_url = $image_url;
             } else {
-                $errors['business_logo'] = 'File upload failed: ' . $movefile['error'];
+                $errors['business_logo'] = 'Failed to save cropped image.';
             }
         } else {
             if (!$profile_edit_mode) {
                 $errors['business_logo'] = "Business logo is required.";
             }
         }
-
-        // If there are errors, redirect back with errors
+    
         if (!empty($errors)) {
             $_SESSION['form_errors'] = $errors;
-            $_SESSION['form_data'] = $_POST; // Store old values
-            // Redirect with both parameters (next-step and partner_id)
+            $_SESSION['form_data'] = $_POST;
+            
             $redirect_url = add_query_arg([
                 'form_error' => 1,
                 'next_step' => 4
             ], wp_get_referer());
-
+            
             wp_safe_redirect($redirect_url);
             exit;
         }
-
+    
         global $wpdb;
-
-        // Get Partner ID from session
         $partner_id = intval($_SESSION['partner_id']);
         if (!$partner_id) {
             wp_die('Invalid Partner ID.');
         }
-
-        // Update database with business logo and website URL
-
-        $data = [
-            'website_url' => $website_url
-        ];
-
+    
+        $data = ['website_url' => $website_url];
         if (!empty($business_logo_url)) {
             $data['business_logo'] = $business_logo_url;
         }
-
+    
         $result = $wpdb->update(
             $this->service_partners_table,
             $data,
             ['id' => $partner_id]
         );
-
+    
         if ($result === false) {
             wp_die('Database update failed: ' . $wpdb->last_error);
         }
-
-        if ($profile_edit_mode && isset($_SESSION['partner_id'])) {
-            $_SESSION['profile_updated'] = true;
-            $redirect_url = wp_get_referer();
-            wp_safe_redirect($redirect_url);
-            exit;
-        }
-
-        // Redirect on success
+    
         $redirect_url = add_query_arg([
             'success' => 1,
             'next_step' => 5
         ], wp_get_referer());
-
+        
         wp_safe_redirect($redirect_url);
         exit;
-
     }
 }
 ?>
