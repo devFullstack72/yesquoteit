@@ -98,10 +98,20 @@
 $selected_category = isset($_GET['htlfndr-category']) ? sanitize_text_field($_GET['htlfndr-category']) : '';
 $search_query = isset($_GET['htlfndr-search']) ? sanitize_text_field($_GET['htlfndr-search']) : '';
 
-
 $slug = $selected_category; // Replace with actual slug
 
 $term = get_term_by('slug', $slug, 'lead_category');
+
+$term_link = get_term_link($term);
+
+if (!empty($search_query)) {
+    $term_link .= '?search_query=' . $search_query;
+}
+
+if (!empty($term_link)) {
+    echo "<script>window.location.href = '" . esc_url($term_link) . "';</script>";
+    exit;
+}
 
 $category_id = $term->term_id ?? 0;
 

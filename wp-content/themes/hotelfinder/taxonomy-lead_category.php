@@ -106,6 +106,8 @@ $category_image = get_term_meta($term->term_id, 'lead_category_image', true);
 $category_page_title = get_term_meta($term->term_id, 'category_page_title', true);
 $category_page_leads_section_title = get_term_meta($term->term_id, 'category_page_leads_section_title', true);
 
+$search_query = isset($_GET['search_query']) ? sanitize_text_field($_GET['search_query']) : '';
+
 // Default image agar koi category image na ho
 if (!$category_image) {
     $category_image = 'https://www.jqueryscript.net/demo/Responsive-Full-Width-jQuery-Image-Slider-Plugin-skdslider/slides/1.jpg';
@@ -198,7 +200,7 @@ if (!$category_image) {
 
     
 
-        <?php echo do_shortcode('[category_generation_cards category="' . $term->term_id . '"]');  ?>
+        <?php echo do_shortcode('[category_generation_cards category="' . $term->term_id . '" search="' . $search_query . '"]');  ?>
 
 
          <?php
