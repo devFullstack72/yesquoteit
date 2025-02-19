@@ -15,7 +15,7 @@
                         <i class="fa fa-star-o htlfndr-star-color"></i>
                         <i class="fa fa-star-o htlfndr-star-color"></i>
                         <i class="fa fa-star-o htlfndr-star-color"></i>
-                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o htlfndr-star-color"></i>
                     </div><!-- .htlfndr-slide-rating-stars -->
                         <h1 class="htlfndr-slider-title"><?php echo esc_html($slide['title']); ?></h1>
                         <div class="htlfndr-slider-under-title-line"></div>
