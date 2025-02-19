@@ -3318,14 +3318,26 @@ a.htlfndr-read-more-button.hovered:after {
 }
 
 .htlfndr-loader-overlay {
-	background: url('../images/ajax-loader.gif') center no-repeat rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 	display: none;
-	height: 100%;
-	left: 0;
-	position: fixed;
-	top: 0;
-	width: 100%;
-	z-index: 9999
+}
+
+/* Set the spinner size */
+.htlfndr-loader-overlay::before {
+    content: "";
+    width: 80px;  /* Adjust width */
+    height: 80px; /* Adjust height */
+    background: url(../images/spinner-overlay.gif) center no-repeat;
+    background-size: contain; /* Ensures image scales properly */
 }
 
 .htlfndr-sidebar-in-top {
