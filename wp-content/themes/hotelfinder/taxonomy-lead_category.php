@@ -187,7 +187,7 @@ if (!$category_image) {
 <!-- Search form aside stop -->
 <div class="container" style="margin-bottom:100px;">
     
-    <h2 class="htlfndr-section-title bigger-title" id="lead-generation-content-details">
+    <h2 class="htlfndr-section-title" id="lead-generation-content-details" style="font-size: 21px;">
         <?php if (!empty($category_page_leads_section_title)): ?>
             <?php echo $category_page_leads_section_title ?>
         <?php else: ?>

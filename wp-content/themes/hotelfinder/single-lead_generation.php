@@ -214,7 +214,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                     the_post();
 
                     // Display the title of the post
-                    echo '<h2 id="lead-generation-content-details" class="htlfndr-section-title htlfndr-lined-title"><span>' . get_the_title() . '</span></h2>';
+                    echo '<h2 id="lead-generation-content-details" class="htlfndr-section-title htlfndr-lined-title" style="font-size: 21px;"><span>' . get_the_title() . '</span></h2>';
 
                     // Display the content of the post
                     echo '<div class="lead-generation-content">';
