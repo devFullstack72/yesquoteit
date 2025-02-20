@@ -9024,13 +9024,15 @@ only screen and (min-resolution:1.3dppx) {
 
 /* Show default_title_cat by default */
 .htlfndr-category-box .default_title_cat {
-    opacity: 1; /* Visible by default */
-    transform: translate3d(0, 0, 0); /* Keep in place */
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
     font-size: 25px;
     text-align: center;
     text-transform: capitalize;
-    color: black;
-    font-weight:bold;
+    color: white;
+    font-weight: 500;
+    background-color: #08c1da7a;
+    padding: 5px;
 }
 
 /* On hover: Hide default_title_cat & show category-name */
