@@ -9035,6 +9035,5 @@ only screen and (min-resolution:1.3dppx) {
 
 /* On hover: Hide default_title_cat & show category-name */
 .htlfndr-category-box:hover .default_title_cat {
-    opacity: 0;
-    transform: translate3d(-360px, 0, 0); /* Move off-screen */
+    display:none;
 }
