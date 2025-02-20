@@ -9021,3 +9021,19 @@ only screen and (min-resolution:1.3dppx) {
 		transition: all .2s ease 0s
 	}
 }
+
+/* Show default_title_cat by default */
+.htlfndr-category-box .default_title_cat {
+    opacity: 1; /* Visible by default */
+    transform: translate3d(0, 0, 0); /* Keep in place */
+    font-size: 4.9rem;
+    text-align: center;
+    text-transform: capitalize;
+    color: white;
+}
+
+/* On hover: Hide default_title_cat & show category-name */
+.htlfndr-category-box:hover .default_title_cat {
+    opacity: 0;
+    transform: translate3d(-360px, 0, 0); /* Move off-screen */
+}
