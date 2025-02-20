@@ -282,17 +282,17 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-7 col-xs-6">
                         <div id="custom-success-message-for-lead" style="display: none;">
                             <div class="panel text-center wpcf7-form">
                                 <div class="panel-body">
                                     <h3 style="margin-top: 20px; margin-bottom: 20px;">We are now contacting relevant businesses.</h3>
                                     <p style="margin-top: 20px; margin-bottom: 20px;">Feel free to request quotes for other products and services.</p>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 col-xs-6">
                                             <a href="Javascript:void(0);" class="btn btn-theme-primary go-to-associated-leads">Associated Leads</a>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 col-xs-6">
                                             <a href="<?php echo home_url() ?>" class="btn btn-theme-primary"><i class="fa fa-home"></i> Home</a>
                                         </div>
                                     </div>
@@ -308,7 +308,7 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                             <?php echo do_shortcode($custom_field_value); ?>
                         </div>
                     </div>
-                    <div class="col-md-5 col-sm-12 col-xl-12 cls_pop_last">
+                    <div class="col-md-5 col-sm-12 col-xl-12 cls_pop_last col-xs-6">
                         <h4 class="text-center">What to expect ?</h4>
                         <div class="modal-body"> <span class="cls_spn_fnt">Up to 5 quotes per category within 12-24 hours.</span> </div>
                         <p> <img class="img-responsive" src="https://yesquoteit.com/application/css/images/mail_icon.jpg" style="width:140px;max-width:100%;margin: 0 auto;"></p>
