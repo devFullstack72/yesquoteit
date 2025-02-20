@@ -170,9 +170,9 @@ class Partner_CF7_Handler {
     public function pr_send_yeemail($to, $template_id, $email_data, $from = 'provider') {
         
         if ($from == 'provider') {
-            $subject = "New Quote Received";
+            $subject = get_option('provider_email');
         } else {
-            $subject = "Thank you for submitting quote";
+            $subject = get_option('customer_email');
         }
 
         $content = Yeemail_Builder_Frontend_Functions::creator_template(array(
