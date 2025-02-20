@@ -311,3 +311,66 @@ Version: 1.0
     width: 80px; /* Adjust size as needed */
     height: 80px;
 }
+
+
+/*Mobile Media Queries*/
+
+@media only screen and (max-width: 768px) {
+    .htlfndr-slider-title {
+        font-size: 25px !important;
+    }
+
+     .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .col-xs-6 {
+        width: 100%; /* Make each lead take full width */
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    #quoteModalWizard .cls_pop_last
+    {
+       margin-top:25px;
+       text-align: center;
+    }
+
+    #quoteModalWizard #quote-form-section
+    {
+      border: 1px solid black;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    #quoteModalWizard .cf7mls-btns 
+    {
+       text-align:center;
+    }
+
+    #quoteModalWizard .cf7mls_next 
+    {
+       float: none;
+    }
+
+    #quoteModalWizard .modal-dialog
+    {
+      margin: 0;
+    }
+
+    #quoteModalWizard .panel-body h3
+    {
+      font-size: 20px !important;
+    }
+
+    #quoteModalWizard .btn-theme-primary
+    {
+      margin-bottom:15px;
+      width: 100%;
+    }
+
+     #quoteModalWizard .contact-form-container .form-title
+    {
+      font-size:25px;
+    }
+}
