@@ -9026,7 +9026,7 @@ only screen and (min-resolution:1.3dppx) {
 .htlfndr-category-box .default_title_cat {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    font-size: 25px;
+    font-size: 20px;
     text-align: center;
     text-transform: capitalize;
     color: white;
