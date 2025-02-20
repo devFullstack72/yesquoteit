@@ -9,7 +9,7 @@ class Partner_CF7_Handler {
     public function __construct() {
         add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
-        add_action('pr_send_emails_background', [$this, 'pr_send_emails_background'], 10, 4);
+        add_action('pr_send_emails_background', [$this, 'pr_send_emails_background'], 10, 5);
 
         add_filter('wpcf7_skip_mail', function($skip_mail, $contact_form) {
 
