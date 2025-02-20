@@ -697,21 +697,24 @@ add_action('save_post', 'save_lead_email_templates');
 function google_places_form_shortcode($atts) {
     $atts = shortcode_atts([
         'address' => '',  // Default value
+        'fields' => 'true',  // Default value
     ], $atts, 'google_places_form'); // 'google_places_form' is the shortcode name
 
     // Get the values
     $default_address = esc_attr($atts['address']);
+    $fields = esc_attr($atts['fields']);
     ob_start();
+    $extra_fields_type = ($fields == 'true') ? 'text' : 'hidden';
     ?>
     <div class="address-wrapper">
         <div class="address-container">
-            <input type="text" id="autocomplete_shortcode" name="google_places_form_address" value="<?php echo $default_address;  ?>" placeholder="Enter address" />
-            <input type="text" id="street_number" name="google_places_form_street_number" placeholder="Street Number" readonly />
-            <input type="text" id="route" name="google_places_form_street" placeholder="Street Name" readonly />
-            <input type="text" id="locality" name="google_places_form_city" placeholder="City" readonly />
-            <input type="text" id="administrative_area_level_1" name="google_places_form_state" placeholder="State" readonly />
-            <input type="text" id="postal_code" placeholder="Postal Code" name="google_places_form_postalcode" readonly />
-            <input type="text" id="country" placeholder="Country" name="google_places_form_country" readonly />
+            <input type="<?php echo $extra_fields_type ?>" id="autocomplete_shortcode" name="google_places_form_address" value="<?php echo $default_address;  ?>" placeholder="Enter address" />
+            <input type="<?php echo $extra_fields_type ?>" id="street_number" name="google_places_form_street_number" placeholder="Street Number" readonly />
+            <input type="<?php echo $extra_fields_type ?>" id="route" name="google_places_form_street" placeholder="Street Name" readonly />
+            <input type="<?php echo $extra_fields_type ?>" id="locality" name="google_places_form_city" placeholder="City" readonly />
+            <input type="<?php echo $extra_fields_type ?>" id="administrative_area_level_1" name="google_places_form_state" placeholder="State" readonly />
+            <input type="<?php echo $extra_fields_type ?>" id="postal_code" placeholder="Postal Code" name="google_places_form_postalcode" readonly />
+            <input type="<?php echo $extra_fields_type ?>" id="country" placeholder="Country" name="google_places_form_country" readonly />
 
             <!-- Hidden Latitude and Longitude Fields -->
             <input type="hidden" id="latitude" name="google_places_form_latitude" />
