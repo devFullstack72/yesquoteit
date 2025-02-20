@@ -256,8 +256,8 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                             echo '<img src="' . esc_url($image) . '" alt="' . esc_attr($title) . '" />';
                             echo '<div class="category-description">';
                             echo '<h3 class="subcategory-name">' . esc_html($title) . '</h3>';
-                            echo '<h5 class="category-name">' . esc_html($title) . '</h5>';
                             echo '<h3 class="default_title_cat">' . esc_html($title) . '</h3>';
+                            echo '<h5 class="category-name">' . esc_html($title) . '</h5>';
                             echo '<a href="' . esc_url($post_link) . '" class="htlfndr-category-permalink"></a>';
                             echo '</div></div></div>';
                         }

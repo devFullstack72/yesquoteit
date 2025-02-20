@@ -9026,14 +9026,14 @@ only screen and (min-resolution:1.3dppx) {
 .htlfndr-category-box .default_title_cat {
     opacity: 1; /* Visible by default */
     transform: translate3d(0, 0, 0); /* Keep in place */
-    font-size: 4.9rem;
+    font-size: 25px;
     text-align: center;
     text-transform: capitalize;
-    color: white;
+    color: black;
+    font-weight:bold;
 }
 
 /* On hover: Hide default_title_cat & show category-name */
 .htlfndr-category-box:hover .default_title_cat {
-    opacity: 0;
-    transform: translate3d(-360px, 0, 0); /* Move off-screen */
+    display:none;
 }
