@@ -9,6 +9,21 @@ class Partner_CF7_Handler {
     public function __construct() {
         add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
+        add_action('pr_send_emails_background', [$this, 'pr_send_emails_background'], 10, 4);
+
+        add_filter('wpcf7_skip_mail', function($skip_mail, $contact_form) {
+
+            $submission = WPCF7_Submission::get_instance();
+            if (!$submission) {
+                return;
+            }
+
+            // Retrieve lead_id passed via shortcode
+            $lead_id = isset($_POST['is_lead']) ? $_POST['is_lead'] : '';
+            if (!empty($lead_id)) {
+                return true; // Prevent default email sending
+            }
+        }, 10, 2);
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
@@ -117,7 +132,7 @@ class Partner_CF7_Handler {
         if (!empty($approved_partners)) {
             foreach ($approved_partners as $partner) {
                 $approved_partners_emails[] = $partner->email;
-                $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
+                // $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
             }
         }
 
@@ -127,6 +142,26 @@ class Partner_CF7_Handler {
         // }
     
         // Send email to the customer
+        // if (!empty($user_email)) {
+        //     $this->pr_send_yeemail($user_email, $customer_template_id, $email_data, 'customer');
+        // }
+
+        // Schedule background email sending
+        wp_schedule_single_event(
+            time() + 10, 
+            'pr_send_emails_background', 
+            array($user_email, $approved_partners_emails, $customer_template_id, $provider_template_id, $email_data)
+        );
+    }
+
+    // Background email processing
+    public function pr_send_emails_background($user_email, $partner_emails, $customer_template_id, $provider_template_id, $email_data = []) {
+        if (!empty($partner_emails)) {
+            foreach ($partner_emails as $email) {
+                $this->pr_send_yeemail($email, $provider_template_id, $email_data, 'provider');
+            }
+        }
+
         if (!empty($user_email)) {
             $this->pr_send_yeemail($user_email, $customer_template_id, $email_data, 'customer');
         }
