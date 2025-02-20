@@ -405,6 +405,7 @@ function category_generation_cards_shortcode($atts) {
                 $output .= '<div class="category-description">';
                 $output .= '<h3 class="subcategory-name">' . $category_name . '</h3>';
                 $output .= '<h5 class="category-name">' . $category_name . '</h3>';
+                $output .= '<h3 class="default_title_cat">' . $category_name . '</h3>';
                 $output .= '<a href="' . esc_url($category_link) . '" class="htlfndr-category-permalink"></a>';
                 $output .= '</div>'; // .category-description
                 $output .= '</div>'; // .htlfndr-category-box
@@ -503,6 +504,7 @@ function category_generation_cards_shortcode($atts) {
                 $output .= '<div class="category-description">';
                 $output .= '<h3 class="subcategory-name">' . esc_html($title) . '</h3>';
                 $output .= '<h5 class="category-name">' . esc_html($title) . '</h5>';
+                $output .= '<h3 class="default_title_cat">' . $title . '</h3>';
                 $output .= '<a href="' . esc_url($post_link) . '" class="htlfndr-category-permalink"></a>';
                 $output .= '</div></div></div>';
             }
