@@ -845,12 +845,14 @@ function custom_site_info_page() {
 
 function custom_site_info_settings() {
     register_setting('site_info_settings', 'partner_contact_form_shortcode');
+    register_setting('site_info_settings', 'customer_email');
+    register_setting('site_info_settings', 'provider_email');
 
     add_settings_section(
         'site_info_section',
-        'Settings',
+        '<h3 style="margin: 0;">Settings</h3>',
         function() {
-            echo '<p>Enter the shortcode below:</p>';
+            echo '';
         },
         'site-information'
     );
@@ -861,6 +863,38 @@ function custom_site_info_settings() {
         function() {
             $value = get_option('partner_contact_form_shortcode', '');
             echo '<input type="text" name="partner_contact_form_shortcode" value="' . esc_attr($value) . '" class="regular-text">';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    add_settings_field(
+        'lead_email_subject',
+        '<h3 style="margin: 0;">Lead Email Subject</h3>',
+        function() {
+            echo '';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    add_settings_field(
+        'customer_email',
+        'Customer Email',
+        function() {
+            $value = get_option('customer_email', '');
+            echo '<input type="text" name="customer_email" value="' . esc_attr($value) . '" class="regular-text">';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    add_settings_field(
+        'provider_email',
+        'Provider Email',
+        function() {
+            $value = get_option('provider_email', '');
+            echo '<input type="text" name="provider_email" value="' . esc_attr($value) . '" class="regular-text">';
         },
         'site-information',
         'site_info_section'
