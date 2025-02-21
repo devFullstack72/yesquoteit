@@ -313,9 +313,9 @@ $custom_field_value = get_post_meta(get_the_ID(), '_lead_form_short_code', true)
                     <div class="col-md-5 col-sm-12 col-xl-12 cls_pop_last col-xs-6">
                         <h4 class="text-center">What to expect ?</h4>
                         <div class="modal-body"> <span class="cls_spn_fnt">Up to 5 quotes per category within 12-24 hours.</span> </div>
-                        <p> <img class="img-responsive" src="https://yesquoteit.com/application/css/images/mail_icon.jpg" style="width:140px;max-width:100%;margin: 0 auto;"></p>
+                        <p> <img class="img-responsive" src="<?php echo esc_url(get_template_directory_uri()); ?>/images/mail_icon.jpg" style="width:140px;max-width:100%;margin: 0 auto;"></p>
                         <div class="modal-body"> <span class="cls_spn_fnt">Quotes from qualified businesses that match your requirements.</span> </div>
-                        <p> <img class="img-responsive" src="https://yesquoteit.com/application/css/images/icon-ups.png" style="width:100px;max-width:100%;margin: 0 auto;"></p>
+                        <p> <img class="img-responsive" src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icon-ups-check.png" style="width:100px;max-width:100%;margin: 0 auto;"></p>
                         <div class="modal-footer cls_mdl_ftr1">
                         </div>
                     </div>
