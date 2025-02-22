@@ -1024,10 +1024,10 @@ div#header-left a {
     display: inline-block;
   }
   .post-type-yeemail_template .tablenav,.post-type-yeemail_template .row-actions{
-    display: none;
+    display: block;
   }
   .post-type-yeemail_template .column-title strong{
-    padding-bottom: 10px;
+    /* padding-bottom: 10px; */
   }
   .list-view-templates .grid-item {
     width: 31%;

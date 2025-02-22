@@ -1040,3 +1040,62 @@ function custom_slider_settings_page() {
     <?php
 }
 
+function add_copy_action_link($actions, $post) {
+    if ($post->post_type == 'yeemail_template') {
+        $copy_url = admin_url('admin-post.php?action=duplicate_email_template&post_id=' . $post->ID);
+        $actions['copy'] = '<a href="' . esc_url($copy_url) . '" title="Duplicate this template">Copy</a>';
+    }
+    return $actions;
+}
+add_filter('post_row_actions', 'add_copy_action_link', 10, 2);
+
+function duplicate_email_template() {
+    if (!isset($_GET['post_id']) || !current_user_can('edit_posts')) {
+        wp_die('Invalid request.');
+    }
+
+    global $wpdb;
+
+    $post_id = intval($_GET['post_id']);
+    $post = get_post($post_id);
+
+    if (!$post || $post->post_type != 'yeemail_template') {
+        wp_die('Template not found.');
+    }
+
+    // Step 1: Copy the post (title only)
+    $new_post = array(
+        'post_title'   => $post->post_title . ' (Copy)',
+        'post_status'  => 'draft',
+        'post_type'    => 'yeemail_template',
+        'post_author'  => get_current_user_id(),
+    );
+
+    $new_post_id = wp_insert_post($new_post);
+
+    if ($new_post_id) {
+        // Step 2: Copy all metadata (content, settings, etc.)
+        $meta_data = get_post_meta($post_id);
+        foreach ($meta_data as $key => $values) {
+            foreach ($values as $value) {
+                add_post_meta($new_post_id, $key, esc_sql($value));
+            }
+        }
+
+        // Step 4: Redirect to the new duplicated template
+        wp_redirect(admin_url("post.php?post=$new_post_id&action=edit"));
+        exit;
+    } else {
+        wp_die('Error duplicating template.');
+    }
+}
+
+add_action('admin_post_duplicate_email_template', 'duplicate_email_template');
+
+function refresh_meta_after_duplicate($post_id) {
+    delete_post_meta($post_id, '_edit_lock'); // Remove edit lock
+    delete_post_meta($post_id, '_edit_last'); // Reset last edit
+}
+add_action('save_post', 'refresh_meta_after_duplicate');
+
+
