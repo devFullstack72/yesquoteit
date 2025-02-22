@@ -374,3 +374,12 @@ Version: 1.0
       font-size:25px;
     }
 }
+
+.current-menu-item>a:after {
+    background: #23def7;  /* The color for the underline */
+    content: '';  /* Creates the underline */
+}
+
+.htlfndr-top-header .htlfndr-logo.navbar-brand>img {
+    top: 9px;
+}

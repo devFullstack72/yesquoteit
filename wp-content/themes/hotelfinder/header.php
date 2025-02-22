@@ -4,35 +4,10 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php wp_title( '|', true, 'right' ); ?> Yes Quote It</title>
-
-    <!-- Bootstrap -->
-    <link href="<?php echo get_template_directory_uri(); ?>/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Main styles -->
-    <link href="<?php echo get_template_directory_uri(); ?>/css/style.css" rel="stylesheet" />
-    <!-- IE styles -->
-    <link href="<?php echo get_template_directory_uri(); ?>/css/ie.css" rel="stylesheet" />
-    <!-- Font Awesome -->
-    <link href="<?php echo get_template_directory_uri(); ?>/css/font-awesome.min.css" rel="stylesheet" />
-    <!-- OWL Carousel -->
-    <link href="<?php echo get_template_directory_uri(); ?>/css/owl.carousel.css" rel="stylesheet" />
-    <!-- Jquery UI -->
-    <link href="<?php echo get_template_directory_uri(); ?>/css/jquery-ui.css" rel="stylesheet" />
+    <title><?php wp_title( '|', true, 'right' ); ?> <?php echo get_bloginfo('name') ?></title>
 
     <?php wp_head(); ?> <!-- WordPress Hook -->
 
-    <style type="text/css">
-    /* Apply underline effect to the current active menu item */
-        .current-menu-item>a:after {
-            background: #23def7;  /* The color for the underline */
-            content: '';  /* Creates the underline */
-        }
-
-        .htlfndr-top-header .htlfndr-logo.navbar-brand>img {
-            top: 9px;
-        }
-
-    </style>
 </head>
 <body>
     <!-- Overlay preloader-->

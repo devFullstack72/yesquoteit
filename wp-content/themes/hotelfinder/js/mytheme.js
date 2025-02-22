@@ -1,3 +1,5 @@
+var $ = jQuery;
+
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('wpcf7submit', function() {
         document.querySelector('.htlfndr-loader-overlay').style.display = 'none'; // Hide loader after submission

@@ -35,20 +35,6 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 </div>';
 }
 
-if (isset($profile_updated) && !empty($profile_updated)) {
-    echo '<div class="container" style="margin-top: 50px;">
-    <div class="row">
-        <div class="col-md-6" style="padding: 0;">
-            <div class="panel panel-default text-center">
-                <div class="panel-body" style="text-align: left;background-color: #3d97377a;">
-                    <p>We have received your submission. Our team will review it shortly.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>';
-}
-
 $total_steps = 4;
 ?>
 
@@ -94,6 +80,23 @@ include plugin_dir_path(__FILE__) . '../views/partner-register/services.php';
 <?php endif; ?>
 
 <?php if ($edit_profile_page == true): ?>
+    
+    <?php if (isset($profile_updated) && !empty($profile_updated)) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container" style="margin-top: 50px;">
+                <div class="alert alert-success">
+                    <?php if (isset($profile_updated['message']) && !empty($profile_updated['message'])) : ?>
+                        <div><?php echo $profile_updated['message'] ?></div>
+                    <?php else: ?>
+                        <div>Profile Updated</div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
 <div class="row">
     <div class="col-md-6">
         <?php
@@ -112,6 +115,11 @@ include plugin_dir_path(__FILE__) . '../views/partner-register/services.php';
     </div>
     <div class="col-md-6">
         <?php 
+
+        $partner_register_page_title = 'Change Password';
+        $submit_button_text = 'Save';
+        include plugin_dir_path(__FILE__) . '../views/partner-register/change-password.php';
+
         $partner_register_page_title = 'Update Address';
         $submit_button_text = 'Save';
         include plugin_dir_path(__FILE__) . '../views/partner-register/address.php';

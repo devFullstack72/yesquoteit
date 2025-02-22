@@ -8,6 +8,7 @@ class Partner_Registration_Form
 
     public $service_partners_table;
     public $lead_partners_table;
+    public $wpdb;
 
     public function __construct()
     {
@@ -27,6 +28,9 @@ class Partner_Registration_Form
         add_action('admin_post_nopriv_pr_partner_form_submission_step_4', [$this, 'handle_pr_partner_form_submission_step_4']);
         add_action('admin_post_pr_partner_form_submission_step_4', [$this, 'handle_pr_partner_form_submission_step_4']);
 
+        add_action('admin_post_nopriv_pr_partner_change_password', [$this, 'handle_pr_partner_change_password']);
+        add_action('admin_post_pr_partner_change_password', [$this, 'handle_pr_partner_change_password']);
+
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
 
         if (!session_id()) {
@@ -34,6 +38,8 @@ class Partner_Registration_Form
         }
 
         global $wpdb;
+
+        $this->wpdb = $wpdb;
 
         $this->service_partners_table = $wpdb->prefix . 'service_partners';
         $this->lead_partners_table = $wpdb->prefix . 'lead_partners';
@@ -701,5 +707,66 @@ class Partner_Registration_Form
         wp_safe_redirect($redirect_url);
         exit;
     }
+
+    public function handle_pr_partner_change_password() {
+        // Verify nonce for security
+        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+            wp_die('Security check failed.');
+        }
+    
+        $new_password = sanitize_text_field($_POST['new_password']);
+        $confirm_password = sanitize_text_field($_POST['confirm_password']);
+
+        $errors = [];
+    
+        if (empty($new_password)) {
+            $errors['new_password'] = "Password is required";
+        } else if (strlen($new_password) < 8) {
+            $errors['new_password'] = "Password must alteast of 8 characters";
+        }
+
+        if (empty($confirm_password)) {
+            $errors['confirm_password'] = "Confirm Password is required";
+        }
+
+        if ( !empty($confirm_password) && $new_password != $confirm_password) {
+            $errors['new_password'] = "Password and confirm password must match";
+        }
+    
+        if (!empty($errors)) {
+            $_SESSION['form_errors'] = $errors;
+            $_SESSION['form_data'] = $_POST;
+            
+            $redirect_url = wp_get_referer();
+            
+            wp_safe_redirect($redirect_url);
+            exit;
+        }
+
+        if ($partner_id = $this->loggedIn()) {
+            $this->wpdb->update($this->service_partners_table, [
+                'password' => wp_hash_password($new_password)
+            ], [
+                'id' => $partner_id
+            ]);
+        }
+
+        $_SESSION['profile_updated'] = [
+            'message' => 'Password changed successfully'
+        ];
+        
+        $redirect_url = wp_get_referer();
+        wp_safe_redirect($redirect_url);
+        exit;
+    }
+
+    protected function loggedIn() {
+        if (isset($_SESSION['partner_id'])) {
+            return $_SESSION['partner_id'];
+        } else {
+            return false;
+        }
+    }
+
 }
 ?>

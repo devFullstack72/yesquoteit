@@ -22,20 +22,49 @@ function mytheme_setup() {
 }
 add_action('after_setup_theme', 'mytheme_setup');
 
-// // Enqueue styles and scripts
-function mytheme_enqueue_scripts() {
+// Enqueue wp head assets
+function theme_enqueue_styles() {
+    // Bootstrap
+    wp_enqueue_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array(), '5.3.0', 'all');
+
+    // Main styles
+    wp_enqueue_style('main-style', get_template_directory_uri() . '/css/style.css', array(), '1.0', 'all');
+
+    // IE styles
+    wp_enqueue_style('ie-style', get_template_directory_uri() . '/css/ie.css', array(), '1.0', 'all');
+
+    // Font Awesome
+    wp_enqueue_style('font-awesome', get_template_directory_uri() . '/css/font-awesome.min.css', array(), '6.0.0', 'all');
+
+    // OWL Carousel
+    wp_enqueue_style('owl-carousel', get_template_directory_uri() . '/css/owl.carousel.css', array(), '2.3.4', 'all');
+
+    // jQuery UI
+    wp_enqueue_style('jquery-ui', get_template_directory_uri() . '/css/jquery-ui.css', array(), '1.12.1', 'all');
+
     // Enqueue the main style sheet
     wp_enqueue_style('mytheme-style', get_stylesheet_uri());
+
+}
+add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
+
+function theme_enqueue_scripts() {
+    // jQuery is already included in WordPress, so load it from WP
+    wp_enqueue_script('jquery');
 
     // Enqueue custom stylesheets or JavaScript files
     wp_enqueue_script('mytheme-script', get_template_directory_uri() . '/js/mytheme.js', array('jquery'), null, true);
 
-    // Enqueue Bootstrap styles and scripts (if needed)
-    // wp_enqueue_style('bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css');
-    // wp_enqueue_script('bootstrap-js', get_template_directory_uri() . '/js/bootstrap.min.js', array('jquery'), null, true);
+    // Load custom scripts
+    wp_enqueue_script('jquery-ui', get_template_directory_uri() . '/js/jquery-ui.min.js', array('jquery'), null, true);
+    wp_enqueue_script('jquery-ui-touch', get_template_directory_uri() . '/js/jquery.ui.touch-punch.min.js', array('jquery-ui'), null, true);
+    wp_enqueue_script('bootstrap', get_template_directory_uri() . '/js/bootstrap.min.js', array('jquery'), null, true);
+    wp_enqueue_script('owl-carousel', get_template_directory_uri() . '/js/owl.carousel.min.js', array('jquery'), null, true);
+    wp_enqueue_script('custom-script', get_template_directory_uri() . '/js/script.js', array('jquery'), null, true);
 }
-add_action('wp_enqueue_scripts', 'mytheme_enqueue_scripts');
 
+add_action('wp_enqueue_scripts', 'theme_enqueue_scripts');
+// End Enqueue wp head assets
 
 function create_posttype_lead_generation() {
     register_post_type( 'lead_generation',
