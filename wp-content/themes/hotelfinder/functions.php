@@ -1078,16 +1078,9 @@ function duplicate_email_template() {
         $meta_data = get_post_meta($post_id);
         foreach ($meta_data as $key => $values) {
             foreach ($values as $value) {
-                add_post_meta($new_post_id, $key, maybe_unserialize($value));
+                add_post_meta($new_post_id, $key, esc_sql($value));
             }
         }
-
-        // Step 3: If `_lead_provider_email_template` references the old post, update it
-        $wpdb->update(
-            $wpdb->postmeta,
-            array('meta_value' => $new_post_id),
-            array('meta_key' => '_lead_provider_email_template', 'meta_value' => $post_id)
-        );
 
         // Step 4: Redirect to the new duplicated template
         wp_redirect(admin_url("post.php?post=$new_post_id&action=edit"));

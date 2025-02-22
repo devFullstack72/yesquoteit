@@ -1027,7 +1027,7 @@ div#header-left a {
     display: block;
   }
   .post-type-yeemail_template .column-title strong{
-    padding-bottom: 10px;
+    /* padding-bottom: 10px; */
   }
   .list-view-templates .grid-item {
     width: 31%;
