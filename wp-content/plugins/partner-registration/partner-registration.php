@@ -20,6 +20,9 @@ require_once PR_PLUGIN_DIR . 'includes/class-partner-login-form.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-admin.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-cf7-handler.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-profile-page.php';
+require_once PR_PLUGIN_DIR . 'includes/class-partner-customer-requests.php';
+
+require_once PR_PLUGIN_DIR . 'includes/class-customer-login.php';
 
 class Partner_Registration_Plugin {
     public function __construct() {
@@ -28,6 +31,9 @@ class Partner_Registration_Plugin {
         new Partner_Admin();
         new Partner_CF7_Handler();
         new Partner_Public_Profile();
+        new Partner_Customer_Requests();
+
+        new Customer_Login();
     }
 
     public static function create_plugin_tables() {
@@ -69,6 +75,30 @@ class Partner_Registration_Plugin {
                 name VARCHAR(255) NOT NULL,
                 code VARCHAR(10) NOT NULL UNIQUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) $charset_collate;",
+
+            'customers' => "CREATE TABLE {$wpdb->prefix}yqit_customers (
+                id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NULL,
+                email VARCHAR(255) NULL,
+                phone VARCHAR(50) NULL,
+                password VARCHAR(255) NULL,
+                status TINYINT(1) DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) $charset_collate;",
+
+            'lead_quotes' => "CREATE TABLE {$wpdb->prefix}yqit_lead_quotes (
+                id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                customer_id BIGINT(20) NOT NULL,
+                lead_id BIGINT(20) NOT NULL,
+                quote_data TEXT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) $charset_collate;",
+
+            'lead_quotes_partners' => "CREATE TABLE {$wpdb->prefix}yqit_lead_quotes_partners (
+                id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                lead_quote_id BIGINT(20) NOT NULL,
+                provider_id BIGINT(20) NOT NULL
             ) $charset_collate;"
         ];
 
@@ -200,6 +230,46 @@ class Partner_Registration_Plugin {
             ]);
         }
     }
+
+    public static function create_customer_login_page() {
+        $page_title = 'Customer Login';
+        $page_slug = 'customer-login';
+        $page_content = '[customer_login]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
+
+    public static function create_partner_customer_requests_page() {
+        $page_title = 'Partner customer requests';
+        $page_slug = 'partner-customer-requests';
+        $page_content = '[partner_customer_requests]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
 }
 
 // Register activation hook
@@ -210,6 +280,11 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_register_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_profile_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_customer_requests_page']);
+
+// Customer hooks
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_login_page']);
 
 
 // Initialize the plugin
