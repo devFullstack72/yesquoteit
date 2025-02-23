@@ -148,6 +148,8 @@ class Partner_CF7_Handler {
         $customer_id = $this->saveCustomer($email_data);
 
         $created_lead_quote_id = $this->saveLeadQuote($customer_id, $email_data);
+
+        $email_data['customer_login_link'] = home_url() . '/handler-events/customer/' . encrypt_customer_id($customer_id);
     
         // Send email to approved service providers
         $approved_partners_emails = [];
@@ -216,9 +218,9 @@ class Partner_CF7_Handler {
         // Replace placeholders manually (if not working inside the function)
         $content = str_replace(array_keys($template_data), array_values($template_data), $content);
 
-        if ($from == 'customer') {
-            $content = $this->replaceDynamicPlaceholders($content);
-        }
+        // if ($from == 'customer') {
+        //     $content = $this->replaceDynamicPlaceholders($content);
+        // }
 
 		$data = wp_mail( $to, $subject, $content );
         

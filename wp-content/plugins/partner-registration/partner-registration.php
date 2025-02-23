@@ -24,6 +24,8 @@ require_once PR_PLUGIN_DIR . 'includes/class-partner-customer-requests.php';
 
 require_once PR_PLUGIN_DIR . 'includes/class-customer-login.php';
 
+require_once PR_PLUGIN_DIR . 'includes/general-functions.php';
+
 class Partner_Registration_Plugin {
     public function __construct() {
         new Partner_Registration_Form();
@@ -270,6 +272,26 @@ class Partner_Registration_Plugin {
             ]);
         }
     }
+
+    public static function create_customer_set_password_page() {
+        $page_title = 'Customer Set Password';
+        $page_slug = 'customer-change-password';
+        $page_content = '[customer_change_password]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
 }
 
 // Register activation hook
@@ -285,6 +307,8 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 
 // Customer hooks
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_login_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_set_password_page']);
 
 
 // Initialize the plugin
