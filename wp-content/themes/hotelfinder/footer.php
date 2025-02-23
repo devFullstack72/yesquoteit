@@ -119,15 +119,6 @@
         </form>
     </div>
 </div>
-
-<!-- jQuery and Scripts -->
-<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/jquery-1.11.3.min.js"></script>
-<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/jquery-ui.min.js"></script>
-<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/jquery.ui.touch-punch.min.js"></script>
-<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/bootstrap.min.js"></script>
-<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/owl.carousel.min.js"></script>
-<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/script.js"></script>
-
 <?php wp_footer(); ?>
 </body>
 </html>

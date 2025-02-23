@@ -6,6 +6,14 @@ if (!defined('ABSPATH')) {
 
 class Partner_CF7_Handler {
 
+    public $database;
+
+    public $customer_table;
+
+    public $lead_quotes_table;
+
+    public $lead_quotes_partners_table;
+
     public function __construct() {
         add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
@@ -24,6 +32,16 @@ class Partner_CF7_Handler {
                 return true; // Prevent default email sending
             }
         }, 10, 2);
+
+        global $wpdb;
+
+        $this->database = $wpdb;
+
+        $this->customer_table = $wpdb->prefix . 'yqit_customers';
+
+        $this->lead_quotes_table = $wpdb->prefix . 'yqit_lead_quotes';
+
+        $this->lead_quotes_partners_table = $wpdb->prefix . 'yqit_lead_quotes_partners';
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
@@ -85,7 +103,7 @@ class Partner_CF7_Handler {
 
         $approved_partners = $wpdb->get_results(
             $wpdb->prepare("
-                SELECT sp.email, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
+                SELECT sp.id as provider_id, sp.email, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
                     (6371 * acos(
                         cos(radians(%f)) * cos(radians(sp.latitude)) *
                         cos(radians(sp.longitude) - radians(%f)) +
@@ -126,6 +144,12 @@ class Partner_CF7_Handler {
                 $email_data[$key] = implode(', ', array_map('sanitize_text_field', $value));
             }
         }
+
+        $customer_id = $this->saveCustomer($email_data);
+
+        $created_lead_quote_id = $this->saveLeadQuote($customer_id, $email_data);
+
+        $email_data['customer_login_link'] = home_url() . '/handler-events/customer/' . encrypt_customer_id($customer_id);
     
         // Send email to approved service providers
         $approved_partners_emails = [];
@@ -133,6 +157,10 @@ class Partner_CF7_Handler {
             foreach ($approved_partners as $partner) {
                 $approved_partners_emails[] = $partner->email;
                 // $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
+                $this->linkLeadQuoteForPartner([
+                    'lead_quote_id' => $created_lead_quote_id,
+                    'provider_id' => $partner->provider_id
+                ]);
             }
         }
 
@@ -190,7 +218,68 @@ class Partner_CF7_Handler {
         // Replace placeholders manually (if not working inside the function)
         $content = str_replace(array_keys($template_data), array_values($template_data), $content);
 
+        // if ($from == 'customer') {
+        //     $content = $this->replaceDynamicPlaceholders($content);
+        // }
+
 		$data = wp_mail( $to, $subject, $content );
+        
+    }
+
+    protected function saveCustomer($data) {
+
+        $customer_id = $this->database->get_var( $this->database->prepare(
+            "SELECT id FROM $this->customer_table WHERE email = %s LIMIT 1", 
+            $data['your-email']
+        ));
+
+        if ($customer_id) {
+            return $customer_id;
+        }
+
+        $this->database->insert($this->customer_table, [
+            'name' => $data['your-name'],
+            'email' => $data['your-email'],
+            'phone' => $data['tel-601'],
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $customer_id = $this->database->insert_id;
+
+        return $customer_id;
+
+    }
+
+    protected function replaceDynamicPlaceholders($content) {
+        $content = str_replace('{customer_login_link}', home_url() . '/customer-login', $content);
+
+        return $content;
+    }
+
+    protected function saveLeadQuote($customer_id, $email_data) {
+        
+        unset($email_data['g-recaptcha-response']);
+
+        $this->database->insert($this->lead_quotes_table, [
+            'customer_id' => $customer_id,
+            'lead_id' => $email_data['is_lead'],
+            'quote_data' => json_encode($email_data)
+        ]);
+
+        $quote_id = $this->database->insert_id;
+
+        return $quote_id;
+
+    }
+
+    protected function linkLeadQuoteForPartner($data) {
+
+        $this->database->insert($this->lead_quotes_partners_table, [
+            'lead_quote_id' => $data['lead_quote_id'],
+            'provider_id' => $data['provider_id']
+        ]);
+
+        return true;
         
     }
 }

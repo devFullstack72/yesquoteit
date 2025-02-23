@@ -4,15 +4,19 @@
         <div class="alert alert-info">You are already loggedin</div>
         <p>Welcome, <?php echo esc_html($_SESSION['partner_name']); ?>!</p>
         <a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>">Logout</a>
+    <?php elseif (isset($_SESSION['customer_logged_in']) && $_SESSION['customer_logged_in'] === true): ?>
+        <div class="alert alert-info">You are already loggedin</div>
+        <p>Welcome, <?php echo esc_html($_SESSION['customer_name']); ?>!</p>
+        <a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>">Logout</a>
     <?php else: ?>
         <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="POST">
-            <?php wp_nonce_field('pr_partner_form_action', 'pr_partner_nonce'); ?>
-            <input type="hidden" name="action" value="partner_login">
+            <?php wp_nonce_field('pr_customer_form_action', 'pr_customer_nonce'); ?>
+            <input type="hidden" name="action" value="customer_login">
             
             <div class="wpcf7-form">
                 <div class="step-header">
-                    <small>Partner Login</small>
-                    <h5 class="text-center">Login for free to start receiving leads...</h5>
+                    <small>Customer Login</small>
+                    <h5 class="text-center">Login for free to start submit leads...</h5>
                 </div>
                 <div class="form-body">
                     <div class="form-group">
@@ -27,7 +31,7 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <a href="<?php echo home_url() . '/register-your-business' ?>">Create an account?</a>
+                            
                         </div>
                         <div class="col-md-6 text-right">
                             <button type="submit" class="btn btn-theme-primary">Login</button>

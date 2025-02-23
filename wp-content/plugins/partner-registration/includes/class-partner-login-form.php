@@ -102,7 +102,22 @@ class Partner_Login_Form
                     <ul class="dropdown-menu" id="dropdownMenu">
                         <li><a href="<?php echo esc_url(site_url('/partner-profile')); ?>"><i class="fa fa-pencil"></i> Edit Profile</a></li>
                         <li><a target="_blank" href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $_SESSION['partner_id'] ?>"><i class="fa fa-eye"></i> Public Profile</a></li>
+                        <li><a href="<?php echo esc_url(home_url()); ?>/partner/customer-requests"><i class="fa fa-bullhorn"></i> Your Quotes</a></li>
                         <li><a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>"><i class="fa fa-sign-out"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <?php
+        } else if (isset($_SESSION['customer_logged_in']) && $_SESSION['customer_logged_in'] === true) {
+            ?>
+            <div class="partner-login-user-area">
+                <div class="dropdown">
+                    <button class="dropdown-toggle" id="partnerDropdown">
+                        <i class="fa fa-user"></i> <?php echo esc_html($_SESSION['customer_name']); ?>
+                    </button>
+                    <ul class="dropdown-menu" id="dropdownMenu">
+                        <li><a href="<?php echo esc_url(site_url('/customer-change-password')); ?>"><i class="fa fa-pencil"></i> Change Password</a></li>
+                        <li><a href="<?php echo esc_url(admin_url('admin-post.php?action=customer_logout')); ?>"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -111,7 +126,7 @@ class Partner_Login_Form
             ?>
             <div class="partner-login-user-area partner-non-login-user-area">
                 <span style="margin-right: 5px;">Login: </span>
-                <!-- <a href="Javascript:void(0);" class="theme-link-color-white"><i class="fa fa-user"></i> Customer</a> -->
+                <a href="<?php echo home_url() . '/customer-login' ?>" class="theme-link-color-white"><i class="fa fa-user"></i> Customer</a>
                 <a href="<?php echo home_url() . '/partner-login' ?>" class="theme-link-color-white"><i class="fa fa-briefcase"></i> Business</a>
             </div>
             <?php
