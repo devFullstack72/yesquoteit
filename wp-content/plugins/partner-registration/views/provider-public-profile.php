@@ -206,15 +206,22 @@ header('Content-Type: text/html; charset=UTF-8');
     <?php wp_footer(); ?>
     <script>
 
-        document.querySelector('input[name="is_partner_contact_form"]').value = '<?php echo $provider->email; ?>';
+        document.addEventListener("DOMContentLoaded", function() {
+            let inputElement = document.querySelector('input[name="is_partner_contact_form"]');
 
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                this.classList.add('active');
-                document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+            if (inputElement) { // Check if the element exists
+                inputElement.value = '<?php echo esc_js($provider->email); ?>';
+            }
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+                });
             });
+            
         });
     </script>
 </body>
