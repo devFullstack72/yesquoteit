@@ -150,14 +150,14 @@ header('Content-Type: text/html; charset=UTF-8');
         }
 
         .services ol {
-            list-style-type: none; /* Remove default bullets */
-            padding: 0;
+            list-style-type: decimal; /* Ensure numbers appear */
+            padding-left: 20px; /* Proper alignment for numbers */
             margin: 0;
         }
 
         .services ol li {
-            padding: 5px 10px; /* Compact padding */
-            border-bottom: 1px solid #ddd; /* Light separator between items */
+            padding: 3px 5px; /* Reduce padding for compactness */
+            border-bottom: 1px solid #ddd; /* Light separator */
             font-size: 14px; /* Keep font size consistent */
         }
 
