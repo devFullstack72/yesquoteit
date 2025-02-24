@@ -19,6 +19,10 @@ class Partner_Customer_Requests extends PartnerController
         
         $provider_id = $this->getProviderID();
 
+        if (!$provider_id) {
+            return '<script>window.location.href="' . esc_url(home_url('/partner-login')) . '";</script>';
+        }
+
         $query = "
             SELECT 
                 c.id AS customer_id, 

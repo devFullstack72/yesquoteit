@@ -1,11 +1,11 @@
 <div class="partner-login-form">
     
     <?php if (isset($_SESSION['partner_logged_in']) && $_SESSION['partner_logged_in'] === true): ?>
-        <div class="alert alert-info">You are already loggedin</div>
+        <div class="alert alert-info">You are already loggedin as customer</div>
         <p>Welcome, <?php echo esc_html($_SESSION['partner_name']); ?>!</p>
         <a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>">Logout</a>
     <?php elseif (isset($_SESSION['customer_logged_in']) && $_SESSION['customer_logged_in'] === true): ?>
-        <div class="alert alert-info">You are already loggedin</div>
+        <div class="alert alert-info">You are already loggedin as customer</div>
         <p>Welcome, <?php echo esc_html($_SESSION['customer_name']); ?>!</p>
         <a href="<?php echo esc_url(admin_url('admin-post.php?action=partner_logout')); ?>">Logout</a>
     <?php else: ?>
