@@ -90,35 +90,35 @@ class Partner_CF7_Handler {
         $service_partners_table = $wpdb->prefix . 'service_partners'; // Main partners table
         $lead_partners_table = $wpdb->prefix . 'lead_partners'; // Junction table
 
-        // $approved_partners = $wpdb->get_results(
-        //     $wpdb->prepare(
-        //         "SELECT sp.email 
-        //         FROM $service_partners_table AS sp
-        //         INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
-        //         WHERE lp.lead_id = %d AND sp.status = 1",
-        //         $lead_id
-        //     )
-        // );
-
-
         $approved_partners = $wpdb->get_results(
-            $wpdb->prepare("
-                SELECT sp.id as provider_id, sp.email, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
-                    (6371 * acos(
-                        cos(radians(%f)) * cos(radians(sp.latitude)) *
-                        cos(radians(sp.longitude) - radians(%f)) +
-                        sin(radians(%f)) * sin(radians(sp.latitude))
-                    )) AS distance
+            $wpdb->prepare(
+                "SELECT sp.email 
                 FROM $service_partners_table AS sp
                 INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
-                WHERE lp.lead_id = %d 
-                    AND sp.status = 1", 
-            $customer_lat, $customer_lng, $customer_lat, 
-            $lead_id, 
-            $customer_country, $customer_state, $customer_country, 
-            $customer_lat, $customer_lng, $customer_lat
+                WHERE lp.lead_id = %d AND sp.status = 1",
+                $lead_id
             )
         );
+
+
+        // $approved_partners = $wpdb->get_results(
+        //     $wpdb->prepare("
+        //         SELECT sp.id as provider_id, sp.email, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
+        //             (6371 * acos(
+        //                 cos(radians(%f)) * cos(radians(sp.latitude)) *
+        //                 cos(radians(sp.longitude) - radians(%f)) +
+        //                 sin(radians(%f)) * sin(radians(sp.latitude))
+        //             )) AS distance
+        //         FROM $service_partners_table AS sp
+        //         INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
+        //         WHERE lp.lead_id = %d 
+        //             AND sp.status = 1", 
+        //     $customer_lat, $customer_lng, $customer_lat, 
+        //     $lead_id, 
+        //     $customer_country, $customer_state, $customer_country, 
+        //     $customer_lat, $customer_lng, $customer_lat
+        //     )
+        // );
 
         // Prepare data for email template
         $email_data = [];
