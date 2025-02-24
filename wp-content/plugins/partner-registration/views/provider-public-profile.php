@@ -149,6 +149,28 @@ header('Content-Type: text/html; charset=UTF-8');
             background-color: #5a677b;
         }
 
+        .services ul {
+            list-style-type: none; /* Remove default bullets */
+            padding: 0;
+            margin: 0;
+        }
+
+        .services ul li {
+            padding: 5px 10px; /* Compact padding */
+            border-bottom: 1px solid #ddd; /* Light separator between items */
+            font-size: 14px; /* Keep font size consistent */
+        }
+
+        .services ul li:last-child {
+            border-bottom: none; /* Remove border from the last item */
+        }
+
+        .services h3 {
+            margin: 5px 0; /* Reduce spacing for a compact look */
+            font-size: 14px; /* Ensure font size stays 14px */
+            font-weight: normal; /* Optional: Keep text lightweight */
+        }
+
     </style>
     <?php wp_head(); ?>
 </head>
