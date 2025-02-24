@@ -64,6 +64,8 @@ class Partner_Registration_Plugin {
                 service_area VARCHAR(100) NULL,
                 other_country VARCHAR(100) NULL,
                 status TINYINT(1) DEFAULT 0,
+                reset_token VARCHAR(255) NULL,
+                reset_expires DATETIME NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) $charset_collate;",
 
@@ -337,9 +339,49 @@ class Partner_Registration_Plugin {
     }
 
     public static function create_partner_reset_password_page() {
-        $page_title = 'Reset Password';
-        $page_slug = 'reset-password';
-        $page_content = '[partner_reset_password]'; // Use the shortcode
+        $page_title = 'Partner Reset Password';
+        $page_slug = 'partner-reset-password';
+        $page_content = '[partner_reset_password_form]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
+
+    public static function create_customer_forgot_password_page() {
+        $page_title = 'Forgot Password';
+        $page_slug = 'customer-forgot-password';
+        $page_content = '[customer_forgot_password_form]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
+
+    public static function create_customer_reset_password_page() {
+        $page_title = 'Customer Reset Password';
+        $page_slug = 'customer-reset-password';
+        $page_content = '[customer_reset_password_form]'; // Use the shortcode
     
         // Check if page already exists by slug
         $page_check = get_page_by_path($page_slug);
@@ -368,14 +410,19 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_forgot_password_page']);
 
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_reset_password_page']);
+
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_customer_requests_page']);
+
 
 // Customer hooks
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_requests_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_login_page']);
 
-register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_reset_password_page']);
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_forgot_password_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_reset_password_page']);
 
 
 // Initialize the plugin
