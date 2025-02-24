@@ -19,6 +19,10 @@ class Customer_Requests extends CustomerController
         
         $customer_id = $this->getCustomerID();
 
+        if (!$customer_id) {
+            return '<script>window.location.href="' . esc_url(home_url('/customer-login')) . '";</script>';
+        }
+
         $query = "
             SELECT 
                 c.id AS customer_id, 
