@@ -149,6 +149,28 @@ header('Content-Type: text/html; charset=UTF-8');
             background-color: #5a677b;
         }
 
+        .services ol {
+            list-style-type: decimal; /* Ensure numbers appear */
+            padding-left: 20px; /* Proper alignment for numbers */
+            margin: 0;
+        }
+
+        .services ol li {
+            padding: 3px 5px; /* Reduce padding for compactness */
+            border-bottom: 1px solid #ddd; /* Light separator */
+            font-size: 14px; /* Keep font size consistent */
+        }
+
+        .services ol li:last-child {
+            border-bottom: none; /* Remove border from the last item */
+        }
+
+        .services h3 {
+            margin: 5px 0; /* Reduce spacing for a compact look */
+            font-size: 14px; /* Ensure font size stays 14px */
+            font-weight: normal; /* Optional: Keep text lightweight */
+        }
+
     </style>
     <?php wp_head(); ?>
 </head>
@@ -171,7 +193,7 @@ header('Content-Type: text/html; charset=UTF-8');
             <p><strong>Phone:</strong> <?php echo esc_html($provider->phone); ?></p>
             <p><strong>Website:</strong> <a href="<?php echo esc_url($provider->website_url); ?>" target="_blank"><?php echo esc_html($provider->website_url); ?></a></p>
         </div>
-        <div class="tab-content" id="tab2">
+        <div class="tab-content services" id="tab2">
             <div class="profile-header">
                 <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
                 <div>
@@ -179,13 +201,13 @@ header('Content-Type: text/html; charset=UTF-8');
                 </div>
             </div>
             <?php if ($assigned_lead_posts): ?>
-                <ul>
+                <ol>
                     <?php foreach ($assigned_lead_posts as $lead): ?>
                         <li>
                             <h3><?php echo esc_html($lead->post_title); ?></h3>
                         </li>
                     <?php endforeach; ?>
-                </ul>
+                </ol>
             <?php else: ?>
                 <p>No services assigned to this partner.</p>
             <?php endif; ?>
