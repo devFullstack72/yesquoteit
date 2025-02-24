@@ -134,6 +134,16 @@ class Partner_Registration_Plugin {
         if (!in_array('website_url', $existing_columns)) {
             $wpdb->query("ALTER TABLE {$wpdb->prefix}service_partners ADD COLUMN website_url VARCHAR(255) NULL AFTER business_logo;");
         }
+
+        $existing_customers_columns = $wpdb->get_col("DESC {$wpdb->prefix}yqit_customers", 0);
+
+        if (!in_array('reset_token', $existing_customers_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_customers ADD COLUMN reset_token VARCHAR(255) NULL AFTER password;");
+        }
+
+        if (!in_array('reset_expires', $existing_customers_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_customers ADD COLUMN reset_expires DATETIME NULL AFTER reset_token;");
+        }
         @ob_end_clean();
     }
 

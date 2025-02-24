@@ -35,6 +35,16 @@ class Customer_Login extends CustomerController
         add_action('admin_post_nopriv_pr_customer_change_password', [$this, 'handle_pr_customer_change_password']);
         add_action('admin_post_pr_customer_change_password', [$this, 'handle_pr_customer_change_password']);
 
+        add_shortcode('customer_forgot_password_form', [$this, 'render_forgot_password_form']);
+        
+        add_action('admin_post_nopriv_pr_customer_forgot_password', [$this, 'handle_customer_forgot_password']);
+        add_action('admin_post_pr_customer_forgot_password', [$this, 'handle_customer_forgot_password']);
+
+        add_shortcode('customer_reset_password_form', [$this, 'render_reset_password_form']);
+
+        add_action('admin_post_nopriv_pr_customer_reset_password', [$this, 'handle_pr_customer_reset_password']);
+        add_action('admin_post_pr_customer_reset_password', [$this, 'handle_pr_customer_reset_password']);
+
         global $wpdb;
 
         $this->wpdb = $wpdb;
@@ -219,6 +229,227 @@ class Customer_Login extends CustomerController
         
         $redirect_url = wp_get_referer();
         wp_safe_redirect($redirect_url);
+        exit;
+    }
+
+    public function render_forgot_password_form($atts)
+    {
+        ob_start();
+
+        // Define path to the view file
+        $view_path = plugin_dir_path(__FILE__) . '../views/customer/forgot-password.php';
+
+        // Ensure file exists before including
+        if (file_exists($view_path)) {
+            include $view_path;
+        } else {
+            echo "<p>Error: View file not found!</p>";
+        }
+
+        return ob_get_clean();
+        
+    }
+
+    public function handle_customer_forgot_password() {
+        session_start();
+
+        global $wpdb;
+
+        // Security Check
+        if (!isset($_POST['pr_customer_nonce']) || !wp_verify_nonce($_POST['pr_customer_nonce'], 'pr_customer_form_action')) {
+            wp_die('Security check failed.');
+        }
+
+        // Get and sanitize email
+        $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+
+        $errors = [];
+        if (empty($email)) {
+            $errors['email'] = 'Email is required.';
+        } elseif (!is_email($email)) {
+            $errors['email'] = 'Invalid email format.';
+        } else {
+            // Check email in wp_service_partners table
+            $user = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->customer_table} WHERE email = %s", $email));
+    
+            if (!$user) {
+                $errors['email'] = 'Email not registered.';
+            }
+        }
+
+        if (!empty($errors)) {
+            $_SESSION['forgot_password_errors'] = $errors;
+            $_SESSION['forgot_password_old'] = $_POST;
+            wp_redirect(wp_get_referer()); // Redirect back to the form
+            exit;
+        }
+
+        $reset_key = wp_generate_password(32, false); // You can store this in the DB for verification
+        $reset_expires = date('Y-m-d H:i:s', strtotime('+1 hour')); 
+        // Save reset key in the service partners table
+        $wpdb->update(
+            $this->customer_table,
+            [
+                'reset_token' => $reset_key,
+                'reset_expires' => $reset_expires // Ensure expiration time is saved
+            ],
+            ['email' => $email],
+            ['%s'],
+            ['%s']
+        );
+    
+        // Generate Reset Password Link
+        $reset_link = add_query_arg([
+            'key' => $reset_key,
+            'email' => rawurlencode($email),
+        ], site_url('/customer-reset-password')); // Change to your reset password page
+
+        // Send Email
+        $subject = 'Password Reset Request';
+        $message = "Hello,\n\nYou requested a password reset. Click the link below to reset your password:\n\n";
+        $message .= $reset_link . "\n\nIf you did not request this, please ignore this email.";
+        
+        wp_mail($email, $subject, $message);
+
+        // Redirect with success message
+        $_SESSION['forgot_password_success'] = 'A reset link has been sent to your email.';
+        wp_redirect(wp_get_referer());
+        exit;
+    }
+
+    function render_reset_password_form() {
+
+        // Start session if not started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+
+        if (!isset($_GET['key']) || !isset($_GET['email'])) {
+            return '<p class="alert alert-danger text-center">Invalid password reset link.</p>';
+        }
+    
+        $errors = isset($_SESSION['forgot_password_errors']) ? $_SESSION['forgot_password_errors'] : [];
+        $success_message = isset($_SESSION['forgot_password_success']) ? $_SESSION['forgot_password_success'] : '';
+    
+        unset($_SESSION['forgot_password_errors'], $_SESSION['forgot_password_success']);
+    
+        ob_start(); ?>
+    
+        <?php if (!empty($success_message)) : ?>
+            <p class="alert alert-success text-center"><?php echo esc_html($success_message); ?></p>
+        <?php endif; ?>
+    
+        <form class="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <?php wp_nonce_field('reset_password_action', 'reset_password_nonce'); ?>
+            <input type="hidden" name="action" value="pr_customer_reset_password">
+            <input type="hidden" name="email" value="<?php echo esc_attr($_GET['email']); ?>">
+            <input type="hidden" name="token" value="<?php echo esc_attr($_GET['key']); ?>">
+    
+            <div class="wpcf7-form">
+                <div class="step step-1">
+                    <div class="step-header">
+                        <h5 class="text-center">Reset Password</h5>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" class="form-control h-50px" id="new_password" name="new_password" placeholder="Enter new password" required>
+                            <span class="error"><?php echo esc_html($errors['new_password'] ?? ''); ?></span>
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password" class="form-control h-50px" id="confirm_password" name="confirm_password" placeholder="Confirm new password" required>
+                            <span class="error"><?php echo esc_html($errors['confirm_password'] ?? ''); ?></span>
+                        </div>
+    
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">Reset Password</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    
+        <?php return ob_get_clean();
+    }
+
+    function handle_pr_customer_reset_password() {
+
+        if (!isset($_POST['reset_password_nonce']) || !wp_verify_nonce($_POST['reset_password_nonce'], 'reset_password_action')) {
+            wp_die('Security check failed.');
+        }
+    
+        // Start session if not started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        // Sanitize input values
+        $email = sanitize_email($_POST['email'] ?? '');
+        $token = sanitize_text_field($_POST['token'] ?? '');
+        $new_password = sanitize_text_field($_POST['new_password'] ?? '');
+        $confirm_password = sanitize_text_field($_POST['confirm_password'] ?? '');
+    
+        $errors = [];
+    
+        // Validate password length
+        if (strlen($new_password) < 8) {
+            $errors['new_password'] = "Password must be at least 8 characters.";
+        }
+    
+        // Confirm passwords match
+        if ($new_password !== $confirm_password) {
+            $errors['confirm_password'] = "Passwords do not match.";
+        }
+    
+        // If there are errors, store them in session and redirect back to reset form
+        if (!empty($errors)) {
+            $_SESSION['forgot_password_errors'] = $errors;
+    
+            // Redirect to reset password form with query params
+            $reset_url = add_query_arg([
+                'key'   => $token,
+                'email' => rawurlencode($email)
+            ], site_url('/customer-reset-password'));
+            
+            
+            wp_safe_redirect($reset_url);
+            exit;
+        }
+    
+        // Database check for partner
+        global $wpdb;
+        $customer = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, reset_token, reset_expires FROM {$this->customer_table} WHERE email = %s", 
+            $email
+        ));
+
+    
+        // Validate token and expiry
+        if (!$customer || $customer->reset_token !== $token || empty($customer->reset_expires) || time() > strtotime($customer->reset_expires)) {
+            wp_die("Invalid or expired reset token.");
+        }
+
+        // Update password and reset token
+        $wpdb->update(
+            $this->customer_table,
+            [
+                'password' => wp_hash_password($new_password),
+                'reset_token' => null,
+                'reset_expires' => null
+            ],
+            ['id' => $customer->id]
+        );
+    
+        // Store success message in session
+        $_SESSION['forgot_password_success'] = "Password reset successful. You can now log in.";
+    
+        // Redirect to login page
+        wp_safe_redirect(home_url('/customer-login?reset=success'));
         exit;
     }
     
