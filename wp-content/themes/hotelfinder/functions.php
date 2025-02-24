@@ -1127,4 +1127,28 @@ function refresh_meta_after_duplicate($post_id) {
 }
 add_action('save_post', 'refresh_meta_after_duplicate');
 
+function send_customer_email() {
+    if (!isset($_POST['email']) || !isset($_POST['subject']) || !isset($_POST['message'])) {
+        echo "Invalid request.";
+        wp_die();
+    }
+
+    $to = sanitize_email($_POST['email']);
+    $subject = sanitize_text_field($_POST['subject']);
+    $message = wp_kses_post($_POST['message']);
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+    if (wp_mail($to, $subject, $message, $headers)) {
+        echo "Email sent successfully.";
+    } else {
+        echo "Failed to send email.";
+    }
+
+    wp_die();
+}
+
+add_action('wp_ajax_send_customer_email', 'send_customer_email');
+add_action('wp_ajax_nopriv_send_customer_email', 'send_customer_email'); // Allow for non-logged-in users
+
+
 

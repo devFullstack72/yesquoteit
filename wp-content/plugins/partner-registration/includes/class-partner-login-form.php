@@ -73,8 +73,8 @@ class Partner_Login_Form
             $_SESSION['partner_logged_in'] = true;
             $_SESSION['partner_id'] = $partner->id;
             $_SESSION['partner_name'] = $partner->name;
-    
-            wp_safe_redirect(home_url());
+            // wp_safe_redirect(home_url());
+            wp_safe_redirect(home_url('partner-customer-requests'));
             exit;
         } else {
             $_SESSION['login_error'] = "Invalid email or password.";
