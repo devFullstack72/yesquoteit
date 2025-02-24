@@ -149,19 +149,19 @@ header('Content-Type: text/html; charset=UTF-8');
             background-color: #5a677b;
         }
 
-        .services ul {
+        .services ol {
             list-style-type: none; /* Remove default bullets */
             padding: 0;
             margin: 0;
         }
 
-        .services ul li {
+        .services ol li {
             padding: 5px 10px; /* Compact padding */
             border-bottom: 1px solid #ddd; /* Light separator between items */
             font-size: 14px; /* Keep font size consistent */
         }
 
-        .services ul li:last-child {
+        .services ol li:last-child {
             border-bottom: none; /* Remove border from the last item */
         }
 
@@ -201,13 +201,13 @@ header('Content-Type: text/html; charset=UTF-8');
                 </div>
             </div>
             <?php if ($assigned_lead_posts): ?>
-                <ul>
+                <ol>
                     <?php foreach ($assigned_lead_posts as $lead): ?>
                         <li>
                             <h3><?php echo esc_html($lead->post_title); ?></h3>
                         </li>
                     <?php endforeach; ?>
-                </ul>
+                </ol>
             <?php else: ?>
                 <p>No services assigned to this partner.</p>
             <?php endif; ?>
