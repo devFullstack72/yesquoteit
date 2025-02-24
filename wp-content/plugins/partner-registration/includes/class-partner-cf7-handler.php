@@ -150,6 +150,8 @@ class Partner_CF7_Handler {
         $created_lead_quote_id = $this->saveLeadQuote($customer_id, $email_data);
 
         $email_data['customer_login_link'] = home_url() . '/handler-events/customer/' . encrypt_customer_id($customer_id);
+
+        $email_data['partner_cost_hotlink'] = home_url() . '/partner-customer-requests';
     
         // Send email to approved service providers
         $approved_partners_emails = [];
