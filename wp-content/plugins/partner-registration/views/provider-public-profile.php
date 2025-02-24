@@ -193,7 +193,7 @@ header('Content-Type: text/html; charset=UTF-8');
             <p><strong>Phone:</strong> <?php echo esc_html($provider->phone); ?></p>
             <p><strong>Website:</strong> <a href="<?php echo esc_url($provider->website_url); ?>" target="_blank"><?php echo esc_html($provider->website_url); ?></a></p>
         </div>
-        <div class="tab-content" id="tab2">
+        <div class="tab-content services" id="tab2">
             <div class="profile-header">
                 <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
                 <div>
