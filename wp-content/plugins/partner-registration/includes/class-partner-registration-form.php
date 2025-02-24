@@ -13,6 +13,7 @@ class Partner_Registration_Form
     public function __construct()
     {
         add_shortcode('partner_registration_form', [$this, 'render_registration_form']);
+        add_shortcode('partner_forgot_password_form', [$this, 'render_forgot_password_form']);
         // add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
         // add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
 
@@ -31,11 +32,15 @@ class Partner_Registration_Form
         add_action('admin_post_nopriv_pr_partner_change_password', [$this, 'handle_pr_partner_change_password']);
         add_action('admin_post_pr_partner_change_password', [$this, 'handle_pr_partner_change_password']);
 
-        add_action('admin_post_nopriv_pr_partner_forgot_password', [$this, 'handle_pr_partner_forgot_password']);
-        add_action('admin_post_pr_partner_forgot_password', [$this, 'handle_pr_partner_forgot_password']);
 
-        add_action('admin_post_nopriv_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
-        add_action('admin_post_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
+        add_action('admin_post_nopriv_pr_partner_forgot_password', [$this, 'handle_pr_handle_forgot_password']);
+        add_action('admin_post_pr_partner_forgot_password', [$this, 'handle_pr_handle_forgot_password']);
+
+        // add_action('admin_post_nopriv_pr_partner_forgot_password', [$this, 'handle_pr_partner_forgot_password']);
+        // add_action('admin_post_pr_partner_forgot_password', [$this, 'handle_pr_partner_forgot_password']);
+
+        // add_action('admin_post_nopriv_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
+        // add_action('admin_post_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
 
@@ -765,6 +770,106 @@ class Partner_Registration_Form
         wp_safe_redirect($redirect_url);
         exit;
     }
+
+
+    public function render_forgot_password_form($atts)
+    {
+
+        // Set default attributes and merge with user-specified attributes
+        // $atts = shortcode_atts([
+        //     'profile'    => false, 
+        // ], $atts, 'partner_registration_form');
+
+        // ob_start(); // Start output buffering
+        
+        // global $wpdb;
+
+        // Start output buffering
+        ob_start();
+
+        // Define path to the view file
+        $view_path = plugin_dir_path(__FILE__) . '../views/partner-register/forgot-password.php';
+
+        // Ensure file exists before including
+        if (file_exists($view_path)) {
+            include $view_path;
+        } else {
+            echo "<p>Error: View file not found!</p>";
+        }
+
+        return ob_get_clean();
+        
+    }
+
+
+    public function handle_pr_handle_forgot_password() {
+        global $wpdb;
+    
+        // Security Check
+        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+            wp_redirect(add_query_arg('error', 'invalid_nonce', wp_get_referer()));
+            exit;
+        }
+    
+        // Get and sanitize email
+        $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    
+        $errors = [];
+    
+        if (empty($email)) {
+            $errors['email'] = 'Email is required.';
+        } elseif (!is_email($email)) {
+            $errors['email'] = 'Invalid email format.';
+        } else {
+            // Check email in wp_service_partners table
+            $table_name = $wpdb->prefix . 'service_partners';
+            $user = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table_name} WHERE email = %s", $email));
+    
+            if (!$user) {
+                $errors['email'] = 'Email not registered.';
+            }
+        }
+    
+        if (!empty($errors)) {
+            set_transient('forgot_password_errors', $errors, 300); // Store errors temporarily
+            wp_redirect(wp_get_referer());
+            exit;
+        }
+    
+        // Generate a secure reset key
+        $reset_key = wp_generate_password(32, false);
+        $hashed_reset_key = wp_hash_password($reset_key); // Hash before storing
+    
+        // Store reset key securely in the database
+        $wpdb->update(
+            $table_name,
+            ['reset_token' => $hashed_reset_key, 'reset_token_expires' => current_time('mysql', 1) + (60 * 60)], // Expires in 1 hour
+            ['email' => $email],
+            ['%s', '%s'],
+            ['%s']
+        );
+    
+        // Generate Reset Password Link
+        $reset_link = add_query_arg([
+            'key'   => $reset_key,
+            'email' => rawurlencode($email),
+        ], site_url('/reset-password'));
+    
+        // Send Email
+        $subject = 'Password Reset Request';
+        $message = "Hello,\n\nYou requested a password reset. Click the link below to reset your password:\n\n";
+        $message .= esc_url($reset_link) . "\n\nIf you did not request this, please ignore this email.";
+    
+        $headers = ['Content-Type: text/plain; charset=UTF-8'];
+    
+        wp_mail($email, $subject, wp_specialchars_decode($message), $headers);
+    
+        // Redirect with success message
+        set_transient('forgot_password_success', 'A reset link has been sent to your email.', 300);
+        wp_redirect(wp_get_referer());
+        exit;
+    }
+    
 
    
 

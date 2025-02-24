@@ -27,7 +27,8 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <a href="<?php echo home_url() . '/register-your-business' ?>">Create an account?</a>
+                            <a href="<?php echo home_url() . '/register-your-business' ?>">Create an account?</a><br>
+                            <a href="<?php echo home_url() . '/partner-forgot-password' ?>">Forgot Password?</a>
                         </div>
                         <div class="col-md-6 text-right">
                             <button type="submit" class="btn btn-theme-primary">Login</button>

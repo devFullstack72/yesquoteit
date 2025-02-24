@@ -121,11 +121,6 @@ include plugin_dir_path(__FILE__) . '../views/partner-register/services.php';
         include plugin_dir_path(__FILE__) . '../views/partner-register/change-password.php';
 
 
-        // $partner_register_page_title = 'Forgot Password';
-        // $submit_button_text = 'Reset Password';
-        // include plugin_dir_path(__FILE__) . '../views/partner-register/forgot-password.php';
-
-
         $partner_register_page_title = 'Update Address';
         $submit_button_text = 'Save';
         include plugin_dir_path(__FILE__) . '../views/partner-register/address.php';
