@@ -316,6 +316,26 @@ class Partner_Registration_Plugin {
         }
     }
 
+    public static function create_partner_forgot_password_page() {
+        $page_title = 'Forgot Password';
+        $page_slug = 'partner-forgot-password';
+        $page_content = '[partner_forgot_password_form]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
+
     public static function create_partner_reset_password_page() {
         $page_title = 'Reset Password';
         $page_slug = 'reset-password';
@@ -345,6 +365,8 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_register_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_profile_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_forgot_password_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_customer_requests_page']);
 
