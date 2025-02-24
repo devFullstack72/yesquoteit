@@ -21,6 +21,7 @@ require_once PR_PLUGIN_DIR . 'includes/class-partner-admin.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-cf7-handler.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-profile-page.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-customer-requests.php';
+require_once PR_PLUGIN_DIR . 'includes/class-customer-requests.php';
 
 require_once PR_PLUGIN_DIR . 'includes/class-customer-login.php';
 
@@ -34,6 +35,7 @@ class Partner_Registration_Plugin {
         new Partner_CF7_Handler();
         new Partner_Public_Profile();
         new Partner_Customer_Requests();
+        new Customer_Requests();
 
         new Customer_Login();
     }
@@ -273,6 +275,27 @@ class Partner_Registration_Plugin {
         }
     }
 
+    public static function create_customer_requests_page() {
+        $page_title = 'Customer requests';
+        $page_slug = 'customer-requests';
+        $page_content = '[customer_requests]'; // Use the shortcode
+    
+        // Check if page already exists by slug
+        $page_check = get_page_by_path($page_slug);
+    
+        if (!$page_check) {
+            $page_id = wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
+
+
     public static function create_customer_set_password_page() {
         $page_title = 'Customer Set Password';
         $page_slug = 'customer-change-password';
@@ -326,6 +349,8 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_customer_requests_page']);
 
 // Customer hooks
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_requests_page']);
+
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_login_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_reset_password_page']);

@@ -116,6 +116,7 @@ class Partner_Login_Form
                         <i class="fa fa-user"></i> <?php echo esc_html($_SESSION['customer_name']); ?>
                     </button>
                     <ul class="dropdown-menu" id="dropdownMenu">
+                        <li><a href="<?php echo esc_url(home_url()); ?>/customer-requests"><i class="fa fa-bullhorn"></i> Your Quotes</a></li>
                         <li><a href="<?php echo esc_url(site_url('/customer-change-password')); ?>"><i class="fa fa-pencil"></i> Change Password</a></li>
                         <li><a href="<?php echo esc_url(admin_url('admin-post.php?action=customer_logout')); ?>"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
