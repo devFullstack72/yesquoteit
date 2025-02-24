@@ -14,6 +14,7 @@ class Partner_Registration_Form
     {
         add_shortcode('partner_registration_form', [$this, 'render_registration_form']);
         add_shortcode('partner_forgot_password_form', [$this, 'render_forgot_password_form']);
+        // add_shortcode('customer_forgot_password_form', [$this, 'render_customer_forgot_password_form']);
         // add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
         // add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
 
@@ -36,11 +37,13 @@ class Partner_Registration_Form
         add_action('admin_post_nopriv_pr_partner_forgot_password', [$this, 'handle_pr_handle_forgot_password']);
         add_action('admin_post_pr_partner_forgot_password', [$this, 'handle_pr_handle_forgot_password']);
 
-        // add_action('admin_post_nopriv_pr_partner_forgot_password', [$this, 'handle_pr_partner_forgot_password']);
-        // add_action('admin_post_pr_partner_forgot_password', [$this, 'handle_pr_partner_forgot_password']);
 
-        // add_action('admin_post_nopriv_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
-        // add_action('admin_post_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
+        add_shortcode('partner_reset_password_form', [$this, 'render_reset_password_form']);
+
+
+
+        add_action('admin_post_nopriv_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
+        add_action('admin_post_pr_partner_reset_password', [$this, 'handle_pr_partner_reset_password']);
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
 
@@ -774,17 +777,6 @@ class Partner_Registration_Form
 
     public function render_forgot_password_form($atts)
     {
-
-        // Set default attributes and merge with user-specified attributes
-        // $atts = shortcode_atts([
-        //     'profile'    => false, 
-        // ], $atts, 'partner_registration_form');
-
-        // ob_start(); // Start output buffering
-        
-        // global $wpdb;
-
-        // Start output buffering
         ob_start();
 
         // Define path to the view file
@@ -803,19 +795,19 @@ class Partner_Registration_Form
 
 
     public function handle_pr_handle_forgot_password() {
+        session_start();
+
         global $wpdb;
-    
+
         // Security Check
         if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
-            wp_redirect(add_query_arg('error', 'invalid_nonce', wp_get_referer()));
-            exit;
+            wp_die('Security check failed.');
         }
-    
+
         // Get and sanitize email
         $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
-    
+
         $errors = [];
-    
         if (empty($email)) {
             $errors['email'] = 'Email is required.';
         } elseif (!is_email($email)) {
@@ -829,183 +821,185 @@ class Partner_Registration_Form
                 $errors['email'] = 'Email not registered.';
             }
         }
-    
+
         if (!empty($errors)) {
-            set_transient('forgot_password_errors', $errors, 300); // Store errors temporarily
-            wp_redirect(wp_get_referer());
+            $_SESSION['forgot_password_errors'] = $errors;
+            $_SESSION['forgot_password_old'] = $_POST;
+            wp_redirect(wp_get_referer()); // Redirect back to the form
             exit;
         }
-    
-        // Generate a secure reset key
-        $reset_key = wp_generate_password(32, false);
-        $hashed_reset_key = wp_hash_password($reset_key); // Hash before storing
-    
-        // Store reset key securely in the database
+
+        $reset_key = wp_generate_password(32, false); // You can store this in the DB for verification
+        $reset_expires = date('Y-m-d H:i:s', strtotime('+1 hour')); 
+        // Save reset key in the service partners table
         $wpdb->update(
             $table_name,
-            ['reset_token' => $hashed_reset_key, 'reset_token_expires' => current_time('mysql', 1) + (60 * 60)], // Expires in 1 hour
+            [
+                'reset_token' => $reset_key,
+                'reset_expires' => $reset_expires // Ensure expiration time is saved
+            ],
             ['email' => $email],
-            ['%s', '%s'],
+            ['%s'],
             ['%s']
         );
     
         // Generate Reset Password Link
         $reset_link = add_query_arg([
-            'key'   => $reset_key,
+            'key' => $reset_key,
             'email' => rawurlencode($email),
-        ], site_url('/reset-password'));
-    
+        ], site_url('/partner-reset-password')); // Change to your reset password page
+
         // Send Email
         $subject = 'Password Reset Request';
         $message = "Hello,\n\nYou requested a password reset. Click the link below to reset your password:\n\n";
-        $message .= esc_url($reset_link) . "\n\nIf you did not request this, please ignore this email.";
-    
-        $headers = ['Content-Type: text/plain; charset=UTF-8'];
-    
-        wp_mail($email, $subject, wp_specialchars_decode($message), $headers);
-    
+        $message .= $reset_link . "\n\nIf you did not request this, please ignore this email.";
+        
+        wp_mail($email, $subject, $message);
+
         // Redirect with success message
-        set_transient('forgot_password_success', 'A reset link has been sent to your email.', 300);
+        $_SESSION['forgot_password_success'] = 'A reset link has been sent to your email.';
         wp_redirect(wp_get_referer());
         exit;
     }
+
+    function render_reset_password_form() {
+
+        // Start session if not started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+
+        if (!isset($_GET['key']) || !isset($_GET['email'])) {
+            return '<p class="alert alert-danger text-center">Invalid password reset link.</p>';
+        }
     
+        $errors = isset($_SESSION['forgot_password_errors']) ? $_SESSION['forgot_password_errors'] : [];
+        $success_message = isset($_SESSION['forgot_password_success']) ? $_SESSION['forgot_password_success'] : '';
+    
+        unset($_SESSION['forgot_password_errors'], $_SESSION['forgot_password_success']);
+    
+        ob_start(); ?>
+    
+        <?php if (!empty($success_message)) : ?>
+            <p class="alert alert-success text-center"><?php echo esc_html($success_message); ?></p>
+        <?php endif; ?>
+    
+        <form class="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <?php wp_nonce_field('reset_password_action', 'reset_password_nonce'); ?>
+            <input type="hidden" name="action" value="pr_partner_reset_password">
+            <input type="hidden" name="email" value="<?php echo esc_attr($_GET['email']); ?>">
+            <input type="hidden" name="token" value="<?php echo esc_attr($_GET['key']); ?>">
+    
+            <div class="wpcf7-form">
+                <div class="step step-1">
+                    <div class="step-header">
+                        <h5 class="text-center">Reset Password</h5>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" class="form-control h-50px" id="new_password" name="new_password" placeholder="Enter new password" required>
+                            <span class="error"><?php echo esc_html($errors['new_password'] ?? ''); ?></span>
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password" class="form-control h-50px" id="confirm_password" name="confirm_password" placeholder="Confirm new password" required>
+                            <span class="error"><?php echo esc_html($errors['confirm_password'] ?? ''); ?></span>
+                        </div>
+    
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">Reset Password</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    
+        <?php return ob_get_clean();
+    }
 
-   
+    function handle_pr_partner_reset_password() {
 
-    public function handle_pr_partner_forgot_password() {
-        if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
+        if (!isset($_POST['reset_password_nonce']) || !wp_verify_nonce($_POST['reset_password_nonce'], 'reset_password_action')) {
             wp_die('Security check failed.');
         }
-
-        $email = sanitize_email($_POST['email']);
-        $errors = [];
-
-        if (empty($email)) {
-            $errors['email'] = "Email is required";
-        } elseif (!is_email($email)) {
-            $errors['email'] = "Invalid email address";
-        } else {
-            $user = $this->wpdb->get_row($this->wpdb->prepare("SELECT id, email FROM {$this->service_partners_table} WHERE email = %s", $email));
-            
-            if (!$user) {
-                $errors['email'] = "No account found with this email";
-            }
+    
+        // Start session if not started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
-
+    
+        // Sanitize input values
+        $email = sanitize_email($_POST['email'] ?? '');
+        $token = sanitize_text_field($_POST['token'] ?? '');
+        $new_password = sanitize_text_field($_POST['new_password'] ?? '');
+        $confirm_password = sanitize_text_field($_POST['confirm_password'] ?? '');
+    
+        $errors = [];
+    
+        // Validate password length
+        if (strlen($new_password) < 8) {
+            $errors['new_password'] = "Password must be at least 8 characters.";
+        }
+    
+        // Confirm passwords match
+        if ($new_password !== $confirm_password) {
+            $errors['confirm_password'] = "Passwords do not match.";
+        }
+    
+        // If there are errors, store them in session and redirect back to reset form
         if (!empty($errors)) {
-            $_SESSION['form_errors'] = $errors;
-            wp_safe_redirect(wp_get_referer());
+            $_SESSION['forgot_password_errors'] = $errors;
+    
+            // Redirect to reset password form with query params
+            $reset_url = add_query_arg([
+                'key'   => $token,
+                'email' => rawurlencode($email)
+            ], site_url('/partner-reset-password'));
+            
+            
+            wp_safe_redirect($reset_url);
             exit;
         }
-
-        $reset_token = wp_generate_password(32, false);
-        $expiry = time() + (60 * 60); // Token valid for 1 hour
-
-        $this->wpdb->update($this->service_partners_table, [
-            'reset_token' => $reset_token,
-            'reset_expires' => $expiry
-        ], ['id' => $user->id]);
-
-        $reset_link = add_query_arg([
-            'action' => 'pr_partner_reset_password',
-            'token' => $reset_token,
-            'email' => urlencode($email)
-        ], site_url('wp-admin/admin-post.php'));
-
-        $subject = "Password Reset Request";
-        $message = "Click the link below to reset your password:\n\n" . esc_url($reset_link);
-        wp_mail($email, $subject, $message);
-
-        $_SESSION['profile_updated'] = ['message' => 'Password reset link sent to your email'];
-        wp_safe_redirect(wp_get_referer());
-        exit;
-    }
-
-    public function handle_pr_partner_reset_password() {
-        $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : null;
-        $email = isset($_GET['email']) ? sanitize_email($_GET['email']) : null;
     
-        if (!$token || !$email) {
-            wp_die('Invalid request.');
+        // Database check for partner
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'service_partners';
+        $partner = $wpdb->get_row($wpdb->prepare(
+            "SELECT id, reset_token, reset_expires FROM {$table_name} WHERE email = %s", 
+            $email
+        ));
+
+    
+        // Validate token and expiry
+        if (!$partner || $partner->reset_token !== $token || empty($partner->reset_expires) || time() > strtotime($partner->reset_expires)) {
+            wp_die("Invalid or expired reset token.");
         }
+
+        // Update password and reset token
+        $wpdb->update(
+            $table_name,
+            [
+                'password' => wp_hash_password($new_password),
+                'reset_token' => null,
+                'reset_expires' => null
+            ],
+            ['id' => $partner->id]
+        );
     
-        // Redirect to a password reset form
-        wp_redirect(home_url("/reset-password/?token={$token}&email={$email}"));
+        // Store success message in session
+        $_SESSION['forgot_password_success'] = "Password reset successful. You can now log in.";
+    
+        // Redirect to login page
+        wp_safe_redirect(home_url('/partner-login?reset=success'));
         exit;
     }
-
-    // public function handle_pr_partner_reset_password() {
-    //     // Verify nonce
-    //     if (!isset($_POST['reset_password_nonce']) || !wp_verify_nonce($_POST['reset_password_nonce'], 'reset_password_action')) {
-    //         wp_die('Security check failed.');
-    //     }
     
-    //     // Get form data safely
-    //     $email = sanitize_email($_POST['email'] ?? '');
-    //     $token = sanitize_text_field($_POST['token'] ?? '');
-    //     $new_password = sanitize_text_field($_POST['new_password'] ?? '');
-    //     $confirm_password = sanitize_text_field($_POST['confirm_password'] ?? '');
-    
-    //     // Check for empty fields
-    //     if (empty($email) || empty($token) || empty($new_password) || empty($confirm_password)) {
-    //         wp_die("Missing required fields.");
-    //     }
-    
-    //     // Validate password length
-    //     $errors = [];
-    //     if (strlen($new_password) < 8) {
-    //         $errors['new_password'] = "Password must be at least 8 characters.";
-    //     }
-    
-    //     // Confirm passwords match
-    //     if ($new_password !== $confirm_password) {
-    //         $errors['confirm_password'] = "Passwords do not match.";
-    //     }
-    
-    //     // Retrieve user from the database
-    //     $user = $this->wpdb->get_row($this->wpdb->prepare(
-    //         "SELECT id, reset_token, reset_expires FROM {$this->service_partners_table} WHERE email = %s", 
-    //         $email
-    //     ));
-    
-    //     // Validate reset token
-    //     if (!$user || $user->reset_token !== $token || time() > $user->reset_expires) {
-    //         wp_die("Invalid or expired reset token.");
-    //     }
-    
-    //     // If errors exist, redirect back with error messages
-    //     if (!empty($errors)) {
-    //         $_SESSION['form_errors'] = $errors;
-    //         wp_safe_redirect(wp_get_referer());
-    //         exit;
-    //     }
-    
-    //     // Update the password and clear the reset token
-    //     $update = $this->wpdb->update(
-    //         $this->service_partners_table,
-    //         [
-    //             'password' => wp_hash_password($new_password),
-    //             'reset_token' => null,
-    //             'reset_expires' => null
-    //         ],
-    //         ['id' => $user->id]
-    //     );
-    
-    //     if ($update === false) {
-    //         wp_die("Password reset failed. Please try again.");
-    //     }
-    
-    //     // Store success message using WordPress transient (if session doesn't work)
-    //     set_transient('password_reset_success', 'Password reset successful. You can now log in.', 60);
-    
-    //     // Redirect to login page with a success message
-    //     wp_safe_redirect(home_url('/login?reset=success'));
-    //     exit;
-    // }
-    
-
-
+   
     protected function loggedIn() {
         if (isset($_SESSION['partner_id'])) {
             return $_SESSION['partner_id'];

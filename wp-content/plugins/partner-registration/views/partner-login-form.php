@@ -1,4 +1,9 @@
 <div class="partner-login-form">
+
+    <!-- Show Success Message if Reset Password is Successful -->
+    <?php if (isset($_GET['reset']) && $_GET['reset'] === 'success'): ?>
+        <div class="alert alert-success">Your password has been reset successfully. You can now log in.</div>
+    <?php endif; ?>
     
     <?php if (isset($_SESSION['partner_logged_in']) && $_SESSION['partner_logged_in'] === true): ?>
         <div class="alert alert-info">You are already loggedin</div>

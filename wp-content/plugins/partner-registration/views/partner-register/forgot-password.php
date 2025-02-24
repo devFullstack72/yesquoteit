@@ -10,7 +10,7 @@ unset($_SESSION['forgot_password_success']);
 ?>
 
 <?php if (!empty($success_message)) : ?>
-    <p class="success"><?php echo esc_html($success_message); ?></p>
+    <p class="alert alert-success text-center"><?php echo esc_html($success_message); ?></p>
 <?php endif; ?>
 
 <form class="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
