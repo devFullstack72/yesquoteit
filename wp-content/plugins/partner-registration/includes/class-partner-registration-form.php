@@ -854,7 +854,7 @@ class Partner_Registration_Form
         $message = "Hello,\n\nYou requested a password reset. Click the link below to reset your password:\n\n";
         $message .= $reset_link . "\n\nIf you did not request this, please ignore this email.";
         
-        // wp_mail($email, $subject, $message);
+        wp_mail($email, $subject, $message);
 
         // Redirect with success message
         $_SESSION['forgot_password_success'] = 'A reset link has been sent to your email.';
