@@ -97,7 +97,6 @@
         <span class="close close-lead-modal">&times;</span>
         <h4>Quote Data</h4>
         <div id="quote_details"></div> <!-- Dynamic Key-Value Pairs -->
-        <button class="btn btn-primary close-lead-modal">Close</button>
     </div>
 </div>
 
