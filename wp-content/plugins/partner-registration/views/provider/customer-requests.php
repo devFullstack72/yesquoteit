@@ -3,7 +3,7 @@
     <div class="htlfndr-section-under-title-line"></div>
     <div class="table-wrap">
     <button id="deleteSelected" class="btn btn-danger" style="display: none; float: right; margin-bottom: 10px;">
-        Delete Selected
+       <i class="fa fa-trash"></i> Delete Selected
     </button>
 
     <table class="table table-responsive-xl">
@@ -11,7 +11,7 @@
             <tr>
                 <th><input type="checkbox" id="selectAll"></th>
                 <th>Email</th>
-                <th>enquiry name</th>
+                <th>Enquiry Name</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -51,7 +51,7 @@
                             <button class="btn btn-primary text-xs open-email-modal" 
                                     data-email="<?php echo esc_attr($customer_quote->email); ?>"
                                     data-quote_id="<?php echo esc_attr($customer_quote->lead_quote_id); ?>">
-                                Send Email
+                                    <i class="fa fa-envelope"></i> Send Email
                             </button>
 
                             <button type="button" class="close delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
@@ -258,9 +258,7 @@ body {background-color: #f8f9fd;}
     color: grey;
 }
 
-.table td a {
-    color: black;
-}
+
 
 /* .table td, .table thead{border-bottom: 2px solid grey !important;} */
 .table tbody td .close span {
@@ -322,5 +320,27 @@ thead {
 .switch{
     border-radius: 3px;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    overflow-y: auto; /* Enable scrolling */
+}
+
+.modal-content {
+    background: #fff;
+    margin: 5% auto; /* Adjusted to prevent overflow */
+    padding: 20px;
+    width: 60%; /* Adjust width if needed */
+    max-height: 90vh; /* Prevents it from exceeding viewport height */
+    overflow-y: auto; /* Enable internal scrolling */
+    border-radius: 5px;
+}
+
 
 </style>
