@@ -29,8 +29,11 @@ class Partner_Customer_Requests extends PartnerController
                 c.name, 
                 c.email, 
                 c.phone, 
-                lq.lead_id, 
+                lq.lead_id,
+                lq.quote_data,  
                 lq.created_at,
+                lqp.status,
+                lqp.id as lead_quote_id,
                 p.post_title AS lead_name
             FROM $this->lead_quotes_partners_table lqp
             INNER JOIN $this->lead_quotes_table lq ON lqp.lead_quote_id = lq.id
