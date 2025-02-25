@@ -30,6 +30,8 @@ class Customer_Requests extends CustomerController
                 c.email, 
                 c.phone, 
                 lq.lead_id, 
+                lq.quote_data, 
+                lq.id as lead_quote_id,
                 lq.created_at,
                 p.post_title AS lead_name
             FROM $this->lead_quotes_table lq

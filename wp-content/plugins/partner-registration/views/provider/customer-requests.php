@@ -284,7 +284,7 @@ body {background-color: #f8f9fd;}
     padding: 30px;
     font-size: 14px;
     background: #fff;
-    vertical-align: middle;
+    vertical-align: middle !important;
 }
 
 .table {
@@ -317,6 +317,10 @@ thead {
     vertical-align: middle;
     unicode-bidi: isolate;
     border-color: inherit;
+}
+
+.switch{
+    border-radius: 3px;
 }
 
 </style>
