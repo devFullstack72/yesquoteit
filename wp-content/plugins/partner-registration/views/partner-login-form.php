@@ -1,9 +1,9 @@
+<?php
+$success_message = isset($_SESSION['forgot_password_success']) ? $_SESSION['forgot_password_success'] : '';
+    
+unset($_SESSION['forgot_password_errors'], $_SESSION['forgot_password_success']);
+?>
 <div class="partner-login-form">
-
-    <!-- Show Success Message if Reset Password is Successful -->
-    <?php if (isset($_GET['reset']) && $_GET['reset'] === 'success'): ?>
-        <div class="alert alert-success">Your password has been reset successfully. You can now log in.</div>
-    <?php endif; ?>
     
     <?php if (isset($_SESSION['partner_logged_in']) && $_SESSION['partner_logged_in'] === true): ?>
         <div class="alert alert-info">You are already loggedin</div>
@@ -36,7 +36,7 @@
                             <a href="<?php echo home_url() . '/partner-forgot-password' ?>">Forgot Password?</a>
                         </div>
                         <div class="col-md-6 text-right">
-                            <button type="submit" class="btn btn-theme-primary">Login</button>
+                            <button type="submit" class="btn btn-theme-primary" style="padding: 10px 50px;">Login</button>
                         </div>
                     </div>
 
@@ -46,6 +46,13 @@
                     <?php endif; ?>
 
                 </div>
+                <?php if (!empty($success_message)) : ?>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="alert alert-success"><?php echo esc_html($success_message); ?></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </form>
     <?php endif; ?>

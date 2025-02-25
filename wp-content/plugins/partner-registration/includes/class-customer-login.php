@@ -330,15 +330,8 @@ class Customer_Login extends CustomerController
         }
     
         $errors = isset($_SESSION['forgot_password_errors']) ? $_SESSION['forgot_password_errors'] : [];
-        $success_message = isset($_SESSION['forgot_password_success']) ? $_SESSION['forgot_password_success'] : '';
-    
-        unset($_SESSION['forgot_password_errors'], $_SESSION['forgot_password_success']);
-    
+        
         ob_start(); ?>
-    
-        <?php if (!empty($success_message)) : ?>
-            <p class="alert alert-success text-center"><?php echo esc_html($success_message); ?></p>
-        <?php endif; ?>
     
         <form class="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <?php wp_nonce_field('reset_password_action', 'reset_password_nonce'); ?>
@@ -370,6 +363,9 @@ class Customer_Login extends CustomerController
                             </div>
                         </div>
                     </div>
+                    <?php if (!empty($success_message)) : ?>
+                        <p class="alert alert-success text-center"><?php echo esc_html($success_message); ?></p>
+                    <?php endif; ?>
                 </div>
             </div>
         </form>

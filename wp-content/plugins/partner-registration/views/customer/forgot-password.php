@@ -9,10 +9,6 @@ $success_message = isset($_SESSION['forgot_password_success']) ? $_SESSION['forg
 unset($_SESSION['forgot_password_success']);
 ?>
 
-<?php if (!empty($success_message)) : ?>
-    <p class="alert alert-success text-center"><?php echo esc_html($success_message); ?></p>
-<?php endif; ?>
-
 <form class="partner-registration-form" method="POST" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
     <?php wp_nonce_field('pr_customer_form_action', 'pr_customer_nonce'); ?>
     <input type="hidden" name="action" value="pr_customer_forgot_password">
@@ -34,6 +30,13 @@ unset($_SESSION['forgot_password_success']);
                     </div>
                 </div>
             </div>
+            <?php if (!empty($success_message)) : ?>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="alert alert-success"><?php echo esc_html($success_message); ?></div>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </form>

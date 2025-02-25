@@ -1,3 +1,9 @@
+<?php
+$success_message = isset($_SESSION['forgot_password_success']) ? $_SESSION['forgot_password_success'] : '';
+    
+unset($_SESSION['forgot_password_errors'], $_SESSION['forgot_password_success']);
+?>
+
 <div class="partner-login-form">
     
     <?php if (isset($_SESSION['partner_logged_in']) && $_SESSION['partner_logged_in'] === true): ?>
@@ -44,6 +50,14 @@
                     <?php endif; ?>
 
                 </div>
+
+                <?php if (!empty($success_message)) : ?>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="alert alert-success"><?php echo esc_html($success_message); ?></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </form>
     <?php endif; ?>
