@@ -104,8 +104,10 @@ class Partner_Registration_Plugin {
             'lead_quotes_partners' => "CREATE TABLE {$wpdb->prefix}yqit_lead_quotes_partners (
                 id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 lead_quote_id BIGINT(20) NOT NULL,
-                provider_id BIGINT(20) NOT NULL
+                provider_id BIGINT(20) NOT NULL,
+                status ENUM('New Lead', 'Viewed', 'Responded') NOT NULL DEFAULT 'New Lead'
             ) $charset_collate;"
+
         ];
 
         @ob_start();

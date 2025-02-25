@@ -1128,6 +1128,7 @@ function refresh_meta_after_duplicate($post_id) {
 add_action('save_post', 'refresh_meta_after_duplicate');
 
 function send_customer_email() {
+
     if (!isset($_POST['email']) || !isset($_POST['subject']) || !isset($_POST['message'])) {
         echo "Invalid request.";
         wp_die();
@@ -1144,11 +1145,153 @@ function send_customer_email() {
         echo "Failed to send email.";
     }
 
+
+    if (isset($_POST['quote_id'])) {
+
+        global $wpdb;
+
+        $quote_id = intval($_POST['quote_id']);
+        $table_name = $wpdb->prefix . "yqit_lead_quotes_partners";
+
+        // Update the status to "Viewed"
+        $updated = $wpdb->update(
+            $table_name,
+            ['status' => 'Responded'],
+            ['id' => $quote_id],
+            ['%s'],
+            ['%d']
+        );
+    }
+
     wp_die();
 }
 
 add_action('wp_ajax_send_customer_email', 'send_customer_email');
 add_action('wp_ajax_nopriv_send_customer_email', 'send_customer_email'); // Allow for non-logged-in users
+
+// Handle AJAX request to delete a partner quote
+add_action('wp_ajax_delete_partner_quote', 'delete_partner_quote');
+add_action('wp_ajax_nopriv_delete_partner_quote', 'delete_partner_quote'); // If non-logged-in users need access
+
+function delete_partner_quote() {
+    global $wpdb;
+
+    if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+        wp_send_json_error(['message' => 'Invalid request.']);
+    }
+
+    $quote_id = intval($_POST['id']);
+    $table_name = $wpdb->prefix . 'yqit_lead_quotes_partners';
+
+    $deleted = $wpdb->delete($table_name, ['id' => $quote_id], ['%d']);
+
+    if ($deleted) {
+        wp_send_json_success(['message' => 'Quote deleted successfully.']);
+    } else {
+        wp_send_json_error(['message' => 'Failed to delete quote.']);
+    }
+}
+
+add_action('wp_ajax_delete_multiple_quotes', 'delete_multiple_quotes');
+add_action('wp_ajax_nopriv_delete_multiple_quotes', 'delete_multiple_quotes'); 
+
+function delete_multiple_quotes() {
+    if (!isset($_POST['ids']) || !is_array($_POST['ids'])) {
+        wp_send_json_error("Invalid request.");
+    }
+
+    global $wpdb;
+    $ids = array_map('intval', $_POST['ids']);
+    $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+    $query = "DELETE FROM {$wpdb->prefix}yqit_lead_quotes_partners WHERE id IN ($placeholders)";
+    $result = $wpdb->query($wpdb->prepare($query, $ids));
+
+    if ($result) {
+        wp_send_json_success("Quotes deleted successfully.");
+    } else {
+        wp_send_json_error("Failed to delete quotes.");
+    }
+}
+
+
+function update_quote_status() {
+    // Ensure the request is valid
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+        wp_send_json_error(['message' => 'Invalid request']);
+    }
+
+    global $wpdb;
+    $quote_id = intval($_POST['id']);
+    $table_name = $wpdb->prefix . "yqit_lead_quotes_partners";
+
+    // Update the status to "Viewed"
+    $updated = $wpdb->update(
+        $table_name,
+        ['status' => 'Viewed'],
+        ['id' => $quote_id],
+        ['%s'],
+        ['%d']
+    );
+
+    if ($updated !== false) {
+        wp_send_json_success(['message' => 'Status updated successfully']);
+    } else {
+        wp_send_json_error(['message' => 'Failed to update status']);
+    }
+}
+
+// Register AJAX action
+add_action('wp_ajax_update_quote_status', 'update_quote_status');
+add_action('wp_ajax_nopriv_update_quote_status', 'update_quote_status'); // For non-logged-in users (if required)
+
+// Handle AJAX request to delete a customer quote
+add_action('wp_ajax_delete_customer_quote', 'delete_customer_quote');
+add_action('wp_ajax_nopriv_delete_customer_quote', 'delete_customer_quote'); // If non-logged-in users need access
+
+function delete_customer_quote() {
+    global $wpdb;
+
+    if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+        wp_send_json_error(['message' => 'Invalid request.']);
+    }
+
+    $quote_id = intval($_POST['id']);
+    $table_name = $wpdb->prefix . 'yqit_lead_quotes_partners';
+    $deleted = $wpdb->delete($table_name, ['lead_quote_id' => $quote_id], ['%d']);
+
+    $table_name = $wpdb->prefix . 'yqit_lead_quotes';
+    $deleted = $wpdb->delete($table_name, ['id' => $quote_id], ['%d']);
+
+    if ($deleted) {
+        wp_send_json_success(['message' => 'Quote deleted successfully.']);
+    } else {
+        wp_send_json_error(['message' => 'Failed to delete quote.']);
+    }
+}
+
+add_action('wp_ajax_delete_multiple_customer_quotes', 'delete_multiple_customer_quotes');
+add_action('wp_ajax_nopriv_delete_multiple_customer_quotes', 'delete_multiple_customer_quotes'); 
+
+function delete_multiple_customer_quotes() {
+    if (!isset($_POST['ids']) || !is_array($_POST['ids'])) {
+        wp_send_json_error("Invalid request.");
+    }
+
+    global $wpdb;
+    $ids = array_map('intval', $_POST['ids']);
+    $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+    $query = "DELETE FROM {$wpdb->prefix}yqit_lead_quotes_partners WHERE lead_quote_id IN ($placeholders)";
+    $result = $wpdb->query($wpdb->prepare($query, $ids));
+
+    $query = "DELETE FROM {$wpdb->prefix}yqit_lead_quotes WHERE id IN ($placeholders)";
+    $result = $wpdb->query($wpdb->prepare($query, $ids));
+
+    if ($result) {
+        wp_send_json_success("Quotes deleted successfully.");
+    } else {
+        wp_send_json_error("Failed to delete quotes.");
+    }
+}
 
 
 
