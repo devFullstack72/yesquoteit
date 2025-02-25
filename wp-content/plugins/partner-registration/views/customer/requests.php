@@ -37,7 +37,7 @@
                         </td>
                         
                         <td>
-                            <button type="button" class="close delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
+                            <button style="float: left;" type="button" class="close delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
 				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
 				          	</button>
                         </td>
