@@ -35,7 +35,7 @@ unset($_SESSION['forgot_password_errors'], $_SESSION['forgot_password_success'])
                             <a href="<?php echo home_url() . '/register-your-business' ?>">Create an account?</a><br>
                             <a href="<?php echo home_url() . '/partner-forgot-password' ?>">Forgot Password?</a>
                         </div>
-                        <div class="col-md-6 text-right">
+                        <div class="col-md-6 text-right" style="margin-left: auto;">
                             <button type="submit" class="btn btn-theme-primary" style="padding: 10px 50px;">Login</button>
                         </div>
                     </div>
