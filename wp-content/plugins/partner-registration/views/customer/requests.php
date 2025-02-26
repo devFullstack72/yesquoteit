@@ -10,8 +10,8 @@
         <thead>
             <tr>
                 <th><input type="checkbox" id="selectAll"></th>
-                <th>Email</th>
-                <th>Enquiry Name</th>
+                <th>Quote Request</th>
+                <th>Contact Details</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -22,18 +22,18 @@
                         <td><input type="checkbox" class="quote-checkbox" value="<?php echo $customer_quote->lead_quote_id; ?>"></td>
                        
                         <td>
-                            <span><?php echo esc_html($customer_quote->name); ?><br></span>
-                            <span><?php echo esc_html($customer_quote->email); ?></span><br>
-                            <span><?php echo esc_html($customer_quote->phone); ?><br></span>
-                            <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->created_at))); ?></span>
-                        </td>
-                        
-                        <td>
                             <a href="javascript:void(0);" 
                             class="open-lead-modal" 
                             data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> <!-- Store JSON -->
                                 <?php echo esc_html($customer_quote->lead_name); ?>
                             </a>
+                        </td>
+                        
+                        <td>
+                            <span><?php echo esc_html($customer_quote->name); ?><br></span>
+                            <span><?php echo esc_html($customer_quote->email); ?></span><br>
+                            <span><?php echo esc_html($customer_quote->phone); ?><br></span>
+                            <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->created_at))); ?></span>
                         </td>
                         
                         <td>
