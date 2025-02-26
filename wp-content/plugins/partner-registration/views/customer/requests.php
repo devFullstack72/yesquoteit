@@ -12,6 +12,7 @@
                 <th><input type="checkbox" id="selectAll"></th>
                 <th>Quote Request</th>
                 <th>Contact Details</th>
+                <th>Inbox</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -34,6 +35,29 @@
                             <span><?php echo esc_html($customer_quote->email); ?></span><br>
                             <span><?php echo esc_html($customer_quote->phone); ?><br></span>
                             <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->created_at))); ?></span>
+                        </td>
+
+                        <td>
+                            <?php
+                                
+                                $status = get_quote_message_status($customer_quote->lead_quote_id);
+                                $message_count = $status->total_messages ?? 0;
+                                $unread_count = $status->unread_messages ?? 0;
+                                
+                                // Determine color class
+                                if ($message_count == 0) {
+                                    $color_class = 'blue-text';
+                                } elseif ($unread_count > 0) {
+                                    $color_class = 'green-text';
+                                } else {
+                                    $color_class = 'yellow-text';
+                                }
+                            ?>
+                            
+                            <span class="message-count <?php echo $color_class; ?>" 
+                                onclick="openChatPopup(<?php echo $customer_quote->lead_quote_id; ?>)">
+                                Quotes received <?php echo $message_count; ?>
+                            </span>
                         </td>
                         
                         <td>
@@ -63,9 +87,32 @@
     </div>
 </div>
 
+<div id="partnerChatModal" class="modal">
+    <div class="modal-content">
+        <span class="close partner-chat-close">&times;</span>
+        <h4>Partner Chat</h4>
+        <div id="chatContainer"></div> <!-- Chats will be inserted here -->
+    </div>
+</div>
 
+<!-- Chat Modal -->
+<div id="chatModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close close-chat-modal">&times;</span>
+        <h4>Chat with Partner</h4>
+        <div id="chat_messages"></div> <!-- Chat messages load here -->
+        <input type="hidden" id="partner_id">
+        <input type="hidden" id="customer_id">
+        <input type="hidden" id="lead_id">
+        <div class="form-group">
+            <textarea id="chat_message" class="form-control" rows="2" placeholder="Type a message..."></textarea>
+        </div>
+        <button id="sendMessage" class="btn btn-success">Send</button>
+    </div>
+</div>
 
 <script>
+
 jQuery(document).ready(function($) {
 
     // Select All Checkboxes
@@ -146,11 +193,29 @@ jQuery(document).ready(function($) {
         $("#leadModal").hide();
     });
 });
+
+var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
+var chat_send_action = 'send_to_partner_message';
+
+function openChatPopup(leadId) {
+    fetch(ajaxurl + "?action=get_chat_details&lead_id=" + leadId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById("chatContainer").innerHTML = data.data.html; // Inject HTML into container
+            document.getElementById("partnerChatModal").style.display = "block"; // Show popup
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
 </script>
+
+<script src="<?php echo get_template_directory_uri(); ?>/js/chat-message.js"></script>
+
 
 <style>
 .htlfndr-under-header{display: none;}
-#emailModal { z-index: 999999; }#leadModal { z-index: 999999; }
+#emailModal { z-index: 999999; }#leadModal { z-index: 999999; }#chatModal{ z-index: 999999;}#partnerChatModal{ z-index: 999999;}
 .open-email-modal, .delete-quote { margin-top: 0px; }
 .modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
 .modal-content { background: #fff; margin: 15% auto; padding: 20px; width: 40%; border-radius: 5px; }
@@ -235,6 +300,126 @@ thead {
     max-height: 90vh; /* Prevents it from exceeding viewport height */
     overflow-y: auto; /* Enable internal scrolling */
     border-radius: 5px;
+}
+
+.message-count {
+    cursor: pointer;
+}
+.green-text { color: green; font-weight: bold; }
+.yellow-text { color: yellow; font-weight: bold; }
+.blue-text { color: blue; font-weight: bold; }
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.business-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.business-name {
+    font-weight: bold;
+    flex-grow: 1;
+}
+
+.view-quote {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.green-button {
+    background-color: green;
+    color: white;
+}
+
+.yellow-button {
+    background-color: yellow;
+    color: black;
+}
+
+.open-chat-modal{
+    margin-top: 0px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+/* Chat message styling */
+.chat-message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.sent {
+    justify-content: flex-end;
+}
+
+.received {
+    justify-content: flex-start;
+}
+
+/* Chat bubble */
+.chat-bubble {
+    max-width: 75%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.sent .chat-bubble {
+    background: #007bff;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.received .chat-bubble {
+    background: #e9ecef;
+    color: #333;
+    border-bottom-left-radius: 4px;
+}
+
+/* Timestamp */
+.chat-time {
+    display: block;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: right;
+    margin-top: 5px;
+}
+
+.received .chat-time {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* No messages text */
+.no-messages {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    padding: 20px;
+    font-style: italic;
+}
+
+#sendMessage{
+    float: right;
 }
 
 
