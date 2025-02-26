@@ -10,8 +10,8 @@
         <thead>
             <tr>
                 <th><input type="checkbox" id="selectAll"></th>
-                <th>Email</th>
-                <th>Enquiry Name</th>
+                <th>Customer Details</th>
+                <th>Quote Request</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
