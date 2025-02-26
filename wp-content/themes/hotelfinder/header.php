@@ -65,6 +65,13 @@
                                     'fallback_cb'     => false,           // Prevent fallback to wp_page_menu
                                 ));
                                 ?>
+                                <?php if ((isset($_SESSION['partner_logged_in']) && $_SESSION['partner_logged_in'] === true)) { ?>
+                                    <ul class="nav navbar-nav">
+                                        <li><a href="<?php echo esc_url(site_url('/partner-profile')); ?>"><i class="fa fa-pencil"></i> Edit Profile</a></li>
+                                        <li><a target="_blank" href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $_SESSION['partner_id'] ?>"><i class="fa fa-eye"></i> Public Profile</a></li>
+                                        <li><a href="<?php echo esc_url(home_url()); ?>/partner-customer-requests"><i class="fa fa-bullhorn"></i> Your Quotes</a></li>
+                                    </ul>
+                                <?php } ?>
                             </div>
                         </div><!-- .container -->
                     </nav><!-- .navbar.navbar-default.htlfndr-blue-hover-nav -->
