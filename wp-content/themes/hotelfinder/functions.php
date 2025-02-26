@@ -1293,5 +1293,19 @@ function delete_multiple_customer_quotes() {
     }
 }
 
-
+function modify_nav_menu($items, $args) {
+    // Get the menu object by location
+    if ($args->theme_location == 'primary-menu' || $args->theme_location == 'main-menu') {
+        foreach ($items as $key => $item) {
+            if ($item->title == 'Leads') { // Change this to the menu item name you want'
+                if (isset($_SESSION['customer_logged_in'])) {
+                    $item->title = 'Your Quotes';
+                    $item->url = home_url() . '/customer-requests';
+                }
+            }
+        }
+    }
+    return $items;
+}
+add_filter('wp_nav_menu_objects', 'modify_nav_menu', 10, 2);
 
