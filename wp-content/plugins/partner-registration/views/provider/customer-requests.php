@@ -13,7 +13,7 @@
                 <th>Customer Details</th>
                 <th>Quote Request</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Messages</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +24,11 @@
                        
                         <td>
                             <span><?php echo esc_html($customer_quote->name); ?><br></span>
-                            <span><?php echo esc_html($customer_quote->email); ?></span><br>
+                            <span>
+                            <a href="mailto:<?php echo esc_attr($customer_quote->email); ?>">
+                                <?php echo esc_html($customer_quote->email); ?>
+                            </a>
+                            </span><br>
                             <span><?php echo esc_html($customer_quote->phone); ?><br></span>
                             <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->created_at))); ?></span>
                         </td>
@@ -45,14 +49,29 @@
                                 <?php echo esc_html($customer_quote->status); ?>
                             </span>
                         </td>
-
                         
                         <td>
-                            <button class="btn btn-primary text-xs open-email-modal" 
+                             <button style="display: none;" class="btn btn-primary text-xs open-email-modal" 
                                     data-email="<?php echo esc_attr($customer_quote->email); ?>"
                                     data-quote_id="<?php echo esc_attr($customer_quote->lead_quote_id); ?>">
                                     <i class="fa fa-envelope"></i> Send Email
                             </button>
+
+                            <?php
+                                $partner_id = $customer_quote->provider_id;
+                                $customer_id = $customer_quote->customer_id;
+                                $lead_quote_id = $customer_quote->l_quote_id;
+
+                                $has_messages = has_chat_messages($partner_id, $customer_id, $lead_quote_id);
+                            ?>
+
+                            <button class="btn btn-primary text-xs open-chat-modal"  
+                                onclick="openChat(<?php echo $customer_quote->provider_id; ?>, <?php echo $customer_quote->customer_id; ?>, <?php echo $customer_quote->l_quote_id; ?>, 'partner')">
+                                <i class="fa fa-comments"></i> <?php echo $has_messages ? 'View Messages' : 'Send Message'; ?>
+                            </button>
+
+
+
 
                             <button type="button" class="close delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
 				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
@@ -69,6 +88,23 @@
     </table>
     </div>
 </div>
+
+<!-- Chat Modal -->
+<div id="chatModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close close-chat-modal">&times;</span>
+        <h4>Chat with Customer</h4>
+        <div id="chat_messages"></div> <!-- Chat messages load here -->
+        <input type="hidden" id="partner_id">
+        <input type="hidden" id="customer_id">
+        <input type="hidden" id="lead_id">
+        <div class="form-group">
+            <textarea id="chat_message" class="form-control" rows="2" placeholder="Type a message..."></textarea>
+        </div>
+        <button id="sendMessage" class="btn btn-success">Send</button>
+    </div>
+</div>
+
 
 <!-- Email Modal -->
 <div id="emailModal" class="modal" style="display: none;">
@@ -232,13 +268,14 @@ jQuery(document).ready(function($) {
     });
 });
 
-
+var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
+var chat_send_action = 'send_chat_message';
 
 </script>
-
+<script src="<?php echo get_template_directory_uri(); ?>/js/chat-message.js"></script>
 <style>
 .htlfndr-under-header{display: none;}
-#emailModal { z-index: 999999; }#leadModal { z-index: 999999; }
+#emailModal { z-index: 999999; }#leadModal { z-index: 999999; }#chatModal { z-index: 999999; }
 .open-email-modal, .delete-quote { margin-top: 0px; }
 .modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
 .modal-content { background: #fff; margin: 15% auto; padding: 20px; width: 40%; border-radius: 5px; }
@@ -341,5 +378,82 @@ thead {
     border-radius: 5px;
 }
 
+.open-chat-modal{
+    margin-top: 0px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+/* Chat message styling */
+.chat-message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.sent {
+    justify-content: flex-end;
+}
+
+.received {
+    justify-content: flex-start;
+}
+
+/* Chat bubble */
+.chat-bubble {
+    max-width: 75%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.sent .chat-bubble {
+    background: #007bff;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.received .chat-bubble {
+    background: #e9ecef;
+    color: #333;
+    border-bottom-left-radius: 4px;
+}
+
+/* Timestamp */
+.chat-time {
+    display: block;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: right;
+    margin-top: 5px;
+}
+
+.received .chat-time {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* No messages text */
+.no-messages {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    padding: 20px;
+    font-style: italic;
+}
+
+#sendMessage{
+    float: right;
+}
 
 </style>

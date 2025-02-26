@@ -1309,3 +1309,411 @@ function modify_nav_menu($items, $args) {
 }
 add_filter('wp_nav_menu_objects', 'modify_nav_menu', 10, 2);
 
+
+function create_customer_partner_chat_tables() {
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $customer_partner_quote_chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
+    $customer_partner_quote_chat_messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
+
+    // Create the customer_partner_quote_chat table first
+    $sql1 = "CREATE TABLE IF NOT EXISTS $customer_partner_quote_chat_table (
+        id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        partner_id BIGINT(20) UNSIGNED NOT NULL,
+        customer_id BIGINT(20) UNSIGNED NOT NULL,
+        lead_id BIGINT(20) UNSIGNED NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB $charset_collate;";
+
+    // Create the customer_partner_quote_chat_messages table
+    $sql2 = "CREATE TABLE IF NOT EXISTS $customer_partner_quote_chat_messages_table (
+        id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        chat_id BIGINT(20) UNSIGNED NOT NULL,
+        sender_id BIGINT(20) UNSIGNED NOT NULL,
+        receiver_id BIGINT(20) UNSIGNED NOT NULL,
+        sender_type ENUM('partner', 'customer') NOT NULL,
+        receiver_type ENUM('partner', 'customer') NOT NULL,
+        message TEXT NOT NULL,
+        is_read TINYINT(1) DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_chat FOREIGN KEY (chat_id) 
+        REFERENCES $customer_partner_quote_chat_table(id) 
+        ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB $charset_collate;";
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    dbDelta($sql1);
+    dbDelta($sql2);
+
+    // Check if the 'is_read' column exists, and add it if not
+    $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $customer_partner_quote_chat_messages_table LIKE 'is_read'");
+    if (empty($column_exists)) {
+        $wpdb->query("ALTER TABLE $customer_partner_quote_chat_messages_table ADD COLUMN is_read TINYINT(1) DEFAULT 0;");
+    }
+}
+
+add_action('after_setup_theme', 'create_customer_partner_chat_tables');
+
+
+
+add_action('wp_ajax_send_chat_message', 'send_chat_message');
+add_action('wp_ajax_nopriv_send_chat_message', 'send_chat_message');
+
+function send_chat_message() {
+    global $wpdb;
+
+    $customer_partner_quote_chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
+    $customer_partner_quote_chat_messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
+
+    $partner_id = intval($_POST['partner_id']);
+    $customer_id = intval($_POST['customer_id']);
+    $lead_id = intval($_POST['lead_id']);
+    $message = sanitize_text_field($_POST['message']);
+
+    // Ensure chat exists
+    $chat_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT id FROM $customer_partner_quote_chat_table WHERE partner_id = %d AND customer_id = %d AND lead_id = %d",
+        $partner_id, $customer_id, $lead_id
+    ));
+
+    if (!$chat_id) {
+        $wpdb->insert($customer_partner_quote_chat_table, [
+            'partner_id'  => $partner_id,
+            'customer_id' => $customer_id,
+            'lead_id'     => $lead_id,
+            'created_at'  => current_time('mysql')
+        ]);
+        $chat_id = $wpdb->insert_id;
+    }
+
+    // Insert message
+    $result = $wpdb->insert($customer_partner_quote_chat_messages_table, [
+        'chat_id'      => $chat_id,
+        'sender_id'    => $partner_id,
+        'receiver_id'  => $customer_id,
+        'sender_type'  => 'partner',
+        'receiver_type'=> 'customer',
+        'message'      => $message,
+        'created_at'   => current_time('mysql')
+    ]);
+
+    send_chat_email_notification($customer_id, $partner_id, $message, 'customer');
+
+    if ($result) {
+        wp_send_json_success(["message" => "Message sent"]);
+    } else {
+        wp_send_json_error(["message" => "Error sending message"]);
+    }
+}
+
+add_action('wp_ajax_send_to_partner_message', 'send_to_partner_message');
+add_action('wp_ajax_nopriv_send_to_partner_message', 'send_to_partner_message');
+
+function send_to_partner_message() {
+    global $wpdb;
+
+    $customer_partner_quote_chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
+    $customer_partner_quote_chat_messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
+    $lead_quotes_partners_table = $wpdb->prefix . 'yqit_lead_quotes_partners';
+
+    $partner_id = intval($_POST['partner_id']);
+    $customer_id = intval($_POST['customer_id']);
+    $lead_id = intval($_POST['lead_id']);
+    $message = sanitize_text_field($_POST['message']);
+
+    // Ensure chat exists
+    $chat_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT id FROM $customer_partner_quote_chat_table WHERE partner_id = %d AND customer_id = %d AND lead_id = %d",
+        $partner_id, $customer_id, $lead_id
+    ));
+
+    // Insert message
+    $result = $wpdb->insert($customer_partner_quote_chat_messages_table, [
+        'chat_id'      => $chat_id,
+        'sender_id'    => $customer_id,
+        'receiver_id'  => $partner_id,
+        'sender_type'  => 'customer',
+        'receiver_type'=> 'partner',
+        'message'      => $message,
+        'created_at'   => current_time('mysql')
+    ]);
+
+    send_chat_email_notification($customer_id, $partner_id, $message, 'partner');
+
+    if ($result) {
+        $current_status = $wpdb->get_var($wpdb->prepare(
+            "SELECT status FROM $lead_quotes_partners_table WHERE provider_id = %d AND lead_quote_id = %d",
+            $partner_id, $lead_id
+        ));
+
+        if ($current_status !== 'Responded') {
+            $wpdb->update($lead_quotes_partners_table, 
+                ['status' => 'Responded'],
+                ['provider_id' => $partner_id, 'lead_quote_id' => $lead_id],
+                ['%s'],
+                ['%d', '%d']
+            );
+        }
+
+        wp_send_json_success(["message" => "Message sent"]);
+    } else {
+        wp_send_json_error(["message" => "Error sending message"]);
+    }
+}
+
+function send_chat_email_notification($customer_id, $partner_id, $message, $to = 'partner') {
+    global $wpdb;
+
+    // Get customer and partner details
+    $customer = $wpdb->get_row($wpdb->prepare(
+        "SELECT name, email FROM {$wpdb->prefix}yqit_customers WHERE id = %d",
+        $customer_id
+    ));
+
+    $partner = $wpdb->get_row($wpdb->prepare(
+        "SELECT business_trading_name, email FROM {$wpdb->prefix}service_partners WHERE id = %d",
+        $partner_id
+    ));
+
+    if (!$customer || !$partner) {
+        return; // Exit if no valid user found
+    }
+
+    // Email subject & headers
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+    
+    if($to == 'partner'){
+        // When customer responds to partner
+        $partner_email_subject = "New Message from {$customer->name}";
+        $partner_email_body = "
+            <p>Dear {$partner->business_trading_name},</p>
+            <p>You have received a new message from <strong>{$customer->name}</strong>:</p>
+            <blockquote>{$message}</blockquote>
+            <p>Please <a href='#'>click here</a> to respond.</p>
+        ";
+
+         // Send email
+         if ($message) {
+            // If the sender is a customer, notify the partner
+            wp_mail($partner->email, $partner_email_subject, $partner_email_body, $headers);
+        }
+
+    } else {
+        // When partner sends inquiry to customer
+        $customer_email_subject = "New Inquiry from {$partner->business_trading_name}";
+        $customer_email_body = "
+            <p>Dear {$customer->name},</p>
+            <p>You have received a new inquiry from <strong>{$partner->business_trading_name}</strong>:</p>
+            <blockquote>{$message}</blockquote>
+            <p>Please <a href='#'>click here</a> to respond.</p>
+        ";
+
+         // Send email
+        if ($message) {
+            // If the sender is a partner, notify the customer
+            wp_mail($customer->email, $customer_email_subject, $customer_email_body, $headers);
+        }
+    }
+}
+
+
+
+// Load Chat Messages
+add_action('wp_ajax_load_chat_messages', 'load_chat_messages');
+add_action('wp_ajax_nopriv_load_chat_messages', 'load_chat_messages');
+
+function load_chat_messages() {
+    global $wpdb;
+
+    $chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
+    $messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
+    $partners_table = $wpdb->prefix . 'service_partners';
+    $customers_table = $wpdb->prefix . 'yqit_customers';
+
+    $partner_id = isset($_POST['partner_id']) ? intval($_POST['partner_id']) : 0;
+    $customer_id = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
+    $lead_id = isset($_POST['lead_id']) ? intval($_POST['lead_id']) : 0;
+    $view = isset($_POST['view']) ? sanitize_text_field($_POST['view']) : '';
+
+    if (!$partner_id || !$customer_id || !$lead_id) {
+        wp_send_json_error(['message' => 'Invalid request parameters']);
+        return;
+    }
+
+    // Get chat ID
+    $chat_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT id FROM $chat_table WHERE partner_id = %d AND customer_id = %d AND lead_id = %d",
+        $partner_id, $customer_id, $lead_id
+    ));
+
+    if (!$chat_id) {
+        wp_send_json_success('');
+        return;
+    }
+
+    if ($view == 'customer') {
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $messages_table 
+             SET is_read = 1 
+             WHERE chat_id = %d AND sender_type = 'partner' AND is_read = 0",
+            $chat_id
+        ));
+    }
+
+    // Fetch partner & customer names
+    $partner_name = $wpdb->get_var($wpdb->prepare(
+        "SELECT business_trading_name FROM $partners_table WHERE id = %d",
+        $partner_id
+    )) ?: 'Partner';
+
+    $customer_name = $wpdb->get_var($wpdb->prepare(
+        "SELECT name FROM $customers_table WHERE id = %d",
+        $customer_id
+    )) ?: 'Customer';
+
+    // Get chat messages
+    $messages = $wpdb->get_results($wpdb->prepare(
+        "SELECT sender_type, message, created_at FROM $messages_table WHERE chat_id = %d ORDER BY created_at ASC",
+        $chat_id
+    ));
+
+    $output = '<div class="chat-container">';
+    
+    foreach ($messages as $msg) {
+        $is_sender_partner = ($msg->sender_type === "partner");
+
+        // Define alignment & sender name based on view
+        if ($view === 'customer') {
+            $sender_class = $is_sender_partner ? "received" : "sent";
+            $sender_name = $is_sender_partner ? $partner_name : "You";
+        } else {
+            $sender_class = $is_sender_partner ? "sent" : "received";
+            $sender_name = $is_sender_partner ? "You" : $customer_name;
+        }
+
+        $formatted_time = date("h:i A", strtotime($msg->created_at));
+
+        $output .= "
+            <div class='chat-message $sender_class'>
+                <div class='chat-bubble'>
+                    <strong>{$sender_name}</strong>
+                    <p>" . esc_html($msg->message) . "</p>
+                    <span class='chat-time'>{$formatted_time}</span>
+                </div>
+            </div>
+        ";
+    }
+
+    $output .= '</div>';
+    wp_send_json_success($output);
+}
+
+add_action('after_setup_theme', function() {
+    function has_chat_messages($partner_id, $customer_id, $lead_id) {
+        global $wpdb;
+        
+        $chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
+        $messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
+
+        // Check if chat exists
+        $chat_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM $chat_table WHERE partner_id = %d AND customer_id = %d AND lead_id = %d",
+            $partner_id, $customer_id, $lead_id
+        ));
+
+        if (!$chat_id) {
+            return false; // No chat found
+        }
+
+        // Check if messages exist in the chat
+        $message_count = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $messages_table WHERE chat_id = %d",
+            $chat_id
+        ));
+
+        return $message_count > 0;
+    }
+
+    function get_quote_message_status($quote_id) {
+        global $wpdb;
+    
+        $query = $wpdb->prepare(
+            "SELECT 
+                COUNT(m.id) AS total_messages,
+                SUM(CASE WHEN m.is_read = 0 THEN 1 ELSE 0 END) AS unread_messages
+             FROM wp_yqit_lead_quotes q
+             LEFT JOIN wp_customer_partner_quote_chat c ON q.id = c.lead_id
+             LEFT JOIN wp_customer_partner_quote_chat_messages m ON c.id = m.chat_id
+             WHERE q.id = %d AND m.receiver_type = 'customer'",
+            $quote_id
+        );
+    
+        return $wpdb->get_row($query);
+    }
+    
+});
+
+add_action('wp_ajax_get_chat_details', 'get_customer_chat_details_callback');
+add_action('wp_ajax_nopriv_get_chat_details', 'get_customer_chat_details_callback'); // For non-logged-in users
+
+function get_customer_chat_details_callback() {
+    global $wpdb;
+
+    $lead_id = isset($_GET['lead_id']) ? intval($_GET['lead_id']) : 0;
+
+    if (!$lead_id) {
+        wp_send_json_error(['message' => 'Invalid Lead ID']);
+    }
+
+    $chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
+    $partners_table = $wpdb->prefix . 'service_partners';
+    $messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
+
+    // Fetch chats with partner details and check if any message in the chat is unread
+    $chats = $wpdb->get_results($wpdb->prepare("
+        SELECT chat.*, partner.business_trading_name AS business_name, partner.business_logo,
+               (SELECT COUNT(*) FROM $messages_table WHERE chat_id = chat.id AND is_read = 0 AND receiver_type = 'customer') AS unread_count
+        FROM $chat_table AS chat
+        LEFT JOIN $partners_table AS partner ON chat.partner_id = partner.id
+        WHERE chat.lead_id = %d
+    ", $lead_id));
+
+    if (!$chats) {
+        wp_send_json_error(['message' => 'No chat found for this lead']);
+    }
+
+    // Build HTML
+    $popupContent = '<div class="chat-list">';
+    foreach ($chats as $chat) {
+        $business_logo = esc_url($chat->business_logo);
+        $business_name = esc_html($chat->business_name);
+        $chat_id = intval($chat->id);
+        $unread_count = intval($chat->unread_count);
+        
+        // If there is at least one unread message, show green, otherwise show yellow
+        $status_class = ($unread_count > 0) ? 'green-button' : 'yellow-button';
+
+        $popupContent .= "
+            <div class='chat-item'>
+                <img src='$business_logo' alt='Business Logo' class='business-logo'>
+                <span class='business-name'>$business_name</span>
+                <span class='view-quote $status_class' onclick='openChat($chat->partner_id, $chat->customer_id, $chat->lead_id, \"customer\")'>
+                    View Quote
+                </span>
+            </div>
+        ";
+    }
+    $popupContent .= '</div>';
+
+    wp_send_json_success(['html' => $popupContent]);
+
+    wp_die(); // Required for WordPress AJAX
+}
+
+
+
+
+
+
+
