@@ -1398,6 +1398,8 @@ function send_chat_message() {
         'created_at'   => current_time('mysql')
     ]);
 
+    send_chat_email_notification($customer_id, $partner_id, $message, 'customer');
+
     if ($result) {
         wp_send_json_success(["message" => "Message sent"]);
     } else {
@@ -1437,6 +1439,8 @@ function send_to_partner_message() {
         'created_at'   => current_time('mysql')
     ]);
 
+    send_chat_email_notification($customer_id, $partner_id, $message, 'partner');
+
     if ($result) {
         $current_status = $wpdb->get_var($wpdb->prepare(
             "SELECT status FROM $lead_quotes_partners_table WHERE provider_id = %d AND lead_quote_id = %d",
@@ -1457,6 +1461,62 @@ function send_to_partner_message() {
         wp_send_json_error(["message" => "Error sending message"]);
     }
 }
+
+function send_chat_email_notification($customer_id, $partner_id, $message, $to = 'partner') {
+    global $wpdb;
+
+    // Get customer and partner details
+    $customer = $wpdb->get_row($wpdb->prepare(
+        "SELECT name, email FROM {$wpdb->prefix}yqit_customers WHERE id = %d",
+        $customer_id
+    ));
+
+    $partner = $wpdb->get_row($wpdb->prepare(
+        "SELECT business_trading_name, email FROM {$wpdb->prefix}service_partners WHERE id = %d",
+        $partner_id
+    ));
+
+    if (!$customer || !$partner) {
+        return; // Exit if no valid user found
+    }
+
+    // Email subject & headers
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+    
+    if($to == 'partner'){
+        // When customer responds to partner
+        $partner_email_subject = "New Message from {$customer->name}";
+        $partner_email_body = "
+            <p>Dear {$partner->business_trading_name},</p>
+            <p>You have received a new message from <strong>{$customer->name}</strong>:</p>
+            <blockquote>{$message}</blockquote>
+            <p>Please <a href='#'>click here</a> to respond.</p>
+        ";
+
+         // Send email
+         if ($message) {
+            // If the sender is a customer, notify the partner
+            wp_mail($partner->email, $partner_email_subject, $partner_email_body, $headers);
+        }
+
+    } else {
+        // When partner sends inquiry to customer
+        $customer_email_subject = "New Inquiry from {$partner->business_trading_name}";
+        $customer_email_body = "
+            <p>Dear {$customer->name},</p>
+            <p>You have received a new inquiry from <strong>{$partner->business_trading_name}</strong>:</p>
+            <blockquote>{$message}</blockquote>
+            <p>Please <a href='#'>click here</a> to respond.</p>
+        ";
+
+         // Send email
+        if ($message) {
+            // If the sender is a partner, notify the customer
+            wp_mail($customer->email, $customer_email_subject, $customer_email_body, $headers);
+        }
+    }
+}
+
 
 
 // Load Chat Messages
