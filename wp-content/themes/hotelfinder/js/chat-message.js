@@ -4,11 +4,16 @@ function openChat(partner_id, customer_id, lead_id, view = 'customer') {
     if(view == 'customer'){
         $("#partnerChatModal").hide();
     }
+
+    $("#chatModal").show();
     
     $("#partner_id").val(partner_id);
     $("#customer_id").val(customer_id);
     $("#lead_id").val(lead_id);
     $("#chat_messages").html(""); // Clear old messages
+
+    // Show loading spinner
+    $("#chat_messages").html("<div class='chat-loading'>Loading...</div>");
 
     // Load previous messages
     $.ajax({
@@ -26,10 +31,11 @@ function openChat(partner_id, customer_id, lead_id, view = 'customer') {
             $("#partner_id").val(partner_id);
             $("#customer_id").val(customer_id);
             $("#lead_id").val(lead_id);
+        },
+        complete: function () {
+            $(".chat-loading").remove(); // Remove loading spinner after loading messages
         }
     });
-
-    $("#chatModal").show();
 }
 
 jQuery(document).ready(function($) {
@@ -56,7 +62,7 @@ jQuery(document).ready(function($) {
         }
 
         // Disable button to prevent multiple clicks
-        $("#sendMessage").prop("disabled", true);
+        $("#sendMessage").text("Sending...").prop("disabled", true);
 
         $.ajax({
             type: "POST",
@@ -93,14 +99,37 @@ jQuery(document).ready(function($) {
 
                     // Auto-scroll to latest message
                     $("#chat_messages").scrollTop($("#chat_messages")[0].scrollHeight);
+
+                    sendChatNotification(response.data.chat_message_id, response.data.customer_id, response.data.partner_id, response.data.message_text, response.data.view);
                 } else {
                     alert("Message failed to send.");
                 }
             },
             complete: function () {
-                $("#sendMessage").prop("disabled", false); // Re-enable button after request
+                $("#sendMessage").text("Send").prop("disabled", false);
             }
         });
 
     });
 });
+
+function sendChatNotification(chat_message_id, customer_id, partner_id, message_text, view) {
+    $.ajax({
+        type: "POST",
+        url: ajaxurl,
+        data: {
+            action: "send_chat_notification",
+            chat_message_id: chat_message_id,
+            customer_id: customer_id,
+            partner_id: partner_id,
+            message: message_text,
+            view: view,
+        },
+        success: function (response) {
+            console.log("Notification sent successfully.");
+        },
+        error: function () {
+            console.log("Failed to send notification.");
+        }
+    });
+}

@@ -46,12 +46,22 @@
                     <tr>
                         <td><input type="checkbox" class="quote-checkbox" value="<?php echo $customer_quote->lead_quote_id; ?>"></td>
                        
+                        <?php $image = get_the_post_thumbnail_url($customer_quote->lead_id, 'large'); ?>
+
                         <td>
-                            <a href="javascript:void(0);" 
-                            class="open-lead-modal" 
-                            data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> <!-- Store JSON -->
-                                <?php echo esc_html($customer_quote->lead_name); ?>
-                            </a>
+                            <div class="d-flex align-items-center" style="display: flex; align-items: center; gap: 10px;">
+                                <?php if (!empty($image)) { ?>
+                                    <div class="img" style="background-image: url('<?php echo esc_url($image); ?>');"></div>
+                                <?php } ?>
+
+                                <div class="email" style="white-space: nowrap;">
+                                    <a href="javascript:void(0);" 
+                                        class="open-lead-modal" 
+                                        data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> 
+                                        <?php echo esc_html($customer_quote->lead_name); ?>
+                                    </a>
+                                </div>
+                            </div>
                         </td>
                         
                         <td>
@@ -67,20 +77,25 @@
                                 $status = get_quote_message_status($customer_quote->lead_quote_id);
                                 $message_count = $status->total_messages ?? 0;
                                 $unread_count = $status->unread_messages ?? 0;
+                                $total_chat_partners = $status->total_chat_partners ?? 0;
+                                $total_unread_chats = $status->total_unread_chats;
+                                
                                 
                                 // Determine color class
-                                if ($message_count == 0) {
+                                if ($total_chat_partners == 0) {
                                     $color_class = 'blue-text';
-                                } elseif ($unread_count > 0) {
+                                } elseif ($total_unread_chats > 0) {
                                     $color_class = 'green-text';
                                 } else {
                                     $color_class = 'yellow-text';
                                 }
                             ?>
                             
+                            <i class="fa fa-envelope"></i>
                             <span class="message-count <?php echo $color_class; ?>" 
                                 onclick="openChatPopup(<?php echo $customer_quote->lead_quote_id; ?>)">
-                                Quotes received <?php echo $message_count; ?>
+                               
+                                Messages received <?php echo $total_chat_partners; ?>
                             </span>
                         </td>
                         
@@ -114,7 +129,7 @@
 <div id="partnerChatModal" class="modal">
     <div class="modal-content">
         <span class="close partner-chat-close">&times;</span>
-        <h4>Partner Chat</h4>
+        <h4>Quote Chat</h4>
         <div id="chatContainer"></div> <!-- Chats will be inserted here -->
     </div>
 </div>
@@ -354,10 +369,12 @@ thead {
 
 .message-count {
     cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
 }
-.green-text { color: green; font-weight: bold; }
-.yellow-text { color: yellow; font-weight: bold; }
-.blue-text { color: blue; font-weight: bold; }
+.green-text { color: green; font-weight: bold; border: 1px solid green; }
+.yellow-text { color:#edbf27; font-weight: bold; border: 1px solid #edbf27; }
+.blue-text { color: blue; font-weight: bold; border: 1px solid blue; }
 
 .chat-item {
     display: flex;
@@ -390,8 +407,8 @@ thead {
 }
 
 .yellow-button {
-    background-color: yellow;
-    color: black;
+    background-color: #fcf8e3;
+    color: #cfa00c;
 }
 
 .open-chat-modal{
@@ -472,5 +489,12 @@ thead {
     float: right;
 }
 
-
+.img {
+    width: 40px; 
+    height: 40px; 
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    display: inline-block;
+}
 </style>
