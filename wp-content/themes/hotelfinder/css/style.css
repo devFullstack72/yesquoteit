@@ -94,7 +94,7 @@ pre {
 	transition: all .3s ease-in-out 0s;
 	margin-right: 16px;
 	border-radius: 3px;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	padding-top: 8px;
 	padding-bottom: 5px
 }
@@ -217,7 +217,7 @@ pre {
 	width: 400px;
 	border-radius: 0;
 	background: 0;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	padding: 9px 10px 9px 28px
 }
 
@@ -1459,7 +1459,7 @@ select {
 	color: #fff;
 	font: 400 15px/37px 'Roboto', sans-serif;
 	height: 38px;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	-webkit-transition: all .3s linear 0s;
 	-moz-transition: all .3s linear 0s;
 	-o-transition: all .3s linear 0s;
@@ -2559,7 +2559,7 @@ a.htlfndr-read-more-button.hovered:after {
 	padding-top: 2px;
 	position: absolute;
 	text-align: center;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	padding-left: 17px;
 	padding-right: 13px
 }
@@ -2853,7 +2853,7 @@ a.htlfndr-read-more-button.hovered:after {
 	margin-right: 10px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	padding-left: 2px;
 	margin-top: 8px;
 	margin-bottom: 16px
@@ -3355,7 +3355,7 @@ a.htlfndr-read-more-button.hovered:after {
 	border-radius: 0;
 	margin-top: 0;
 	width: 100%;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	height: 39px;
 	padding-left: 0;
 	padding-right: 0;
@@ -3518,7 +3518,7 @@ a.htlfndr-read-more-button.hovered:after {
 	border-bottom: 1px solid #e0e0e0;
 	margin: 0;
 	padding: 15px 0 28px;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	font-size: 16px
 }
 
@@ -3567,7 +3567,7 @@ a.htlfndr-read-more-button.hovered:after {
 	float: none;
 	position: relative;
 	top: 15px;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	vertical-align: sub;
 	width: auto;
 	right: 4px
@@ -4034,7 +4034,7 @@ a.htlfndr-read-more-button.hovered:after {
 	line-height: 19px;
 	padding: 18px 0;
 	text-align: center;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	width: 100%
 }
 
@@ -4089,7 +4089,7 @@ a.htlfndr-read-more-button.hovered:after {
 	color: #fff;
 	text-align: center;
 	text-decoration: none;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	font-size: 15px
 }
 
@@ -4556,7 +4556,7 @@ iframe {
 	font-size: 15px;
 	font-weight: normal;
 	padding: 7px 0;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	width: 41.5%
 }
 
@@ -5267,7 +5267,7 @@ meter:-moz-meter-optimum::-moz-meter-bar {
 	margin-top: 38px;
 	padding-bottom: 8px;
 	position: relative;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	font-size: 24px;
 	cursor: pointer
 }
@@ -5554,7 +5554,7 @@ textarea.incorrect {
 	line-height: 65px;
 	padding: 0 25px;
 	text-align: center;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	-webkit-transition: background-color .3s ease 0s;
 	-moz-transition: background-color .3s ease 0s;
 	-o-transition: background-color .3s ease 0s;
@@ -5707,7 +5707,7 @@ textarea.incorrect {
 	line-height: 50px;
 	margin-top: 21px;
 	padding: 0 25px;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	-webkit-transition: all .3s ease-in 0s;
 	-moz-transition: all .3s ease-in 0s;
 	-o-transition: all .3s ease-in 0s;
@@ -6521,7 +6521,7 @@ body>#htlfndr-sing-up,
 .htlfndr-credit-card .htlfndr-edit-card {
 	font: 14px "open Sans Bold";
 	color: #23def7;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	padding-top: 64px;
 	text-align: center
 }
@@ -6546,7 +6546,7 @@ body>#htlfndr-sing-up,
 	font-size: 18px;
 	left: 23px;
 	position: relative;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	top: 65px
 }
 
@@ -6683,7 +6683,7 @@ body>#htlfndr-sing-up,
 }
 
 .htlfndr-load_more a {
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	color: #23def7 !important
 }
 
@@ -6778,7 +6778,7 @@ body>#htlfndr-sing-up,
 
 .htlfndr-elements-page .htlfndr-elements-content h3 b {
 	color: #08c1da;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	margin-bottom: 23px
 }
 
@@ -7297,7 +7297,7 @@ body>#htlfndr-sing-up,
 	margin-bottom: 32px;
 	color: #08c1da;
 	text-align: center;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 	font-size: 12px
 }
 

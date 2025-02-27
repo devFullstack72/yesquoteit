@@ -13,7 +13,10 @@ class Customer_Requests extends CustomerController
         parent::__construct();
 
         add_shortcode('customer_requests', [$this, 'render_customer_requests']);
-    }
+
+        add_action('wp_ajax_archive_multiple_customer_quotes', [$this, 'archive_multiple_customer_quotes']);
+        add_action('wp_ajax_nopriv_archive_multiple_customer_quotes', [$this, 'archive_multiple_customer_quotes']);
+    } 
 
     public function render_customer_requests() {
         
@@ -22,6 +25,8 @@ class Customer_Requests extends CustomerController
         if (!$customer_id) {
             return '<script>window.location.href="' . esc_url(home_url('/customer-login')) . '";</script>';
         }
+
+        $is_archived = isset($_GET['is_archived']) && $_GET['is_archived'] == 1;
 
         $query = "
             SELECT 
@@ -39,9 +44,15 @@ class Customer_Requests extends CustomerController
             INNER JOIN $this->posts_table p ON lq.lead_id = p.ID
             WHERE lq.customer_id = %d
             AND p.post_type = 'lead_generation' 
-            AND p.post_status = 'publish'
-            ORDER BY c.created_at DESC
-        ";
+            AND p.post_status = 'publish'";
+
+        if ($is_archived) {
+            $query .= " AND lq.is_archived = 1";
+        } else {
+            $query .= " AND lq.is_archived = 0";
+        }
+
+        $query .= " ORDER BY c.created_at DESC";
 
         // Execute query with prepared statement for security
         $customer_quotes = $this->database->get_results($this->database->prepare($query, $customer_id));
@@ -51,5 +62,26 @@ class Customer_Requests extends CustomerController
         include plugin_dir_path(__FILE__) . '../views/customer/requests.php';
 
         return ob_get_clean();
+    }
+
+    function archive_multiple_customer_quotes() {
+        if (!isset($_POST['ids']) || !is_array($_POST['ids'])) {
+            wp_send_json_error("Invalid request.");
+        }
+
+        global $wpdb;
+        $ids = array_map('intval', $_POST['ids']);
+        $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+
+        $is_archived = $_POST['is_archived'];
+        
+        $query = "UPDATE {$wpdb->prefix}yqit_lead_quotes SET is_archived = {$is_archived} WHERE id IN ($placeholders)";
+        $result = $wpdb->query($wpdb->prepare($query, $ids));
+
+        if ($result) {
+            wp_send_json_success("Quotes archived successfully.");
+        } else {
+            wp_send_json_error("Failed to archived quotes.");
+        }
     }
 }

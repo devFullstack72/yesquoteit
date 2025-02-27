@@ -2,9 +2,33 @@
     <h2 class="htlfndr-section-title bigger-title">Quote Requests</h2>
     <div class="htlfndr-section-under-title-line"></div>
     <div class="table-wrap">
-    <button id="deleteSelected" class="btn btn-danger" style="display: none; float: right; margin-bottom: 10px;">
-    <i class="fa fa-trash"></i> Delete Selected
-    </button>
+    
+    <div class="row">
+        <div class="col-md-12 text-right" style="display: flex;justify-content: end;">
+            <div class="multi-action-buttons" style="display: none;">
+                <?php if ($is_archived) : ?>
+                    <button class="btn btn-warning archived-multi" data-status="0" style="margin-bottom: 10px;">
+                    <i class="fa fa-arrow-down"></i> Remove from Archived
+                    </button>
+                <?php else : ?>
+                    <button class="btn btn-warning archived-multi" data-status="1" style="margin-bottom: 10px;">
+                    <i class="fa fa-arrow-down"></i> Archive
+                    </button>
+                <?php endif; ?>
+
+                <button id="deleteSelected" class="btn btn-danger" style="margin-bottom: 10px;">
+                <i class="fa fa-trash"></i> Delete
+                </button>
+            </div>
+            <div>
+                <?php if ($is_archived) : ?>
+                <a href="<?php echo home_url() . '/customer-requests' ?>" class="btn btn-warning" style="color: white;">Open Non Archived</a>
+                <?php else : ?>
+                    <a href="<?php echo home_url() . '/customer-requests/?is_archived=1' ?>" class="btn btn-warning" style="color: white;">Open Archived</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 
     <table class="table table-responsive-xl">
         <thead>
@@ -129,9 +153,9 @@ jQuery(document).ready(function($) {
     function toggleDeleteButton() {
         var selectedCount = $(".quote-checkbox:checked").length;
         if (selectedCount > 0) {
-            $("#deleteSelected").show();
+            $(".multi-action-buttons").show();
         } else {
-            $("#deleteSelected").hide();
+            $(".multi-action-buttons").hide();
         }
     }
 
@@ -151,6 +175,32 @@ jQuery(document).ready(function($) {
                 type: "POST",
                 url: "<?php echo admin_url('admin-ajax.php'); ?>",
                 data: { action: "delete_multiple_customer_quotes", ids: selectedIds },
+                success: function(response) {
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    $(".archived-multi").click(function() {
+        var selectedIds = $(".quote-checkbox:checked").map(function() {
+            return $(this).val();
+        }).get();
+
+        var is_archived = $(this).data('status');
+
+        var flag_state = is_archived == 1 ? 'archive' : 'unarchive';
+
+        if (selectedIds.length === 0) {
+            alert("Please select at least one quote to " + flag_state + ".");
+            return;
+        }
+
+        if (confirm("Are you sure you want to " + flag_state + " the selected quotes?")) {
+            $.ajax({
+                type: "POST",
+                url: "<?php echo admin_url('admin-ajax.php'); ?>",
+                data: { action: "archive_multiple_customer_quotes", ids: selectedIds, is_archived: is_archived },
                 success: function(response) {
                     location.reload();
                 }

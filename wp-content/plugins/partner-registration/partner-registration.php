@@ -146,6 +146,13 @@ class Partner_Registration_Plugin {
         if (!in_array('reset_expires', $existing_customers_columns)) {
             $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_customers ADD COLUMN reset_expires DATETIME NULL AFTER reset_token;");
         }
+
+        $existing_lead_quotes_columns = $wpdb->get_col("DESC {$wpdb->prefix}yqit_lead_quotes", 0);
+
+        if (!in_array('is_archived', $existing_lead_quotes_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes ADD COLUMN is_archived VARCHAR(255) NULL DEFAULT 0 AFTER quote_data;");
+        }
+
         @ob_end_clean();
     }
 
