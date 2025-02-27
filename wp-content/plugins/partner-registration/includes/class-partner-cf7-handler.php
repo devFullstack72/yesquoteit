@@ -4,6 +4,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+require_once ABSPATH . 'vendor/autoload.php';
+
+
+use Twilio\Rest\Client;
+
+
 class Partner_CF7_Handler {
 
     public $database;
@@ -103,7 +109,7 @@ class Partner_CF7_Handler {
 
         $approved_partners = $wpdb->get_results(
             $wpdb->prepare("
-                SELECT sp.id as provider_id, sp.email, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
+                SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
                     (6371 * acos(
                         cos(radians(%f)) * cos(radians(sp.latitude)) *
                         cos(radians(sp.longitude) - radians(%f)) +
@@ -152,7 +158,8 @@ class Partner_CF7_Handler {
         $email_data['customer_login_link'] = home_url() . '/handler-events/customer/' . encrypt_customer_id($customer_id);
 
         $email_data['partner_cost_hotlink'] = home_url() . '/partner-customer-requests';
-    
+        
+
         // Send email to approved service providers
         $approved_partners_emails = [];
         if (!empty($approved_partners)) {
@@ -163,6 +170,10 @@ class Partner_CF7_Handler {
                     'lead_quote_id' => $created_lead_quote_id,
                     'provider_id' => $partner->provider_id
                 ]);
+
+                $message = "New Quote Received from". $email_data['your-name'];
+
+                $this->sendSMS($message, $partner->phone);
             }
         }
 
@@ -182,6 +193,28 @@ class Partner_CF7_Handler {
             'pr_send_emails_background', 
             array($user_email, $approved_partners_emails, $customer_template_id, $provider_template_id, $email_data)
         );
+    }
+
+    public function sendSMS($message, $to){
+         // SMS Message
+         $account_sid = get_option('twilio_account_sid', '');
+         $auth_token = get_option('twilio_auth_token', '');
+         $twilio_number = get_option('twilio_number', '');
+
+         // Send SMS using Twilio
+         try {
+             $client = new Client($account_sid, $auth_token);
+             $response = $client->messages->create(
+                 $to,
+                 [
+                     'from' => $twilio_number,
+                     'body' => $message
+                 ]
+             );
+
+         } catch (Exception $e) {
+             error_log('Twilio SMS Error: ' . $e->getMessage());
+         }
     }
 
     // Background email processing

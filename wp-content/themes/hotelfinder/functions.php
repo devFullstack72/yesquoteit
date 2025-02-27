@@ -879,6 +879,9 @@ function custom_site_info_settings() {
     register_setting('site_info_settings', 'partner_contact_form_shortcode');
     register_setting('site_info_settings', 'customer_email');
     register_setting('site_info_settings', 'provider_email');
+    register_setting('site_info_settings', 'twilio_account_sid');
+    register_setting('site_info_settings', 'twilio_auth_token');
+    register_setting('site_info_settings', 'twilio_number');
 
     add_settings_section(
         'site_info_section',
@@ -927,6 +930,51 @@ function custom_site_info_settings() {
         function() {
             $value = get_option('provider_email', '');
             echo '<input type="text" name="provider_email" value="' . esc_attr($value) . '" class="regular-text">';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    // Twilio Account Details
+
+    add_settings_field(
+        'twilio_account_details',
+        '<h3 style="margin: 0;">Twilio Account Details</h3>',
+        function() {
+            echo '';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    add_settings_field(
+        'twilio_account_sid',
+        'Twilio Account SID',
+        function() {
+            $value = get_option('twilio_account_sid', '');
+            echo '<input type="text" name="twilio_account_sid" value="' . esc_attr($value) . '" class="regular-text">';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    add_settings_field(
+        'twilio_auth_token',
+        'Twilio Auth Token',
+        function() {
+            $value = get_option('twilio_auth_token', '');
+            echo '<input type="password" name="twilio_auth_token" value="' . esc_attr($value) . '" class="regular-text">';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    add_settings_field(
+        'twilio_number',
+        'Twilio Number',
+        function() {
+            $value = get_option('twilio_number', '');
+            echo '<input type="text" name="twilio_number" value="' . esc_attr($value) . '" class="regular-text">';
         },
         'site-information',
         'site_info_section'
