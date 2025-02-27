@@ -1399,6 +1399,11 @@ function create_customer_partner_chat_tables() {
     if (empty($column_exists)) {
         $wpdb->query("ALTER TABLE $customer_partner_quote_chat_messages_table ADD COLUMN is_read TINYINT(1) DEFAULT 0;");
     }
+
+    $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $customer_partner_quote_chat_table LIKE 'is_read'");
+    if (empty($column_exists)) {
+        $wpdb->query("ALTER TABLE $customer_partner_quote_chat_table ADD COLUMN is_read TINYINT(1) DEFAULT 0;");
+    }
 }
 
 add_action('after_setup_theme', 'create_customer_partner_chat_tables');
@@ -1446,14 +1451,42 @@ function send_chat_message() {
         'created_at'   => current_time('mysql')
     ]);
 
-    send_chat_email_notification($customer_id, $partner_id, $message, 'customer');
 
     if ($result) {
-        wp_send_json_success(["message" => "Message sent"]);
+
+        $message_id = $wpdb->insert_id;
+
+        // send_chat_email_notification($customer_id, $partner_id, $message, 'customer');
+
+        wp_send_json_success([
+            "message" => "Message sent",
+            "chat_message_id" => $message_id,
+            "customer_id" => $customer_id,
+            "partner_id" => $partner_id,
+            "message_text" => $message,
+            "view" => 'customer'
+        ]);
+
+        wp_send_json_success(["message" => "Message sent", 'chat_message_id' => $result['id']]);
     } else {
         wp_send_json_error(["message" => "Error sending message"]);
     }
 }
+
+function send_chat_notification() {
+    $customer_id = intval($_POST['customer_id']);
+    $partner_id = intval($_POST['partner_id']);
+    $message = sanitize_text_field($_POST['message']);
+    $view = sanitize_text_field($_POST['view']);
+
+    // Send email notification
+    send_chat_email_notification($customer_id, $partner_id, $message, $view);
+
+    wp_send_json_success(["message" => "Notification sent"]);
+}
+add_action('wp_ajax_send_chat_notification', 'send_chat_notification');
+add_action('wp_ajax_nopriv_send_chat_notification', 'send_chat_notification'); // Allow for non-logged-in users if needed
+
 
 add_action('wp_ajax_send_to_partner_message', 'send_to_partner_message');
 add_action('wp_ajax_nopriv_send_to_partner_message', 'send_to_partner_message');
@@ -1487,9 +1520,12 @@ function send_to_partner_message() {
         'created_at'   => current_time('mysql')
     ]);
 
-    send_chat_email_notification($customer_id, $partner_id, $message, 'partner');
+    // send_chat_email_notification($customer_id, $partner_id, $message, 'partner');
 
     if ($result) {
+        
+        $message_id = $wpdb->insert_id;
+
         $current_status = $wpdb->get_var($wpdb->prepare(
             "SELECT status FROM $lead_quotes_partners_table WHERE provider_id = %d AND lead_quote_id = %d",
             $partner_id, $lead_id
@@ -1504,7 +1540,15 @@ function send_to_partner_message() {
             );
         }
 
-        wp_send_json_success(["message" => "Message sent"]);
+        wp_send_json_success([
+            "message" => "Message sent",
+            "chat_message_id" => $message_id,
+            "customer_id" => $customer_id,
+            "partner_id" => $partner_id,
+            "message_text" => $message,
+            "view" => 'partner'
+        ]);
+
     } else {
         wp_send_json_error(["message" => "Error sending message"]);
     }
@@ -1538,8 +1582,7 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
             <p>Dear {$partner->business_trading_name},</p>
             <p>You have received a new message from <strong>{$customer->name}</strong>:</p>
             <blockquote>{$message}</blockquote>
-            <p>Please <a href='#'>click here</a> to respond.</p>
-        ";
+            <p>Please <a href='".home_url('/partner-customer-requests')."'>click here</a> to respond.</p>";
 
          // Send email
          if ($message) {
@@ -1554,7 +1597,7 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
             <p>Dear {$customer->name},</p>
             <p>You have received a new inquiry from <strong>{$partner->business_trading_name}</strong>:</p>
             <blockquote>{$message}</blockquote>
-            <p>Please <a href='#'>click here</a> to respond.</p>
+            <p>Please <a href='".home_url('/customer-login')."'>click here</a> to respond.</p>
         ";
 
          // Send email
@@ -1605,6 +1648,13 @@ function load_chat_messages() {
             "UPDATE $messages_table 
              SET is_read = 1 
              WHERE chat_id = %d AND sender_type = 'partner' AND is_read = 0",
+            $chat_id
+        ));
+
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $chat_table 
+             SET is_read = 1 
+             WHERE id = %d AND is_read = 0",
             $chat_id
         ));
     }
@@ -1683,13 +1733,32 @@ add_action('after_setup_theme', function() {
         return $message_count > 0;
     }
 
+    // function get_quote_message_status($quote_id) {
+    //     global $wpdb;
+    
+    //     $query = $wpdb->prepare(
+    //         "SELECT 
+    //             COUNT(m.id) AS total_messages,
+    //             SUM(CASE WHEN m.is_read = 0 THEN 1 ELSE 0 END) AS unread_messages
+    //          FROM wp_yqit_lead_quotes q
+    //          LEFT JOIN wp_customer_partner_quote_chat c ON q.id = c.lead_id
+    //          LEFT JOIN wp_customer_partner_quote_chat_messages m ON c.id = m.chat_id
+    //          WHERE q.id = %d AND m.receiver_type = 'customer'",
+    //         $quote_id
+    //     );
+    
+    //     return $wpdb->get_row($query);
+    // }
+
     function get_quote_message_status($quote_id) {
         global $wpdb;
     
         $query = $wpdb->prepare(
             "SELECT 
                 COUNT(m.id) AS total_messages,
-                SUM(CASE WHEN m.is_read = 0 THEN 1 ELSE 0 END) AS unread_messages
+                SUM(CASE WHEN m.is_read = 0 THEN 1 ELSE 0 END) AS unread_messages,
+                COUNT(DISTINCT c.partner_id) AS total_chat_partners,
+                COUNT(DISTINCT CASE WHEN c.is_read = 0 THEN c.id END) AS total_unread_chats
              FROM wp_yqit_lead_quotes q
              LEFT JOIN wp_customer_partner_quote_chat c ON q.id = c.lead_id
              LEFT JOIN wp_customer_partner_quote_chat_messages m ON c.id = m.chat_id
@@ -1747,7 +1816,7 @@ function get_customer_chat_details_callback() {
                 <img src='$business_logo' alt='Business Logo' class='business-logo'>
                 <span class='business-name'>$business_name</span>
                 <span class='view-quote $status_class' onclick='openChat($chat->partner_id, $chat->customer_id, $chat->lead_id, \"customer\")'>
-                    View Quote
+                    View Message
                 </span>
             </div>
         ";

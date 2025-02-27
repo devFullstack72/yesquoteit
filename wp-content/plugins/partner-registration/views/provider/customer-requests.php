@@ -64,12 +64,22 @@
                             <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->created_at))); ?></span>
                         </td>
                         
+                        
                         <td>
-                            <a href="javascript:void(0);" 
-                            class="open-lead-modal" 
-                            data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> <!-- Store JSON -->
-                                <?php echo esc_html($customer_quote->lead_name); ?>
-                            </a>
+                            <?php $image = get_the_post_thumbnail_url($customer_quote->lead_id, 'large'); ?>
+                            <div class="d-flex align-items-center" style="display: flex; align-items: center; gap: 10px;">
+                                <?php if (!empty($image)) { ?>
+                                    <div class="img" style="background-image: url('<?php echo esc_url($image); ?>');"></div>
+                                <?php } ?>
+
+                                <div class="email" style="white-space: nowrap;">
+                                    <a href="javascript:void(0);" 
+                                        class="open-lead-modal" 
+                                        data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> 
+                                        <?php echo esc_html($customer_quote->lead_name); ?>
+                                    </a>
+                                </div>
+                            </div>
                         </td>
 
                         <td>
@@ -124,7 +134,7 @@
 <div id="chatModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close close-chat-modal">&times;</span>
-        <h4>Chat with Customer</h4>
+        <h4>Quote Chat</h4>
         <div id="chat_messages"></div> <!-- Chat messages load here -->
         <input type="hidden" id="partner_id">
         <input type="hidden" id="customer_id">
@@ -511,6 +521,15 @@ thead {
 
 #sendMessage{
     float: right;
+}
+
+.img {
+    width: 40px; 
+    height: 40px; 
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    display: inline-block;
 }
 
 </style>
