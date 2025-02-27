@@ -153,6 +153,12 @@ class Partner_Registration_Plugin {
             $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes ADD COLUMN is_archived VARCHAR(255) NULL DEFAULT 0 AFTER quote_data;");
         }
 
+        $existing_lead_quotes_columns = $wpdb->get_col("DESC {$wpdb->prefix}yqit_lead_quotes_partners", 0);
+
+        if (!in_array('is_archived', $existing_lead_quotes_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes_partners ADD COLUMN is_archived VARCHAR(255) NULL DEFAULT 0 AFTER status;");
+        }
+
         @ob_end_clean();
     }
 
