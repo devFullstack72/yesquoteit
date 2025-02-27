@@ -158,6 +158,7 @@ class Partner_CF7_Handler {
         $email_data['customer_login_link'] = home_url() . '/handler-events/customer/' . encrypt_customer_id($customer_id);
 
         $email_data['partner_cost_hotlink'] = home_url() . '/partner-customer-requests';
+        
 
         // Send email to approved service providers
         $approved_partners_emails = [];
@@ -170,7 +171,7 @@ class Partner_CF7_Handler {
                     'provider_id' => $partner->provider_id
                 ]);
 
-                $message = "New Quote Received: Customer:". $email_data['your-name'];
+                $message = "New Quote Received from". $email_data['your-name'];
 
                 $this->sendSMS($message, $partner->phone);
             }
@@ -196,20 +197,20 @@ class Partner_CF7_Handler {
 
     public function sendSMS($message, $to){
          // SMS Message
-         $account_sid = 'AC16211ef9274b2859d29203c547635cdf';
-         $auth_token = '9f1ba52e92e8666fe0b804f9c593febe';
-         $twilio_number = '+16193784231';
+         $account_sid = get_option('twilio_account_sid', '');
+         $auth_token = get_option('twilio_auth_token', '');
+         $twilio_number = get_option('twilio_number', '');
 
          // Send SMS using Twilio
          try {
              $client = new Client($account_sid, $auth_token);
-            //  $response = $client->messages->create(
-            //      $to,
-            //      [
-            //          'from' => $twilio_number,
-            //          'body' => $message
-            //      ]
-            //  );
+             $response = $client->messages->create(
+                 $to,
+                 [
+                     'from' => $twilio_number,
+                     'body' => $message
+                 ]
+             );
 
          } catch (Exception $e) {
              error_log('Twilio SMS Error: ' . $e->getMessage());
