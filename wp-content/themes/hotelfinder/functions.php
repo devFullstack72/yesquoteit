@@ -1809,7 +1809,7 @@ function get_customer_chat_details_callback() {
         $unread_count = intval($chat->unread_count);
 
         if(empty($chat->business_logo)) {
-            $business_logo = '<img src="https://eu.ui-avatars.com/api/?name='.$business_name.'&size=250">';
+            $business_logo = 'https://eu.ui-avatars.com/api/?name='.$business_name.'&size=250';
         }
         
         // If there is at least one unread message, show green, otherwise show yellow
