@@ -1807,6 +1807,10 @@ function get_customer_chat_details_callback() {
         $business_name = esc_html($chat->business_name);
         $chat_id = intval($chat->id);
         $unread_count = intval($chat->unread_count);
+
+        if(empty($chat->business_logo)) {
+            $business_logo = '<img src="https://eu.ui-avatars.com/api/?name='.$business_name.'&size=250">';
+        }
         
         // If there is at least one unread message, show green, otherwise show yellow
         $status_class = ($unread_count > 0) ? 'green-button' : 'yellow-button';
