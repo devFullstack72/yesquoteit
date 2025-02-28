@@ -1317,30 +1317,6 @@ function delete_customer_quote() {
     }
 }
 
-add_action('wp_ajax_delete_multiple_customer_quotes', 'delete_multiple_customer_quotes');
-add_action('wp_ajax_nopriv_delete_multiple_customer_quotes', 'delete_multiple_customer_quotes'); 
-
-function delete_multiple_customer_quotes() {
-    if (!isset($_POST['ids']) || !is_array($_POST['ids'])) {
-        wp_send_json_error("Invalid request.");
-    }
-
-    global $wpdb;
-    $ids = array_map('intval', $_POST['ids']);
-    $placeholders = implode(',', array_fill(0, count($ids), '%d'));
-    $query = "DELETE FROM {$wpdb->prefix}yqit_lead_quotes_partners WHERE lead_quote_id IN ($placeholders)";
-    $result = $wpdb->query($wpdb->prepare($query, $ids));
-
-    $query = "DELETE FROM {$wpdb->prefix}yqit_lead_quotes WHERE id IN ($placeholders)";
-    $result = $wpdb->query($wpdb->prepare($query, $ids));
-
-    if ($result) {
-        wp_send_json_success("Quotes deleted successfully.");
-    } else {
-        wp_send_json_error("Failed to delete quotes.");
-    }
-}
-
 function modify_nav_menu($items, $args) {
     // Get the menu object by location
     if ($args->theme_location == 'primary-menu' || $args->theme_location == 'main-menu') {
