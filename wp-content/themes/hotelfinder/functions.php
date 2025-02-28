@@ -1803,6 +1803,7 @@ function register_quote_email_templates_post_type() {
             'name'          => 'Standard Email Templates',
             'singular_name' => 'Standard Email Template',
             'add_new'       => 'Add New Template',
+            'add_new_item' => 'Add New Email Template',
             'edit_item'     => 'Edit Standard Email Template'
         ],
         'public'       => false,
