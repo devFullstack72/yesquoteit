@@ -1,9 +1,9 @@
 // Open Chat Modal
 function openChat(partner_id, customer_id, lead_id, view = 'customer') {
 
-    if(view == 'customer'){
-        $("#partnerChatModal").hide();
-    }
+    // if(view == 'customer'){
+    //     $("#partnerChatModal").hide();
+    // }
 
     $("#chatModal").show();
     
