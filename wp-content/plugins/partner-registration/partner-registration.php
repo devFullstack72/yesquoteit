@@ -106,7 +106,30 @@ class Partner_Registration_Plugin {
                 lead_quote_id BIGINT(20) NOT NULL,
                 provider_id BIGINT(20) NOT NULL,
                 status ENUM('New Lead', 'Viewed', 'Responded') NOT NULL DEFAULT 'New Lead'
-            ) $charset_collate;"
+            ) $charset_collate;",
+
+            'customer_partner_quote_chat' => "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}customer_partner_quote_chat (
+                id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                partner_id BIGINT(20) UNSIGNED NOT NULL,
+                customer_id BIGINT(20) UNSIGNED NOT NULL,
+                lead_id BIGINT(20) UNSIGNED NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB $charset_collate;",
+
+            'customer_partner_quote_chat_messages' => "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}customer_partner_quote_chat_messages (
+                id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                chat_id BIGINT(20) UNSIGNED NOT NULL,
+                sender_id BIGINT(20) UNSIGNED NOT NULL,
+                receiver_id BIGINT(20) UNSIGNED NOT NULL,
+                sender_type ENUM('partner', 'customer') NOT NULL,
+                receiver_type ENUM('partner', 'customer') NOT NULL,
+                message TEXT NOT NULL,
+                is_read TINYINT(1) DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT fk_chat FOREIGN KEY (chat_id) 
+                REFERENCES {$wpdb->prefix}customer_partner_quote_chat(id) 
+                ON DELETE CASCADE ON UPDATE CASCADE
+            ) ENGINE=InnoDB $charset_collate;"
 
         ];
 
@@ -157,6 +180,18 @@ class Partner_Registration_Plugin {
 
         if (!in_array('is_archived', $existing_lead_quotes_columns)) {
             $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes_partners ADD COLUMN is_archived VARCHAR(255) NULL DEFAULT 0 AFTER status;");
+        }
+
+        $existing_customer_partner_quote_chat_columns = $wpdb->get_col("DESC {$wpdb->prefix}customer_partner_quote_chat", 0);
+
+        if (!in_array('is_read', $existing_customer_partner_quote_chat_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}customer_partner_quote_chat ADD COLUMN is_read TINYINT(1) DEFAULT 0 AFTER lead_id;");
+        }
+
+        $existing_customer_partner_quote_chat_messages_columns = $wpdb->get_col("DESC {$wpdb->prefix}customer_partner_quote_chat_messages", 0);
+
+        if (!in_array('is_read', $existing_customer_partner_quote_chat_messages_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}customer_partner_quote_chat_messages ADD COLUMN is_read TINYINT(1) DEFAULT 0 AFTER message;");
         }
 
         @ob_end_clean();
