@@ -514,4 +514,24 @@ thead {
     border-radius: 50%;
     display: inline-block;
 }
+
+.chat-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+.chat-loading::after {
+    content: "";
+    width: 80px;
+    height: 80px;
+    background: url(../wp-includes/images/spinner-overlay.gif) center no-repeat;
+    background-size: contain; /* Ensures image scales properly */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
