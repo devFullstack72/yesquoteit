@@ -1523,40 +1523,51 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
         return; // Exit if no valid user found
     }
 
-    // Email subject & headers
-    $headers = ['Content-Type: text/html; charset=UTF-8'];
+    /// Get email template dynamically
+    $template_title = ($to == 'partner') ? 'Customer to Partner' : 'Partner to Customer';
     
-    if($to == 'partner'){
-        // When customer responds to partner
-        $partner_email_subject = "New Message from {$customer->name}";
-        $partner_email_body = "
-            <p>Dear {$partner->business_trading_name},</p>
-            <p>You have received a new message from <strong>{$customer->name}</strong>:</p>
-            <blockquote>{$message}</blockquote>
-            <p>Please <a href='".home_url('/partner-customer-requests')."'>click here</a> to respond.</p>";
+    $template_post = get_page_by_title($template_title, OBJECT, 'quote_tpl');
 
-         // Send email
-         if ($message) {
-            // If the sender is a customer, notify the partner
-            wp_mail($partner->email, $partner_email_subject, $partner_email_body, $headers);
-        }
-
-    } else {
-        // When partner sends inquiry to customer
-        $customer_email_subject = "New Inquiry from {$partner->business_trading_name}";
-        $customer_email_body = "
-            <p>Dear {$customer->name},</p>
-            <p>You have received a new inquiry from <strong>{$partner->business_trading_name}</strong>:</p>
-            <blockquote>{$message}</blockquote>
-            <p>Please <a href='".home_url('/customer-login')."'>click here</a> to respond.</p>
-        ";
-
-         // Send email
-        if ($message) {
-            // If the sender is a partner, notify the customer
-            wp_mail($customer->email, $customer_email_subject, $customer_email_body, $headers);
-        }
+    if (!$template_post) {
+        return; // Exit if template is not found
     }
+
+    // Fetch the subject from post meta
+    $email_subject_template = get_post_meta($template_post->ID, 'email_subject', true);
+    if (!$email_subject_template) {
+        $email_subject_template = "New Message"; // Fallback subject
+    }
+
+    // Replace placeholders in the subject
+    $email_subject = str_replace(
+        ['{recipient_name}', '{sender_name}'],
+        [
+            ($to == 'partner') ? $partner->business_trading_name : $customer->name,
+            ($to == 'partner') ? $customer->name : $partner->business_trading_name,
+        ],
+        $email_subject_template
+    );
+
+    // Replace placeholders in the email body
+    $email_body = str_replace(
+        ['{recipient_name}', '{sender_name}', '{message}', '{response_url}'],
+        [
+            ($to == 'partner') ? $partner->business_trading_name : $customer->name,
+            ($to == 'partner') ? $customer->name : $partner->business_trading_name,
+            nl2br($message),
+            home_url(($to == 'partner') ? '/partner-customer-requests' : '/customer-login')
+        ],
+        $template_post->post_content
+    );
+
+    // Email headers
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+    // Determine recipient email
+    $recipient_email = ($to == 'partner') ? $partner->email : $customer->email;
+    
+    // Send email
+    wp_mail($recipient_email, $email_subject, $email_body, $headers);
 }
 
 
@@ -1782,6 +1793,110 @@ function get_customer_chat_details_callback() {
 
     wp_die(); // Required for WordPress AJAX
 }
+
+// delete_option('default_quote_email_templates_added');
+
+// Register Standard Email Templates Post Type
+function register_quote_email_templates_post_type() {
+    $args = [
+        'labels' => [
+            'name'          => 'Standard Email Templates',
+            'singular_name' => 'Standard Email Template',
+            'add_new'       => 'Add New Template',
+            'edit_item'     => 'Edit Quote Email Template'
+        ],
+        'public'       => false,
+        'show_ui'      => true,
+        'menu_icon'    => 'dashicons-email-alt2',
+        'supports'     => ['title', 'editor', 'custom-fields'], // Added custom-fields
+    ];
+    register_post_type('quote_tpl', $args);
+}
+add_action('init', 'register_quote_email_templates_post_type');
+
+// Add Default Email Templates
+function add_default_quote_email_templates() {
+    if (get_option('default_quote_email_templates_added')) return;
+
+    $templates = [
+        [
+            'title'   => 'Customer to Partner',
+            'subject' => 'New Message from {sender_name}', // Dynamic subject
+            'content' => '<p>Dear {recipient_name},</p>
+                          <p>You have received a message from <strong>{sender_name}</strong>:</p>
+                          <blockquote>{message}</blockquote>
+                          <p>Please <a href="{response_url}">click here</a> to respond.</p>'
+        ],
+        [
+            'title'   => 'Partner to Customer',
+            'subject' => 'New Inquiry from {sender_name}',
+            'content' => '<p>Dear {recipient_name},</p>
+                          <p>You have received an inquiry from <strong>{sender_name}</strong>:</p>
+                          <blockquote>{message}</blockquote>
+                          <p>Please <a href="{response_url}">click here</a> to respond.</p>'
+        ],
+    ];
+
+    foreach ($templates as $template) {
+        $existing_posts = get_posts([
+            'post_type'   => 'quote_tpl',
+            'title'       => $template['title'],
+            'post_status' => 'any',
+            'numberposts' => 1
+        ]);
+
+        if (empty($existing_posts)) {
+            $post_id = wp_insert_post([
+                'post_type'    => 'quote_tpl',
+                'post_title'   => $template['title'],
+                'post_content' => $template['content'],
+                'post_status'  => 'publish',
+            ]);
+
+            if ($post_id) {
+                update_post_meta($post_id, 'email_subject', $template['subject']); // Store subject in meta
+            }
+        }
+    }
+
+    update_option('default_quote_email_templates_added', true);
+}
+add_action('init', 'add_default_quote_email_templates');
+
+// Add Meta Box for Subject in Admin
+function add_email_subject_meta_box() {
+    add_meta_box(
+        'email_subject_meta',
+        'Email Subject',
+        'email_subject_meta_callback',
+        'quote_tpl',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_email_subject_meta_box');
+
+// Meta Box Callback
+function email_subject_meta_callback($post) {
+    $value = get_post_meta($post->ID, 'email_subject', true);
+    echo '<label for="email_subject">Subject: </label>';
+    echo '<input type="text" id="email_subject" name="email_subject" value="' . esc_attr($value) . '" style="width:100%;" />';
+}
+
+// Save Meta Box Data
+function save_email_subject_meta($post_id) {
+    if (array_key_exists('email_subject', $_POST)) {
+        update_post_meta($post_id, 'email_subject', sanitize_text_field($_POST['email_subject']));
+    }
+}
+add_action('save_post', 'save_email_subject_meta');
+
+
+
+
+
+
+
 
 
 
