@@ -21,11 +21,11 @@
                 </button>
             </div>
             <div>
-                <?php if ($is_archived) : ?>
+                <!-- <?php if ($is_archived) : ?>
                 <a href="<?php echo home_url() . '/customer-requests' ?>" class="btn btn-warning" style="color: white;">Open Non Archived</a>
                 <?php else : ?>
                     <a href="<?php echo home_url() . '/customer-requests/?is_archived=1' ?>" class="btn btn-warning" style="color: white;">Open Archived</a>
-                <?php endif; ?>
+                <?php endif; ?> -->
             </div>
         </div>
     </div>
@@ -37,7 +37,10 @@
                 <th>Quote Request</th>
                 <th>Contact Details</th>
                 <th>Inbox</th>
-                <th>Action</th>
+                <th>
+                    <input type="checkbox" <?php if (!$is_archived){ echo "checked"; } ?> id="open" onclick="handleCheckboxSelection('open')"> Open
+                    <input type="checkbox" <?php if ($is_archived){ echo "checked"; } ?>  id="archive" onclick="handleCheckboxSelection('archive')"> Archive
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -91,10 +94,10 @@
                                 }
                             ?>
                             
-                            <i class="fa fa-envelope"></i>
+                           
                             <span class="message-count <?php echo $color_class; ?>" 
                                 onclick="openChatPopup(<?php echo $customer_quote->lead_quote_id; ?>)">
-                               
+                                <i class="fa fa-envelope"></i>
                                 Messages received <?php echo $total_chat_partners; ?>
                             </span>
                         </td>
@@ -258,6 +261,20 @@ jQuery(document).ready(function($) {
         $("#leadModal").hide();
     });
 });
+
+
+function handleCheckboxSelection(selected) {
+    let archiveCheckbox = document.getElementById("archive");
+    let openCheckbox = document.getElementById("open");
+
+    if (selected === "archive") {
+        openCheckbox.checked = false; // Deselect Open
+        window.location.href = "<?php echo home_url(); ?>/customer-requests/?is_archived=1";
+    } else if (selected === "open") {
+        archiveCheckbox.checked = false; // Deselect Archive
+        window.location.href = "<?php echo home_url(); ?>/customer-requests";
+    }
+}
 
 var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
 var chat_send_action = 'send_to_partner_message';
