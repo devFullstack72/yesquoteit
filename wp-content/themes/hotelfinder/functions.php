@@ -1292,31 +1292,6 @@ function update_quote_status() {
 add_action('wp_ajax_update_quote_status', 'update_quote_status');
 add_action('wp_ajax_nopriv_update_quote_status', 'update_quote_status'); // For non-logged-in users (if required)
 
-// Handle AJAX request to delete a customer quote
-add_action('wp_ajax_delete_customer_quote', 'delete_customer_quote');
-add_action('wp_ajax_nopriv_delete_customer_quote', 'delete_customer_quote'); // If non-logged-in users need access
-
-function delete_customer_quote() {
-    global $wpdb;
-
-    if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
-        wp_send_json_error(['message' => 'Invalid request.']);
-    }
-
-    $quote_id = intval($_POST['id']);
-    $table_name = $wpdb->prefix . 'yqit_lead_quotes_partners';
-    $deleted = $wpdb->delete($table_name, ['lead_quote_id' => $quote_id], ['%d']);
-
-    $table_name = $wpdb->prefix . 'yqit_lead_quotes';
-    $deleted = $wpdb->delete($table_name, ['id' => $quote_id], ['%d']);
-
-    if ($deleted) {
-        wp_send_json_success(['message' => 'Quote deleted successfully.']);
-    } else {
-        wp_send_json_error(['message' => 'Failed to delete quote.']);
-    }
-}
-
 function modify_nav_menu($items, $args) {
     // Get the menu object by location
     if ($args->theme_location == 'primary-menu' || $args->theme_location == 'main-menu') {
@@ -1334,55 +1309,55 @@ function modify_nav_menu($items, $args) {
 add_filter('wp_nav_menu_objects', 'modify_nav_menu', 10, 2);
 
 
-function create_customer_partner_chat_tables() {
-    global $wpdb;
-    $charset_collate = $wpdb->get_charset_collate();
+// function create_customer_partner_chat_tables() {
+//     global $wpdb;
+//     $charset_collate = $wpdb->get_charset_collate();
 
-    $customer_partner_quote_chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
-    $customer_partner_quote_chat_messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
+//     $customer_partner_quote_chat_table = $wpdb->prefix . 'customer_partner_quote_chat';
+//     $customer_partner_quote_chat_messages_table = $wpdb->prefix . 'customer_partner_quote_chat_messages';
 
-    // Create the customer_partner_quote_chat table first
-    $sql1 = "CREATE TABLE IF NOT EXISTS $customer_partner_quote_chat_table (
-        id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        partner_id BIGINT(20) UNSIGNED NOT NULL,
-        customer_id BIGINT(20) UNSIGNED NOT NULL,
-        lead_id BIGINT(20) UNSIGNED NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB $charset_collate;";
+//     // Create the customer_partner_quote_chat table first
+//     $sql1 = "CREATE TABLE IF NOT EXISTS $customer_partner_quote_chat_table (
+//         id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+//         partner_id BIGINT(20) UNSIGNED NOT NULL,
+//         customer_id BIGINT(20) UNSIGNED NOT NULL,
+//         lead_id BIGINT(20) UNSIGNED NOT NULL,
+//         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+//     ) ENGINE=InnoDB $charset_collate;";
 
-    // Create the customer_partner_quote_chat_messages table
-    $sql2 = "CREATE TABLE IF NOT EXISTS $customer_partner_quote_chat_messages_table (
-        id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        chat_id BIGINT(20) UNSIGNED NOT NULL,
-        sender_id BIGINT(20) UNSIGNED NOT NULL,
-        receiver_id BIGINT(20) UNSIGNED NOT NULL,
-        sender_type ENUM('partner', 'customer') NOT NULL,
-        receiver_type ENUM('partner', 'customer') NOT NULL,
-        message TEXT NOT NULL,
-        is_read TINYINT(1) DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_chat FOREIGN KEY (chat_id) 
-        REFERENCES $customer_partner_quote_chat_table(id) 
-        ON DELETE CASCADE ON UPDATE CASCADE
-    ) ENGINE=InnoDB $charset_collate;";
+//     // Create the customer_partner_quote_chat_messages table
+//     $sql2 = "CREATE TABLE IF NOT EXISTS $customer_partner_quote_chat_messages_table (
+//         id BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+//         chat_id BIGINT(20) UNSIGNED NOT NULL,
+//         sender_id BIGINT(20) UNSIGNED NOT NULL,
+//         receiver_id BIGINT(20) UNSIGNED NOT NULL,
+//         sender_type ENUM('partner', 'customer') NOT NULL,
+//         receiver_type ENUM('partner', 'customer') NOT NULL,
+//         message TEXT NOT NULL,
+//         is_read TINYINT(1) DEFAULT 0,
+//         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+//         CONSTRAINT fk_chat FOREIGN KEY (chat_id) 
+//         REFERENCES $customer_partner_quote_chat_table(id) 
+//         ON DELETE CASCADE ON UPDATE CASCADE
+//     ) ENGINE=InnoDB $charset_collate;";
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta($sql1);
-    dbDelta($sql2);
+//     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+//     dbDelta($sql1);
+//     dbDelta($sql2);
 
-    // Check if the 'is_read' column exists, and add it if not
-    $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $customer_partner_quote_chat_messages_table LIKE 'is_read'");
-    if (empty($column_exists)) {
-        $wpdb->query("ALTER TABLE $customer_partner_quote_chat_messages_table ADD COLUMN is_read TINYINT(1) DEFAULT 0;");
-    }
+//     // Check if the 'is_read' column exists, and add it if not
+//     $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $customer_partner_quote_chat_messages_table LIKE 'is_read'");
+//     if (empty($column_exists)) {
+//         $wpdb->query("ALTER TABLE $customer_partner_quote_chat_messages_table ADD COLUMN is_read TINYINT(1) DEFAULT 0;");
+//     }
 
-    $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $customer_partner_quote_chat_table LIKE 'is_read'");
-    if (empty($column_exists)) {
-        $wpdb->query("ALTER TABLE $customer_partner_quote_chat_table ADD COLUMN is_read TINYINT(1) DEFAULT 0;");
-    }
-}
+//     $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $customer_partner_quote_chat_table LIKE 'is_read'");
+//     if (empty($column_exists)) {
+//         $wpdb->query("ALTER TABLE $customer_partner_quote_chat_table ADD COLUMN is_read TINYINT(1) DEFAULT 0;");
+//     }
+// }
 
-add_action('after_setup_theme', 'create_customer_partner_chat_tables');
+// add_action('after_setup_theme', 'create_customer_partner_chat_tables');
 
 
 

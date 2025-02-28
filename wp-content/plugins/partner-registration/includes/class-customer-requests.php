@@ -20,6 +20,9 @@ class Customer_Requests extends CustomerController
         add_action('wp_ajax_delete_multiple_customer_quotes', [$this, 'delete_multiple_customer_quotes']);
         add_action('wp_ajax_nopriv_delete_multiple_customer_quotes', [$this, 'delete_multiple_customer_quotes']);
 
+        add_action('wp_ajax_delete_customer_quote', [$this, 'delete_customer_quote']);
+        add_action('wp_ajax_nopriv_delete_customer_quote', [$this, 'delete_customer_quote']);
+
     } 
 
     public function render_customer_requests() {
@@ -68,7 +71,7 @@ class Customer_Requests extends CustomerController
         return ob_get_clean();
     }
 
-    function archive_multiple_customer_quotes() {
+    public function archive_multiple_customer_quotes() {
         if (!isset($_POST['ids']) || !is_array($_POST['ids'])) {
             wp_send_json_error("Invalid request.");
         }
@@ -89,7 +92,7 @@ class Customer_Requests extends CustomerController
         }
     }
 
-    function delete_multiple_customer_quotes() {
+    public function delete_multiple_customer_quotes() {
         if (!isset($_POST['ids']) || !is_array($_POST['ids'])) {
             wp_send_json_error("Invalid request.");
         }
@@ -107,6 +110,27 @@ class Customer_Requests extends CustomerController
             wp_send_json_success("Quotes deleted successfully.");
         } else {
             wp_send_json_error("Failed to delete quotes.");
+        }
+    }
+
+    public function delete_customer_quote() {
+        global $wpdb;
+    
+        if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+            wp_send_json_error(['message' => 'Invalid request.']);
+        }
+    
+        $quote_id = intval($_POST['id']);
+        $table_name = $wpdb->prefix . 'yqit_lead_quotes_partners';
+        $deleted = $wpdb->delete($table_name, ['lead_quote_id' => $quote_id], ['%d']);
+    
+        $table_name = $wpdb->prefix . 'yqit_lead_quotes';
+        $deleted = $wpdb->delete($table_name, ['id' => $quote_id], ['%d']);
+    
+        if ($deleted) {
+            wp_send_json_success(['message' => 'Quote deleted successfully.']);
+        } else {
+            wp_send_json_error(['message' => 'Failed to delete quote.']);
         }
     }
 }
