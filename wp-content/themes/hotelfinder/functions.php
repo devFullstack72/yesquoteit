@@ -1821,12 +1821,12 @@ function get_customer_chat_details_callback() {
 
 // delete_option('default_quote_email_templates_added');
 
-// Register Quote Email Templates Post Type
+// Register Standard Email Templates Post Type
 function register_quote_email_templates_post_type() {
     $args = [
         'labels' => [
-            'name'          => 'Quote Email Templates',
-            'singular_name' => 'Quote Email Template',
+            'name'          => 'Standard Email Templates',
+            'singular_name' => 'Standard Email Template',
             'add_new'       => 'Add New Template',
             'edit_item'     => 'Edit Quote Email Template'
         ],
