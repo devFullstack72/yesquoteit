@@ -13,7 +13,7 @@ function openChat(partner_id, customer_id, lead_id, view = 'customer') {
     $("#chat_messages").html(""); // Clear old messages
 
     // Show loading spinner
-    $("#chat_messages").html("<div class='chat-loading'>Loading...</div>");
+    $("#chat_messages").html("<div class='chat-loading'></div>");
 
     // Load previous messages
     $.ajax({
