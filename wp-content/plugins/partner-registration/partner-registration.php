@@ -129,7 +129,13 @@ class Partner_Registration_Plugin {
                 CONSTRAINT fk_chat FOREIGN KEY (chat_id) 
                 REFERENCES {$wpdb->prefix}customer_partner_quote_chat(id) 
                 ON DELETE CASCADE ON UPDATE CASCADE
-            ) ENGINE=InnoDB $charset_collate;"
+            ) ENGINE=InnoDB $charset_collate;",
+
+            'cf7_fields_labels' => "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cf7_fields_labels (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    field_name VARCHAR(255) NOT NULL UNIQUE,
+                    field_label VARCHAR(255) NOT NULL
+                );"
 
         ];
 

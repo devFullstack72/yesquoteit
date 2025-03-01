@@ -20,6 +20,8 @@ class Partner_CF7_Handler {
 
     public $lead_quotes_partners_table;
 
+    public $cf7_fields_labels_table;
+
     public function __construct() {
         add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
@@ -48,6 +50,10 @@ class Partner_CF7_Handler {
         $this->lead_quotes_table = $wpdb->prefix . 'yqit_lead_quotes';
 
         $this->lead_quotes_partners_table = $wpdb->prefix . 'yqit_lead_quotes_partners';
+
+        $this->cf7_fields_labels_table = $wpdb->prefix . 'cf7_fields_labels';
+
+        add_action('wpcf7_save_contact_form', [$this, 'save_cf7_fields_labels'], 10, 1);
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
@@ -316,5 +322,46 @@ class Partner_CF7_Handler {
 
         return true;
         
+    }
+
+    public function save_cf7_fields_labels($contact_form) {
+        
+        $form_properties = $contact_form->get_properties();
+        $form_fields = $form_properties['form'];
+
+        // Updated regex to capture full field names (e.g., number-266)
+        preg_match_all('/<label>\s*(.*?)\s*<\/label>\s*\[([a-zA-Z0-9-*]+)\s+([a-zA-Z0-9-_]+)[^\]]*\]/', $form_fields, $matches, PREG_SET_ORDER);
+
+        foreach ($matches as $match) {
+            
+            $label = sanitize_text_field(trim($match[1]));  // Extract label text
+            $field_name = sanitize_text_field(trim($match[3]));  // Extract actual field name
+
+            // Check if the field already exists
+            $existing = $this->database->get_var($this->database->prepare(
+                "SELECT COUNT(*) FROM {$this->cf7_fields_labels_table} WHERE field_name = %s",
+                $field_name
+            ));
+
+            if ($existing) {
+                // Update existing field label
+                $this->database->update(
+                    $this->cf7_fields_labels_table,
+                    ['field_label' => $label],  // Update field_label
+                    ['field_name' => $field_name],  // Where condition
+                    ['%s'], ['%s']
+                );
+            } else {
+                // Insert new field
+                $this->database->insert(
+                    $this->cf7_fields_labels_table,
+                    [
+                        'field_name' => $field_name,
+                        'field_label' => $label
+                    ],
+                    ['%s', '%s']
+                );
+            }
+        }
     }
 }
