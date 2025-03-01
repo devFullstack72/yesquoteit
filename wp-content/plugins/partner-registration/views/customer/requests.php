@@ -251,11 +251,14 @@ jQuery(document).ready(function($) {
 
         $("#quote_details").html("");
 
+        // Create the table structure
+        $("#quote_details").html('<table class="quote-table"><tbody></tbody></table>');
+
         $.each(quoteObj, function(key, item) {
             if (typeof item.label !== 'undefined') {
                 if (!item.label.includes('is_lead') && !item.label.startsWith('cf7mls_step')) {
-                    $("#quote_details").append(
-                        "<p><strong>" + item.label + ":</strong> " + item.value + "</p>"
+                    $(".quote-table tbody").append(
+                        "<tr><td><strong>" + item.label + "</strong></td><td>" + item.value + "</td></tr>"
                     );
                 }
             }
@@ -541,5 +544,24 @@ thead {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.quote-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.quote-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.quote-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.quote-table tr:hover {
+    background-color: #f1f1f1;
 }
 </style>
