@@ -60,7 +60,7 @@ class Partner_CF7_Fields_Labels {
                             <td>
                                 <form method="POST">
                                     <input type="hidden" name="field_id" value="<?php echo esc_attr($row->id); ?>">
-                                    <input type="text" name="field_label" value="<?php echo esc_attr($row->field_label); ?>">
+                                    <input style="width:100%;" type="text" name="field_label" value="<?php echo esc_attr($row->field_label); ?>">
                             </td>
                             <td>
                                     <button type="submit" name="update_field_label" class="button button-primary">Update</button>
