@@ -15,6 +15,14 @@ unset($_SESSION['profile_updated']);
 
 $current_step = isset($_GET['next_step']) ? $_GET['next_step'] : 1;
 
+$message = 'Thank You for Registering!';
+$description = 'We have received your submission. Our team will review it shortly.';
+
+if (isset($profile_updated) && !empty($profile_updated)) {
+    $message = 'Profile updated successfully!';
+    $description = 'We have updated your profile based on your request.';
+}
+
 // Check for success message
 if (isset($_GET['success']) && $_GET['success'] == 1) {
     echo '<div class="container partner-register-thank-you" style="margin-top: 50px; margin-bottom: 100px;">
