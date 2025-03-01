@@ -56,6 +56,8 @@ class Partner_CF7_Handler {
         add_action('wpcf7_save_contact_form', [$this, 'save_cf7_fields_labels'], 10, 1);
 
         add_action('init', [$this, 'sync_existing_lead_quote_data']);
+
+        add_action('init', [$this, 'add_cf7_default_fields_lables']);
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
@@ -368,31 +370,8 @@ class Partner_CF7_Handler {
             if (in_array($field_name, ['is_lead']))
                 continue;
 
-            // Check if the field already exists
-            $existing = $this->database->get_var($this->database->prepare(
-                "SELECT COUNT(*) FROM {$this->cf7_fields_labels_table} WHERE field_name = %s",
-                $field_name
-            ));
+            $this->saveCF7FieldLabel($label, $field_name);
 
-            if ($existing) {
-                // Update existing field label
-                $this->database->update(
-                    $this->cf7_fields_labels_table,
-                    ['field_label' => $label],  // Update field_label
-                    ['field_name' => $field_name],  // Where condition
-                    ['%s'], ['%s']
-                );
-            } else {
-                // Insert new field
-                $this->database->insert(
-                    $this->cf7_fields_labels_table,
-                    [
-                        'field_name' => $field_name,
-                        'field_label' => $label
-                    ],
-                    ['%s', '%s']
-                );
-            }
         }
     }
 
@@ -422,5 +401,50 @@ class Partner_CF7_Handler {
             }
         }
         return false; // Single-dimensional array
+    }
+
+    public function add_cf7_default_fields_lables() {
+        $default_fields_labels = [
+            'google_places_form_address' => 'Full Address',
+            'google_places_form_street_number' => 'Street No.',
+            'google_places_form_street' => 'Street',
+            'google_places_form_city' => 'City',
+            'google_places_form_state' => 'State',
+            'google_places_form_postalcode' => 'Postalcode',
+            'google_places_form_country' => 'Country',
+            'google_places_form_latitude' => 'Latitude',
+            'google_places_form_longitude' => 'Longitude'
+        ];
+        foreach($default_fields_labels as $field_name => $label) {
+            $this->saveCF7FieldLabel($label, $field_name);
+        }
+    }
+
+    private function saveCF7FieldLabel($label, $field_name) {
+        // Check if the field already exists
+        $existing = $this->database->get_var($this->database->prepare(
+            "SELECT COUNT(*) FROM {$this->cf7_fields_labels_table} WHERE field_name = %s",
+            $field_name
+        ));
+
+        if ($existing) {
+            // Update existing field label
+            $this->database->update(
+                $this->cf7_fields_labels_table,
+                ['field_label' => $label],  // Update field_label
+                ['field_name' => $field_name],  // Where condition
+                ['%s'], ['%s']
+            );
+        } else {
+            // Insert new field
+            $this->database->insert(
+                $this->cf7_fields_labels_table,
+                [
+                    'field_name' => $field_name,
+                    'field_label' => $label
+                ],
+                ['%s', '%s']
+            );
+        }
     }
 }
