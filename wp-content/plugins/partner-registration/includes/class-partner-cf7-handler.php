@@ -54,6 +54,8 @@ class Partner_CF7_Handler {
         $this->cf7_fields_labels_table = $wpdb->prefix . 'cf7_fields_labels';
 
         add_action('wpcf7_save_contact_form', [$this, 'save_cf7_fields_labels'], 10, 1);
+
+        add_action('init', [$this, 'sync_existing_lead_quote_data']);
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
@@ -392,5 +394,33 @@ class Partner_CF7_Handler {
                 );
             }
         }
+    }
+
+    public function sync_existing_lead_quote_data() {
+        $lead_quotes = $this->database->get_results("SELECT id, quote_data FROM {$this->lead_quotes_table}", ARRAY_A);
+        
+        foreach($lead_quotes as $lead_quote_row) {
+            if (!empty($lead_quote_row['quote_data'])) {
+                $lead_quote = json_decode($lead_quote_row['quote_data'], TRUE);
+                if (!$this->is_multidimensional_array($lead_quote)) {
+                    $posted_data = $this->replaceFieldNameWithLabel($lead_quote);
+
+                    $this->database->update($this->lead_quotes_table, [
+                        'quote_data' => json_encode($posted_data)
+                    ], [
+                        'id' => $lead_quote_row['id']
+                    ]);
+                }
+            }
+        }
+    }
+
+    private function is_multidimensional_array($array) {
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                return true; // Multi-dimensional array detected
+            }
+        }
+        return false; // Single-dimensional array
     }
 }
