@@ -22,6 +22,7 @@ require_once PR_PLUGIN_DIR . 'includes/class-partner-cf7-handler.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-profile-page.php';
 require_once PR_PLUGIN_DIR . 'includes/class-partner-customer-requests.php';
 require_once PR_PLUGIN_DIR . 'includes/class-customer-requests.php';
+require_once PR_PLUGIN_DIR . 'includes/class-partner-cf7-fields-labels.php';
 
 require_once PR_PLUGIN_DIR . 'includes/class-customer-login.php';
 
@@ -36,6 +37,7 @@ class Partner_Registration_Plugin {
         new Partner_Public_Profile();
         new Partner_Customer_Requests();
         new Customer_Requests();
+        new Partner_CF7_Fields_Labels();
 
         new Customer_Login();
     }

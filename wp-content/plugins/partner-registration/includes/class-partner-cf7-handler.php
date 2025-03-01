@@ -354,7 +354,7 @@ class Partner_CF7_Handler {
         
         $form_properties = $contact_form->get_properties();
         $form_fields = $form_properties['form'];
-
+        
         // Updated regex to capture full field names (e.g., number-266)
         preg_match_all('/<label>\s*(.*?)\s*<\/label>\s*\[([a-zA-Z0-9-*]+)\s+([a-zA-Z0-9-_]+)[^\]]*\]/', $form_fields, $matches, PREG_SET_ORDER);
 
@@ -362,6 +362,9 @@ class Partner_CF7_Handler {
             
             $label = sanitize_text_field(trim($match[1]));  // Extract label text
             $field_name = sanitize_text_field(trim($match[3]));  // Extract actual field name
+
+            if (in_array($field_name, ['is_lead']))
+                continue;
 
             // Check if the field already exists
             $existing = $this->database->get_var($this->database->prepare(
