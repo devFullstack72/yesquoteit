@@ -301,16 +301,42 @@ class Partner_CF7_Handler {
         
         unset($email_data['g-recaptcha-response']);
 
+        $quote_info = $this->replaceFieldNameWithLabel($email_data);
+
         $this->database->insert($this->lead_quotes_table, [
             'customer_id' => $customer_id,
             'lead_id' => $email_data['is_lead'],
-            'quote_data' => json_encode($email_data)
+            'quote_data' => json_encode($quote_info)
         ]);
 
         $quote_id = $this->database->insert_id;
 
         return $quote_id;
 
+    }
+
+    protected function replaceFieldNameWithLabel($posted_data) {
+
+        // Fetch data from the table
+        $results = $this->database->get_results("SELECT field_name, field_label FROM {$this->cf7_fields_labels_table}", ARRAY_A);
+
+        // Convert results into an associative array
+        $field_labels = [];
+        foreach ($results as $row) {
+            $field_labels[$row['field_name']] = $row['field_label'];
+        }
+
+        $quote_info = [];
+
+        foreach ($posted_data as $field_key => $field_value) {
+            $field_label = isset($field_labels[$field_key]) ? $field_labels[$field_key] : $field_key;
+            $quote_info[$field_key] = [
+                'label' => $field_label,
+                'value' => $field_value
+            ];
+        }
+
+        return $quote_info;
     }
 
     protected function linkLeadQuoteForPartner($data) {
