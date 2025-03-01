@@ -1892,6 +1892,86 @@ function save_email_subject_meta($post_id) {
 }
 add_action('save_post', 'save_email_subject_meta');
 
+function create_mailing_list_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mailing_list';
+
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        is_subscribed TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) $charset_collate;";
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    dbDelta($sql);
+}
+add_action('after_setup_theme', 'create_mailing_list_table');
+
+function save_mailing_list() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mailing_list';
+    
+    $email = sanitize_email($_POST['email']);
+
+    if (!is_email($email)) {
+        echo "Invalid email address.";
+        wp_die();
+    }
+
+    $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table_name WHERE email = %s", $email));
+
+    if ($exists) {
+        echo "This email is already subscribed.";
+    } else {
+        $wpdb->insert($table_name, [
+            'email' => $email,
+            'is_subscribed' => 1
+        ]);
+        echo "You have been subscribed successfully!";
+    }
+
+    wp_die();
+}
+add_action('wp_ajax_save_mailing_list', 'save_mailing_list');
+add_action('wp_ajax_nopriv_save_mailing_list', 'save_mailing_list');
+
+function mailing_list_admin_menu() {
+    add_menu_page(
+        'Mailing List',
+        'Mailing List',
+        'manage_options',
+        'mailing-list',
+        'display_mailing_list',
+        'dashicons-email',
+        20
+    );
+}
+add_action('admin_menu', 'mailing_list_admin_menu');
+
+function display_mailing_list() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mailing_list';
+    $results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC");
+
+    echo '<div class="wrap"><h1>Mailing List Subscribers</h1>';
+    echo '<table class="widefat"><thead><tr><th>ID</th><th>Email</th><th>Subscribed</th><th>Date</th></tr></thead><tbody>';
+    
+    foreach ($results as $row) {
+        echo "<tr>
+            <td>{$row->id}</td>
+            <td>{$row->email}</td>
+            <td>{$row->is_subscribed}</td>
+            <td>{$row->created_at}</td>
+        </tr>";
+    }
+
+    echo '</tbody></table></div>';
+}
+
+
 
 
 
