@@ -1951,25 +1951,82 @@ function mailing_list_admin_menu() {
 }
 add_action('admin_menu', 'mailing_list_admin_menu');
 
+function mailing_list_admin_scripts($hook) {
+    if ($hook !== 'toplevel_page_mailing-list') {
+        return;
+    }
+
+    wp_enqueue_script('mailing-list-admin-js', get_template_directory_uri() . '/js/mailing-list.js', array('jquery'), null, true);
+    wp_localize_script('mailing-list-admin-js', 'ajax_object', ['ajax_url' => admin_url('admin-ajax.php')]);
+}
+add_action('admin_enqueue_scripts', 'mailing_list_admin_scripts');
+
+
 function display_mailing_list() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'mailing_list';
     $results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC");
 
     echo '<div class="wrap"><h1>Mailing List Subscribers</h1>';
-    echo '<table class="widefat"><thead><tr><th>ID</th><th>Email</th><th>Subscribed</th><th>Date</th></tr></thead><tbody>';
+    echo '<table class="widefat"><thead><tr><th>ID</th><th>Email</th><th>Subscribed</th><th>Date</th><th>Action</th></tr></thead><tbody>';
     
     foreach ($results as $row) {
+        $status = $row->is_subscribed ? 'Subscribed' : 'Unsubscribed';
+        $new_status = $row->is_subscribed ? 0 : 1;
+        $button_text = $row->is_subscribed ? 'Unsubscribe' : 'Subscribe';
+        
         echo "<tr>
             <td>{$row->id}</td>
             <td>{$row->email}</td>
-            <td>{$row->is_subscribed}</td>
+            <td>{$status}</td>
             <td>{$row->created_at}</td>
+            <td><button class='toggle-subscription' data-id='{$row->id}' data-status='{$new_status}'>{$button_text}</button></td>
         </tr>";
     }
 
     echo '</tbody></table></div>';
 }
+
+// Handle AJAX request for toggling subscription status
+function toggle_subscription_status() {
+    // Ensure the request is coming from an admin user
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(['message' => 'Unauthorized']);
+        wp_die();
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mailing_list';
+
+    // Get user ID and new subscription status from AJAX request
+    $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
+    $new_status = isset($_POST['status']) ? intval($_POST['status']) : 0;
+
+    if ($user_id === 0) {
+        wp_send_json_error(['message' => 'Invalid User ID']);
+        wp_die();
+    }
+
+    // Update the subscription status in the database
+    $updated = $wpdb->update(
+        $table_name,
+        ['is_subscribed' => $new_status],
+        ['id' => $user_id],
+        ['%d'],
+        ['%d']
+    );
+
+    if ($updated !== false) {
+        wp_send_json_success(['message' => 'Subscription status updated successfully']);
+    } else {
+        wp_send_json_error(['message' => 'Failed to update subscription status']);
+    }
+
+    wp_die();
+}
+add_action('wp_ajax_toggle_subscription', 'toggle_subscription_status');
+
+
 
 
 
