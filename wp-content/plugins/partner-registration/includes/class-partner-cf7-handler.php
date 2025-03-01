@@ -321,14 +321,7 @@ class Partner_CF7_Handler {
 
     protected function replaceFieldNameWithLabel($posted_data) {
 
-        // Fetch data from the table
-        $results = $this->database->get_results("SELECT field_name, field_label FROM {$this->cf7_fields_labels_table}", ARRAY_A);
-
-        // Convert results into an associative array
-        $field_labels = [];
-        foreach ($results as $row) {
-            $field_labels[$row['field_name']] = $row['field_label'];
-        }
+        $field_labels = $this->getCF7FieldsLabels();
 
         $quote_info = [];
 
@@ -377,6 +370,9 @@ class Partner_CF7_Handler {
 
     public function sync_existing_lead_quote_data() {
         $lead_quotes = $this->database->get_results("SELECT id, quote_data FROM {$this->lead_quotes_table}", ARRAY_A);
+
+        // Fetch data from the table
+        $field_labels = $this->getCF7FieldsLabels();
         
         foreach($lead_quotes as $lead_quote_row) {
             if (!empty($lead_quote_row['quote_data'])) {
@@ -386,6 +382,20 @@ class Partner_CF7_Handler {
 
                     $this->database->update($this->lead_quotes_table, [
                         'quote_data' => json_encode($posted_data)
+                    ], [
+                        'id' => $lead_quote_row['id']
+                    ]);
+                } else {
+                    foreach($lead_quote as &$lead_quote_data) {
+                        $field_key = $lead_quote_data['label'];
+                        $field_label = isset($field_labels[$field_key]) ? $field_labels[$field_key] : $field_key;
+                        $lead_quote_data = [
+                            'label' => $field_label,
+                            'value' => $lead_quote_data['value']
+                        ];
+                    }
+                    $this->database->update($this->lead_quotes_table, [
+                        'quote_data' => json_encode($lead_quote)
                     ], [
                         'id' => $lead_quote_row['id']
                     ]);
@@ -446,5 +456,18 @@ class Partner_CF7_Handler {
                 ['%s', '%s']
             );
         }
+    }
+
+    public function getCF7FieldsLabels() {
+        // Fetch data from the table
+        $results = $this->database->get_results("SELECT field_name, field_label FROM {$this->cf7_fields_labels_table}", ARRAY_A);
+
+        // Convert results into an associative array
+        $field_labels = [];
+        foreach ($results as $row) {
+            $field_labels[$row['field_name']] = $row['field_label'];
+        }
+
+        return $field_labels;
     }
 }
