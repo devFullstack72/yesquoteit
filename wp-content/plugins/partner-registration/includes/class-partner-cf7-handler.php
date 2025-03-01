@@ -20,6 +20,8 @@ class Partner_CF7_Handler {
 
     public $lead_quotes_partners_table;
 
+    public $cf7_fields_labels_table;
+
     public function __construct() {
         add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
@@ -48,6 +50,10 @@ class Partner_CF7_Handler {
         $this->lead_quotes_table = $wpdb->prefix . 'yqit_lead_quotes';
 
         $this->lead_quotes_partners_table = $wpdb->prefix . 'yqit_lead_quotes_partners';
+
+        $this->cf7_fields_labels_table = $wpdb->prefix . 'cf7_fields_labels';
+
+        add_action('wpcf7_save_contact_form', [$this, 'save_cf7_fields_labels'], 10, 1);
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
@@ -295,16 +301,42 @@ class Partner_CF7_Handler {
         
         unset($email_data['g-recaptcha-response']);
 
+        $quote_info = $this->replaceFieldNameWithLabel($email_data);
+
         $this->database->insert($this->lead_quotes_table, [
             'customer_id' => $customer_id,
             'lead_id' => $email_data['is_lead'],
-            'quote_data' => json_encode($email_data)
+            'quote_data' => json_encode($quote_info)
         ]);
 
         $quote_id = $this->database->insert_id;
 
         return $quote_id;
 
+    }
+
+    protected function replaceFieldNameWithLabel($posted_data) {
+
+        // Fetch data from the table
+        $results = $this->database->get_results("SELECT field_name, field_label FROM {$this->cf7_fields_labels_table}", ARRAY_A);
+
+        // Convert results into an associative array
+        $field_labels = [];
+        foreach ($results as $row) {
+            $field_labels[$row['field_name']] = $row['field_label'];
+        }
+
+        $quote_info = [];
+
+        foreach ($posted_data as $field_key => $field_value) {
+            $field_label = isset($field_labels[$field_key]) ? $field_labels[$field_key] : $field_key;
+            $quote_info[$field_key] = [
+                'label' => $field_label,
+                'value' => $field_value
+            ];
+        }
+
+        return $quote_info;
     }
 
     protected function linkLeadQuoteForPartner($data) {
@@ -316,5 +348,46 @@ class Partner_CF7_Handler {
 
         return true;
         
+    }
+
+    public function save_cf7_fields_labels($contact_form) {
+        
+        $form_properties = $contact_form->get_properties();
+        $form_fields = $form_properties['form'];
+
+        // Updated regex to capture full field names (e.g., number-266)
+        preg_match_all('/<label>\s*(.*?)\s*<\/label>\s*\[([a-zA-Z0-9-*]+)\s+([a-zA-Z0-9-_]+)[^\]]*\]/', $form_fields, $matches, PREG_SET_ORDER);
+
+        foreach ($matches as $match) {
+            
+            $label = sanitize_text_field(trim($match[1]));  // Extract label text
+            $field_name = sanitize_text_field(trim($match[3]));  // Extract actual field name
+
+            // Check if the field already exists
+            $existing = $this->database->get_var($this->database->prepare(
+                "SELECT COUNT(*) FROM {$this->cf7_fields_labels_table} WHERE field_name = %s",
+                $field_name
+            ));
+
+            if ($existing) {
+                // Update existing field label
+                $this->database->update(
+                    $this->cf7_fields_labels_table,
+                    ['field_label' => $label],  // Update field_label
+                    ['field_name' => $field_name],  // Where condition
+                    ['%s'], ['%s']
+                );
+            } else {
+                // Insert new field
+                $this->database->insert(
+                    $this->cf7_fields_labels_table,
+                    [
+                        'field_name' => $field_name,
+                        'field_label' => $label
+                    ],
+                    ['%s', '%s']
+                );
+            }
+        }
     }
 }

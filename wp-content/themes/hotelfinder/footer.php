@@ -46,9 +46,10 @@
                         <hr />
                         <h3 class="widget-title">Mailing List</h3>
                         <p>Sign up for our mailing list to get the latest updates and offers</p>
-                        <form>
-                            <input type="email" placeholder="Your E-mail" />
+                        <form id="mailing-list-form">
+                            <input type="email" id="email" placeholder="Your E-mail" />
                             <input type="submit" />
+                            <p class="mailing-list-response"></p>
                         </form>
                         <hr/>
                         <h3 class="widget-title">contact info</h3>
@@ -120,5 +121,27 @@
     </div>
 </div>
 <?php wp_footer(); ?>
+<script>
+var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
+jQuery(document).ready(function($) {
+    $('#mailing-list-form').on('submit', function(e) {
+        e.preventDefault();
+        var email = $('#mailing-list-form').find('#email').val();
+
+        $.ajax({
+            type: 'POST',
+            url: ajaxurl,
+            data: {
+                action: 'save_mailing_list',
+                email: email
+            },
+            success: function(response) {
+                $('.mailing-list-response').html(response);
+                $('#email').val('');
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>
