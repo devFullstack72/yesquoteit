@@ -33,8 +33,8 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                     <img src="' . get_template_directory_uri() . '/images/footer-logo.png" alt="Thank You" style="max-width: 100px;">
                 </div>
                 <div class="panel-body">
-                    <h2>Thank You for Registering!</h2>
-                    <p>We have received your submission. Our team will review it shortly.</p>
+                    <h2>' . $message . '</h2>
+                    <p>' . $description . '</p>
                     <a href="'. home_url() .'" class="btn btn-primary">Go to Home</a>
                 </div>
             </div>
