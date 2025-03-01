@@ -2039,6 +2039,3 @@ add_action('wp_ajax_toggle_subscription', 'toggle_subscription_status');
 
 
 
-
-
-

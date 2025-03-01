@@ -242,6 +242,7 @@ jQuery(document).ready(function($) {
     });
 });
 
+
 jQuery(document).ready(function($) {
     $(".open-lead-modal").click(function() {
         var quoteId = $(this).closest("tr").find(".quote-checkbox").val();
@@ -250,8 +251,14 @@ jQuery(document).ready(function($) {
 
         $("#quote_details").html("");
 
-        $.each(quoteObj, function(key, value) {
-            $("#quote_details").append("<p><strong>" + key + ":</strong> " + value + "</p>");
+        $.each(quoteObj, function(key, item) {
+            if (typeof item.label !== 'undefined') {
+                if (!item.label.includes('is_lead') && !item.label.startsWith('cf7mls_step')) {
+                    $("#quote_details").append(
+                        "<p><strong>" + item.label + ":</strong> " + item.value + "</p>"
+                    );
+                }
+            }
         });
 
         $("#leadModal").show();
@@ -261,6 +268,7 @@ jQuery(document).ready(function($) {
         $("#leadModal").hide();
     });
 });
+
 
 
 function handleCheckboxSelection(selected) {
