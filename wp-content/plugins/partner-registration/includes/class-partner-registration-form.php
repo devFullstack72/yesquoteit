@@ -715,7 +715,8 @@ class Partner_Registration_Form
     
         $redirect_url = add_query_arg([
             'success' => 1,
-            'next_step' => 5
+            'next_step' => 5,
+            'profile_edit_mode' => 1,
         ], wp_get_referer());
         
         wp_safe_redirect($redirect_url);

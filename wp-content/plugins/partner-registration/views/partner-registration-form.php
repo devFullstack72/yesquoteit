@@ -18,7 +18,7 @@ $current_step = isset($_GET['next_step']) ? $_GET['next_step'] : 1;
 $message = 'Thank You for Registering!';
 $description = 'We have received your submission. Our team will review it shortly.';
 
-if (isset($profile_updated) && !empty($profile_updated)) {
+if (isset($_GET['profile_edit_mode']) && $_GET['profile_edit_mode'] == 1) {
     $message = 'Profile updated successfully!';
     $description = 'We have updated your profile based on your request.';
 }
