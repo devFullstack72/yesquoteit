@@ -1,6 +1,6 @@
 <div class="container hotel-finder-page">
-    <h2 class="htlfndr-section-title bigger-title">Quote Requests</h2>
-    <div class="htlfndr-section-under-title-line"></div>
+    <!-- <h2 class="htlfndr-section-title bigger-title">Quote Requests</h2> -->
+    <!-- <div class="htlfndr-section-under-title-line"></div> -->
     <div class="table-wrap">
 
     <div class="row">
@@ -35,7 +35,24 @@
         </div>
     </div>
 
-    
+    <table class="table table-responsive-xl custom-mt-15">
+        <thead>
+            <tr>
+                <th>
+                    <div class="d-flex align-items-center" style="display: flex; align-items: center; gap: 10px;">
+                        <div class="profile-img" style="background-image: url('<?php echo $provider_details->business_logo ?>');"></div>
+                        <h3 style="color:black;"><?php echo $provider_details->business_trading_name ?></h3>
+                    </div>
+                </th>
+                <th colspan="5" style="float:right;vertical-align:middle;">
+                    <a class="btn btn-default text-xs" target="_blank" href="<?php echo esc_url(home_url()); ?>/provider/<?php echo $provider_details->id ?>"><i class="fa fa-eye"></i> Public Profile</a>
+                    <a class="btn btn-default text-xs" href="<?php echo esc_url(home_url()); ?>/partner-customer-requests"><i class="fa fa-bullhorn"></i> Your Quotes</a>
+                    <a class="btn btn-default text-xs" href="<?php echo esc_url(site_url('/partner-profile')); ?>"><i class="fa fa-pencil"></i> Edit Profile</a>
+                </th>
+            </tr>
+        </thead>
+    </table>
+
 
     <table class="table table-responsive-xl">
         <thead>
@@ -539,6 +556,15 @@ thead {
     float: right;
 }
 
+.profile-img{
+    width: 70px; 
+    height: 70px; 
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    display: inline-block;
+}
+
 .img {
     width: 40px; 
     height: 40px; 
@@ -566,6 +592,15 @@ thead {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.custom-mt-15{
+    margin-top:15px;
+}
+
+.btn-link{
+    color:black;
+    border-color:black;
 }
 
 </style>

@@ -20,6 +20,8 @@ class Partner_Customer_Requests extends PartnerController
 
     public function render_partner_customer_requests() {
         
+        global $wpdb;
+        
         $provider_id = $this->getProviderID();
 
         if (!$provider_id) {
@@ -60,6 +62,12 @@ class Partner_Customer_Requests extends PartnerController
 
         // Execute query with prepared statement for security
         $customer_quotes = $this->database->get_results($this->database->prepare($query, $provider_id));
+
+        
+        $provider_details = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}service_partners WHERE id = %d", $provider_id)
+        );
+
 
         ob_start();
 
