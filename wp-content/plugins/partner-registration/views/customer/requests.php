@@ -124,7 +124,7 @@
 <div id="leadModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close close-lead-modal">&times;</span>
-        <h4>Quote Data</h4>
+        <h4>Quote Request</h4>
         <div id="quote_details"></div> <!-- Dynamic Key-Value Pairs -->
     </div>
 </div>
@@ -256,7 +256,7 @@ jQuery(document).ready(function($) {
 
         $.each(quoteObj, function(key, item) {
             if (typeof item.label !== 'undefined') {
-                if (!item.label.includes('is_lead') && !item.label.startsWith('cf7mls_step')) {
+                if (!(['google_places_form_street_number', 'google_places_form_street', 'google_places_form_latitude', 'google_places_form_longitude'].includes(key)) && !item.label.includes('is_lead') && !item.label.startsWith('cf7mls_step')) {
                     $(".quote-table tbody").append(
                         "<tr><td><strong>" + item.label + "</strong></td><td>" + item.value + "</td></tr>"
                     );
