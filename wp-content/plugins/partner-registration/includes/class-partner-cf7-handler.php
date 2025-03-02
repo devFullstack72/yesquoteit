@@ -415,7 +415,7 @@ class Partner_CF7_Handler {
 
     public function add_cf7_default_fields_lables() {
         $default_fields_labels = [
-            'google_places_form_address' => 'Full Address',
+            'google_places_form_address' => 'Address',
             'google_places_form_street_number' => 'Street No.',
             'google_places_form_street' => 'Street',
             'google_places_form_city' => 'City',
