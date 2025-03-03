@@ -296,20 +296,19 @@ class Partner_CF7_Handler {
     }
 
     public function prospects_send_emails_background($prospects_partners_data) {
-        global $wpdb;
         
         if (!empty($prospects_partners_data)) {
             foreach ($prospects_partners_data as $prospects_partner) {
                 
                 // Check if user exists in wp_service_partners table
-                $table_name = $wpdb->prefix . "service_partners";
-                $user = $wpdb->get_row($wpdb->prepare("SELECT id, email, business_trading_name, status FROM $table_name WHERE email = %s", $prospects_partner->email));
+                $table_name = $this->database->prefix . "service_partners";
+                $user = $this->database->get_row($this->database->prepare("SELECT id, email, business_trading_name, status FROM $table_name WHERE email = %s", $prospects_partner->email));
     
                 if (!$user) {
                     continue; // Skip if user does not exist
                 }
 
-                if (!$user->status != 3) {
+                if ($user->status != 3) {
                     continue;
                 }
 
@@ -332,7 +331,7 @@ class Partner_CF7_Handler {
                 $expiry_time = date("Y-m-d H:i:s", strtotime("+1 hour")); // Token expires in 1 hour
     
                 // Store the reset token in the database
-                $wpdb->update(
+                $this->database->update(
                     $table_name,
                     ['reset_token' => $reset_token, 'reset_expires' => $expiry_time],
                     ['id' => $user->id]
@@ -351,7 +350,7 @@ class Partner_CF7_Handler {
                         esc_html($user->business_trading_name),
                         esc_url($reset_url)
                     ],
-                    $template_post->post_content
+                    wpautop($template_post->post_content)
                 );
 
                 // Email headers
