@@ -14,7 +14,7 @@ class Partner_Registration_Form
     {
         add_shortcode('partner_registration_form', [$this, 'render_registration_form']);
         add_shortcode('partner_forgot_password_form', [$this, 'render_forgot_password_form']);
-        add_shortcode('prospect_reset_password_form', [$this, 'render_prospect_reset_password_form']);
+        add_shortcode('prospect_reset_password_form', [$this, 'render_reset_password_form']);
         // add_shortcode('customer_forgot_password_form', [$this, 'render_customer_forgot_password_form']);
         // add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
         // add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
@@ -1004,15 +1004,12 @@ class Partner_Registration_Form
     }
 
     public function render_prospect_reset_password_form() {
-        ob_start();
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . "service_partners"; // Change table name accordingly
+        
         $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : '';
-        $email = isset($_GET['email']) ? sanitize_email($_GET['email']) : '';
+        $email = isset($_GET['email']) ? $_GET['email'] : '';
 
         // Validate token
-        $prospect = $wpdb->get_row($wpdb->prepare("SELECT id, reset_token, reset_expires FROM $table_name WHERE email = %s", $email));
+        $prospect = $this->wpdb->get_row($this->wpdb->prepare("SELECT id, reset_token, reset_expires FROM $this->service_partners_table WHERE email = %s", $email));
 
         if (!$prospect || $prospect->reset_token !== $token || strtotime($prospect->reset_expires) < time()) {
             echo "<p style='color: red;'>Invalid or expired reset link.</p>";
@@ -1020,6 +1017,7 @@ class Partner_Registration_Form
         }
 
         // Reset Form
+        ob_start();
         ?>
         <h2>Reset Your Password</h2>
         <form method="post">
@@ -1039,8 +1037,8 @@ class Partner_Registration_Form
                 $hashed_password = wp_hash_password($new_password); // Corrected function
 
                 // Update password & remove token
-                $wpdb->update(
-                    $table_name,
+                $this->wpdb->update(
+                    $this->service_partners_table,
                     ['password' => $hashed_password, 'reset_token' => NULL, 'reset_expires' => NULL],
                     ['id' => $prospect->id]
                 );
