@@ -11,12 +11,12 @@ function initAutocomplete() {
         }
     });
 
-    var default_latitude = $('.partner-registration-form #latitude').val();
+    var default_latitude = jQuery('.partner-registration-form #latitude').val();
     if (default_latitude.toString().length == 0) {
         default_latitude = 40.7128;
     }
 
-    var default_longitude = $('.partner-registration-form #longitude').val();
+    var default_longitude = jQuery('.partner-registration-form #longitude').val();
     if (default_longitude.toString().length == 0) {
         default_longitude = 40.7128;
     }
