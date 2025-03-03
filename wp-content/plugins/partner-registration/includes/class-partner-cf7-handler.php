@@ -339,7 +339,6 @@ class Partner_CF7_Handler {
     
                 // Generate password reset link
                 $reset_url = add_query_arg([
-                    'action' => 'reset_password',
                     'token'  => $reset_token,
                     'email'  => rawurlencode($user->email),
                 ], site_url('/prospect-reset-password'));

@@ -120,7 +120,13 @@ class Partner_Admin
                                 <?php endif; ?>
                             </td>
 
-                            <td><?php echo $partner->status == 1 ? 'Approved' : ($partner->status == 2 ? 'Rejected' : 'Pending'); ?></td>
+                            <td>
+                                <?php 
+                                    echo $partner->status == 1 ? 'Approved' : 
+                                        ($partner->status == 2 ? 'Rejected' : 
+                                        ($partner->status == 3 ? 'Prospect' : 'Pending'));
+                                ?>
+                            </td>
                             <td>
                                 <?php if ($partner->status == 0): ?>
                                     <a href="?page=service-partners&action=approve&id=<?php echo $partner->id; ?>" class="button">Approve</a>
@@ -379,6 +385,7 @@ class Partner_Admin
                                 <option value="0" <?php selected($partner->status, 0); ?>>Pending</option>
                                 <option value="1" <?php selected($partner->status, 1); ?>>Approved</option>
                                 <option value="2" <?php selected($partner->status, 2); ?>>Rejected</option>
+                                <option value="3" <?php selected($partner->status, 3); ?>>Prospect</option>
                             </select>
                         </td>
                     </tr>
