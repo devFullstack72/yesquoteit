@@ -465,6 +465,28 @@ class Partner_Registration_Plugin {
             ]);
         }
     }
+
+    public static function create_prospect_reset_password_form() {
+        $page_title = 'Prospect Reset Password';
+        $page_slug = 'prospect-reset-password';
+        $page_content = '[prospect_reset_password_form]'; // Shortcode
+
+        // Check if the page already exists
+        $page_check = get_page_by_path($page_slug);
+
+        if (!$page_check) {
+            wp_insert_post([
+                'post_title'    => $page_title,
+                'post_name'     => $page_slug,
+                'post_content'  => $page_content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+                'post_author'   => get_current_user_id()
+            ]);
+        }
+    }
+
+    
 }
 
 // Register activation hook
@@ -491,6 +513,8 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_custo
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_forgot_password_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_reset_password_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_prospect_reset_password_form']);
 
 
 // Initialize the plugin

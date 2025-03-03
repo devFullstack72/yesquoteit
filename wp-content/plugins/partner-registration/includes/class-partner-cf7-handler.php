@@ -26,6 +26,7 @@ class Partner_CF7_Handler {
         add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
         add_action('pr_send_emails_background', [$this, 'pr_send_emails_background'], 10, 5);
+        add_action('prospects_send_emails_background', [$this, 'prospects_send_emails_background'], 10, 1);
 
         add_filter('wpcf7_skip_mail', function($skip_mail, $contact_form) {
 
@@ -128,7 +129,7 @@ class Partner_CF7_Handler {
                 FROM $service_partners_table AS sp
                 INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
                 WHERE lp.lead_id = %d 
-                    AND sp.status = 1
+                    AND (sp.status = 1 OR sp.status = 3)
                     AND (
                         (sp.service_area IS NULL OR sp.service_area = '') -- No restriction
                         OR (sp.service_area = 'entire' AND sp.country = %s) -- Entire country
@@ -170,11 +171,14 @@ class Partner_CF7_Handler {
         $email_data['partner_cost_hotlink'] = home_url() . '/partner-customer-requests';
         
 
+        $approved_and_prospect_partners = [];
         // Send email to approved service providers
         $approved_partners_emails = [];
         if (!empty($approved_partners)) {
             foreach ($approved_partners as $partner) {
                 $approved_partners_emails[] = $partner->email;
+
+                $approved_and_prospect_partners[] = $partner;
                 // $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
                 $this->linkLeadQuoteForPartner([
                     'lead_quote_id' => $created_lead_quote_id,
@@ -203,6 +207,57 @@ class Partner_CF7_Handler {
             'pr_send_emails_background', 
             array($user_email, $approved_partners_emails, $customer_template_id, $provider_template_id, $email_data)
         );
+
+        // $prospects_partners = $wpdb->get_results(
+        //     $wpdb->prepare("
+        //         SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
+        //             (6371 * acos(
+        //                 cos(radians(%f)) * cos(radians(sp.latitude)) *
+        //                 cos(radians(sp.longitude) - radians(%f)) +
+        //                 sin(radians(%f)) * sin(radians(sp.latitude))
+        //             )) AS distance
+        //         FROM $service_partners_table AS sp
+        //         INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
+        //         WHERE lp.lead_id = %d 
+        //             AND sp.status = 2
+        //             AND (
+        //                 (sp.service_area IS NULL OR sp.service_area = '') -- No restriction
+        //                 OR (sp.service_area = 'entire' AND sp.country = %s) -- Entire country
+        //                 OR (sp.service_area = 'state' AND sp.state = %s) -- Entire state
+        //                 OR (sp.service_area = 'other' AND sp.country != %s) -- Other countries
+        //                 OR (sp.service_area = 'every') -- Serves everywhere
+        //                 OR (sp.service_area REGEXP '^[0-9]+$' AND CAST(sp.service_area AS UNSIGNED) > 0 
+        //                     AND (6371 * acos(
+        //                         cos(radians(%f)) * cos(radians(sp.latitude)) *
+        //                         cos(radians(sp.longitude) - radians(%f)) +
+        //                         sin(radians(%f)) * sin(radians(sp.latitude))
+        //                     )) <= CAST(sp.service_area AS UNSIGNED) -- Numeric radius filtering
+        //                 )
+        //             )
+        //     ", 
+        //     $customer_lat, $customer_lng, $customer_lat, 
+        //     $lead_id, 
+        //     $customer_country, $customer_state, $customer_country, 
+        //     $customer_lat, $customer_lng, $customer_lat
+        //     )
+        // );
+
+        // $prospects_partners_data = [];
+        // if (!empty($prospects_partners)) {
+        //     foreach ($prospects_partners as $partner) {
+        //         $prospects_partners_data[] = $partner;
+        //     }
+        // }
+
+        // $this->prospects_send_emails_background($prospects_partners_data);
+
+        wp_schedule_single_event(
+            time() + 10, 
+            'prospects_send_emails_background', 
+            array($approved_and_prospect_partners)
+        );
+
+        
     }
 
     public function sendSMS($message, $to){
@@ -239,6 +294,75 @@ class Partner_CF7_Handler {
             $this->pr_send_yeemail($user_email, $customer_template_id, $email_data, 'customer');
         }
     }
+
+    public function prospects_send_emails_background($prospects_partners_data) {
+        
+        if (!empty($prospects_partners_data)) {
+            foreach ($prospects_partners_data as $prospects_partner) {
+                
+                // Check if user exists in wp_service_partners table
+                $table_name = $this->database->prefix . "service_partners";
+                $user = $this->database->get_row($this->database->prepare("SELECT id, email, business_trading_name, status FROM $table_name WHERE email = %s", $prospects_partner->email));
+    
+                if (!$user) {
+                    continue; // Skip if user does not exist
+                }
+
+                if ($user->status != 3) {
+                    continue;
+                }
+
+                // Get email template dynamically
+                $template_title = 'Reset Password';
+                $template_post = get_page_by_title($template_title, OBJECT, 'quote_tpl');
+    
+                if (!$template_post) {
+                    continue; // Skip if template is not found
+                }
+    
+                // Fetch the subject from post meta
+                $email_subject_template = get_post_meta($template_post->ID, 'email_subject', true);
+                if (!$email_subject_template) {
+                    $email_subject_template = "Reset Your Password"; // Fallback subject
+                }
+    
+                // Generate a secure token and expiration time
+                $reset_token = wp_generate_password(32, false);
+                $expiry_time = date("Y-m-d H:i:s", strtotime("+1 hour")); // Token expires in 1 hour
+    
+                // Store the reset token in the database
+                $this->database->update(
+                    $table_name,
+                    ['reset_token' => $reset_token, 'reset_expires' => $expiry_time],
+                    ['id' => $user->id]
+                );
+    
+                // Generate password reset link
+                $reset_url = add_query_arg([
+                    'key'  => $reset_token,
+                    'email'  => rawurlencode($user->email),
+                ], site_url('/prospect-reset-password'));
+    
+                // Replace placeholders in the email body
+                $email_body = str_replace(
+                    ['{recipient_name}', '{change_password_link}'],
+                    [
+                        esc_html($user->business_trading_name),
+                        esc_url($reset_url)
+                    ],
+                    wpautop($template_post->post_content)
+                );
+
+                // Email headers
+                $headers = ['Content-Type: text/html; charset=UTF-8'];
+    
+                // Send email
+                wp_mail(sanitize_email($user->email), esc_html($email_subject_template), $email_body, $headers);
+            }
+        }
+    }
+    
+    
 
     public function pr_send_yeemail($to, $template_id, $email_data, $from = 'provider') {
         
