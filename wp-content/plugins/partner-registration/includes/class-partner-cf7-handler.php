@@ -137,6 +137,8 @@ class Partner_CF7_Handler {
             )
         );
 
+        dd($approved_partners);
+
         // Prepare data for email template
         $email_data = [];
         foreach ($posted_data as $key => $value) {
@@ -235,7 +237,7 @@ class Partner_CF7_Handler {
         // }
 
         // $this->prospects_send_emails_background($prospects_partners_data);
-        dd($approved_and_prospect_partners);
+       
         wp_schedule_single_event(
             time() + 10, 
             'prospects_send_emails_background', 
