@@ -14,6 +14,7 @@ class Partner_Registration_Form
     {
         add_shortcode('partner_registration_form', [$this, 'render_registration_form']);
         add_shortcode('partner_forgot_password_form', [$this, 'render_forgot_password_form']);
+        add_shortcode('prospect_reset_password_form', [$this, 'render_prospect_reset_password_form']);
         // add_shortcode('customer_forgot_password_form', [$this, 'render_customer_forgot_password_form']);
         // add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
         // add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
@@ -1000,6 +1001,55 @@ class Partner_Registration_Form
         } else {
             return false;
         }
+    }
+
+    public function render_prospect_reset_password_form() {
+        ob_start();
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . "service_partners"; // Change table name accordingly
+        $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : '';
+        $email = isset($_GET['email']) ? sanitize_email($_GET['email']) : '';
+
+        // Validate token
+        $prospect = $wpdb->get_row($wpdb->prepare("SELECT id, reset_token, reset_expires FROM $table_name WHERE email = %s", $email));
+
+        if (!$prospect || $prospect->reset_token !== $token || strtotime($prospect->reset_expires) < time()) {
+            echo "<p style='color: red;'>Invalid or expired reset link.</p>";
+            return ob_get_clean();
+        }
+
+        // Reset Form
+        ?>
+        <h2>Reset Your Password</h2>
+        <form method="post">
+            <label>New Password:</label>
+            <input type="password" name="new_password" required>
+            <button type="submit" name="submit_new_password">Reset Password</button>
+        </form>
+        <?php
+
+        // Handle Password Reset
+        if (isset($_POST['submit_new_password'])) {
+            $new_password = sanitize_text_field($_POST['new_password']);
+
+            if (strlen($new_password) < 6) {
+                echo "<p style='color: red;'>Password must be at least 6 characters.</p>";
+            } else {
+                $hashed_password = wp_hash_password($new_password); // Corrected function
+
+                // Update password & remove token
+                $wpdb->update(
+                    $table_name,
+                    ['password' => $hashed_password, 'reset_token' => NULL, 'reset_expires' => NULL],
+                    ['id' => $prospect->id]
+                );
+
+                echo "<p style='color: green;'>Password reset successfully! <a href='" . wp_login_url() . "'>Login here</a></p>";
+            }
+        }
+
+        return ob_get_clean();
     }
 
 }
