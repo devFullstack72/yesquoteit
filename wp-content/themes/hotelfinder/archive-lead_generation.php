@@ -129,6 +129,36 @@ $category_image = get_term_meta($category_id, 'lead_category_image', true);
 if (!$category_image) {
     $category_image = 'https://www.jqueryscript.net/demo/Responsive-Full-Width-jQuery-Image-Slider-Plugin-skdslider/slides/1.jpg';
 }
+
+
+if (!empty($search_query)) {
+    $args = array(
+        'post_type'      => 'lead_generation',
+        'posts_per_page' => 10,
+        'post_status'    => 'publish',
+        's'             => $search_query, // Apply search query
+    );
+
+    // Apply category filter only if a category is selected
+    if (!empty($selected_category)) {
+        $args['tax_query'] = array(
+            array(
+                'taxonomy' => 'lead_category',
+                'field'    => 'term_id',  // Ensure category filter works correctly
+                'terms'    => $selected_category,
+            ),
+        );
+    }
+
+
+    $query = new WP_Query($args);
+    if (!$query->have_posts()) {
+        echo "<script>var noResults = true;</script>";
+    }
+    
+
+} 
+
 ?>
 <!-- Featured Image Section with Overlay -->
 <div class="lead-generation-featured-container">
@@ -219,4 +249,64 @@ if (!$category_image) {
         });
     });
 </script>
+
+
+<div id="no-results-popup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; border-radius:10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.5); z-index:1000;" tabindex="-1" role="dialog" aria-labelledby="no-results-popupLabel" data-backdrop="static" data-keyboard="false">
+    <div role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="border: none;">
+                <button type="button"  onclick="closePopup()" class="close" data-dismiss="modal" aria-label="Close" style="font-size: 43px;">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7 col-xs-6">
+                        <div id="quote-form-section">
+                            <?php echo do_shortcode(get_option('no_lead_found_contact_form_shortcode')); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-12 col-xl-12 cls_pop_last col-xs-6">
+                        <h4 class="text-center">What to expect ?</h4>
+                        <div class="modal-body"> <span class="cls_spn_fnt">Up to 5 quotes per category within 12-24 hours.</span> </div>
+                        <p> <img class="img-responsive" src="<?php echo esc_url(get_template_directory_uri()); ?>/images/mail_icon.jpg" style="width:140px;max-width:100%;margin: 0 auto;"></p>
+                        <div class="modal-body"> <span class="cls_spn_fnt">Quotes from qualified businesses that match your requirements.</span> </div>
+                        <p> <img class="img-responsive" src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icon-ups-check.png" style="width:100px;max-width:100%;margin: 0 auto;"></p>
+                        <div class="modal-footer cls_mdl_ftr1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="closePopup()"></div>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof noResults !== "undefined" && noResults) {
+            document.getElementById("no-results-popup").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+
+            // Get search_query from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get("htlfndr-search");
+
+            // Set value in input field if searchQuery exists
+            if (searchQuery) {
+                document.querySelector("input[name='product-name']").value = searchQuery;
+            }
+        }
+    });
+
+    function closePopup() {
+        document.getElementById("no-results-popup").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+    }
+</script>
+
 <?php get_footer(); ?>

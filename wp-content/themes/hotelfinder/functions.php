@@ -877,6 +877,7 @@ function custom_site_info_page() {
 
 function custom_site_info_settings() {
     register_setting('site_info_settings', 'partner_contact_form_shortcode');
+    register_setting('site_info_settings', 'no_lead_found_contact_form_shortcode');
     register_setting('site_info_settings', 'customer_email');
     register_setting('site_info_settings', 'provider_email');
     register_setting('site_info_settings', 'twilio_account_sid');
@@ -898,6 +899,17 @@ function custom_site_info_settings() {
         function() {
             $value = get_option('partner_contact_form_shortcode', '');
             echo '<input type="text" name="partner_contact_form_shortcode" value="' . esc_attr($value) . '" class="regular-text">';
+        },
+        'site-information',
+        'site_info_section'
+    );
+
+    add_settings_field(
+        'no_lead_found_contact_form_shortcode',
+        'No lead found Form Shortcode',
+        function() {
+            $value = get_option('no_lead_found_contact_form_shortcode', '');
+            echo '<input type="text" name="no_lead_found_contact_form_shortcode" value="' . esc_attr($value) . '" class="regular-text">';
         },
         'site-information',
         'site_info_section'
