@@ -981,7 +981,8 @@ class Partner_Registration_Form
             [
                 'password' => wp_hash_password($new_password),
                 'reset_token' => null,
-                'reset_expires' => null
+                'reset_expires' => null,
+                'status' => 1
             ],
             ['id' => $partner->id]
         );
