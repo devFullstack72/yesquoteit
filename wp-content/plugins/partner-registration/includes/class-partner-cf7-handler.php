@@ -137,8 +137,6 @@ class Partner_CF7_Handler {
             )
         );
 
-        dd($approved_partners);
-
         // Prepare data for email template
         $email_data = [];
         foreach ($posted_data as $key => $value) {
