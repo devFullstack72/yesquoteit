@@ -338,6 +338,8 @@ class Partner_CF7_Handler {
                     wpautop($template_post->post_content)
                 );
 
+                dd($email_body);
+
                 // Email headers
                 $headers = ['Content-Type: text/html; charset=UTF-8'];
     
