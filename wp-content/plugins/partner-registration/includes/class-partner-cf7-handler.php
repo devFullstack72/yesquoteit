@@ -128,8 +128,7 @@ class Partner_CF7_Handler {
                     )) AS distance
                 FROM $service_partners_table AS sp
                 INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
-                WHERE lp.lead_id = %d 
-                    AND (sp.status = 1 OR sp.status = 3)
+                WHERE sp.status = 1 OR sp.status = 3
             ", 
             $customer_lat, $customer_lng, $customer_lat, 
             $lead_id, 
