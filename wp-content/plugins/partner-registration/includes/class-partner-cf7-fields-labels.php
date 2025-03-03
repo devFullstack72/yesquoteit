@@ -25,6 +25,20 @@ class Partner_CF7_Fields_Labels {
         global $wpdb;
         $table_name = $wpdb->prefix . 'cf7_fields_labels';
 
+        // Handle new field insertion
+        if (isset($_POST['add_new_field'])) {
+            $field_name = sanitize_text_field($_POST['field_id']);
+            $field_label = sanitize_text_field($_POST['field_label']);
+
+            $wpdb->insert(
+                $table_name,
+                ['field_name' => $field_name, 'field_label' => $field_label],
+                ['%s', '%s']
+            );
+
+            echo '<div class="updated"><p>New field added successfully!</p></div>';
+        }
+
         // Handle form submission
         if (isset($_POST['update_field_label'])) {
             $id = intval($_POST['field_id']);
@@ -45,6 +59,25 @@ class Partner_CF7_Fields_Labels {
         ?>
         <div class="wrap">
             <h2>CF7 Fields Labels</h2>
+
+            <!-- Add New Field Form -->
+            <h3>Add New Field</h3>
+            <form method="POST">
+                <table class="form-table">
+                    <tr>
+                        <th>Field Name</th>
+                        <td><input type="text" name="field_id" required></td>
+                    </tr>
+                    <tr>
+                        <th>Field Label</th>
+                        <td><input type="text" name="field_label" required></td>
+                    </tr>
+                </table>
+                <button type="submit" name="add_new_field" class="button button-primary">Add Field</button>
+            </form>
+
+            <!-- Display Existing Fields -->
+            <h3>Existing Fields</h3>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
