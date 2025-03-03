@@ -130,20 +130,6 @@ class Partner_CF7_Handler {
                 INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
                 WHERE lp.lead_id = %d 
                     AND (sp.status = 1 OR sp.status = 3)
-                    AND (
-                        (sp.service_area IS NULL OR sp.service_area = '') -- No restriction
-                        OR (sp.service_area = 'entire' AND sp.country = %s) -- Entire country
-                        OR (sp.service_area = 'state' AND sp.state = %s) -- Entire state
-                        OR (sp.service_area = 'other' AND sp.country != %s) -- Other countries
-                        OR (sp.service_area = 'every') -- Serves everywhere
-                        OR (sp.service_area REGEXP '^[0-9]+$' AND CAST(sp.service_area AS UNSIGNED) > 0 
-                            AND (6371 * acos(
-                                cos(radians(%f)) * cos(radians(sp.latitude)) *
-                                cos(radians(sp.longitude) - radians(%f)) +
-                                sin(radians(%f)) * sin(radians(sp.latitude))
-                            )) <= CAST(sp.service_area AS UNSIGNED) -- Numeric radius filtering
-                        )
-                    )
             ", 
             $customer_lat, $customer_lng, $customer_lat, 
             $lead_id, 
