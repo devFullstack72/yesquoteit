@@ -178,16 +178,21 @@ class Partner_CF7_Handler {
             foreach ($approved_partners as $partner) {
                 $approved_partners_emails[] = $partner->email;
 
-                $approved_and_prospect_partners[] = $partner;
-                // $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
-                $this->linkLeadQuoteForPartner([
-                    'lead_quote_id' => $created_lead_quote_id,
-                    'provider_id' => $partner->provider_id
-                ]);
+                if ($partner->status == 3) {
+                    $approved_and_prospect_partners[] = $partner;
+                }
 
-                $message = "New Quote Received from". $email_data['your-name'];
+                if ($partner->status == 1) {
+                    // $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
+                    $this->linkLeadQuoteForPartner([
+                        'lead_quote_id' => $created_lead_quote_id,
+                        'provider_id' => $partner->provider_id
+                    ]);
 
-                $this->sendSMS($message, $partner->phone);
+                    $message = "New Quote Received from". $email_data['your-name'];
+
+                    $this->sendSMS($message, $partner->phone);
+                }
             }
         }
 
@@ -313,7 +318,7 @@ class Partner_CF7_Handler {
                 }
 
                 // Get email template dynamically
-                $template_title = 'Reset Password';
+                $template_title = 'Prospects';
                 $template_post = get_page_by_title($template_title, OBJECT, 'quote_tpl');
     
                 if (!$template_post) {
