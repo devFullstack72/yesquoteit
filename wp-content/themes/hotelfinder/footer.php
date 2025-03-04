@@ -1,3 +1,13 @@
+<?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Get flash message and unset it after use
+$successMessage = isset($_SESSION['flash_message_success']) ? $_SESSION['flash_message_success'] : '';
+unset($_SESSION['flash_message_success']); 
+?>
+
 <footer class="htlfndr-footer">
     <button class="htlfndr-button-to-top" role="button"><span>Back to top</span></button><!-- Button "To top" -->
 
@@ -141,6 +151,11 @@ jQuery(document).ready(function($) {
             }
         });
     });
+});
+
+jQuery(document).ready(function($) {
+    var toastr_message = '<?php echo !empty($successMessage) ? $successMessage : "" ?>';
+    toastr.success(toastr_message, 'success');
 });
 </script>
 </body>

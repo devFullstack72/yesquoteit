@@ -420,7 +420,7 @@ class Customer_Login extends CustomerController
         // Database check for partner
         global $wpdb;
         $customer = $wpdb->get_row($wpdb->prepare(
-            "SELECT id, reset_token, reset_expires FROM {$this->customer_table} WHERE email = %s", 
+            "SELECT id, name, reset_token, reset_expires FROM {$this->customer_table} WHERE email = %s", 
             $email
         ));
 
@@ -442,10 +442,12 @@ class Customer_Login extends CustomerController
         );
     
         // Store success message in session
-        $_SESSION['forgot_password_success'] = "Password reset successful. You can now log in.";
+        $_SESSION['flash_message_success'] = "Password reset successful.";
+
+        $this->autoCustomerLogin($customer);
     
         // Redirect to login page
-        wp_safe_redirect(home_url('/customer-login?reset=success'));
+        wp_safe_redirect(home_url());
         exit;
     }
     
