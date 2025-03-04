@@ -263,7 +263,25 @@ if (!empty($search_query)) {
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-7 col-xs-6">
-                        <div id="quote-form-section">
+                        <div id="custom-success-message-for-noresult-popup" style="display: none;">
+                            <div class="panel text-center wpcf7-form">
+                                <div class="panel-body">
+                                    <h3 style="margin-top: 20px; margin-bottom: 20px;">We are now contacting relevant businesses.</h3>
+                                    <p style="margin-top: 20px; margin-bottom: 20px;">Feel free to request quotes for other products and services.</p>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xs-12">
+                                            <a href="<?php echo home_url() ?>" class="btn btn-theme-primary"><i class="fa fa-home"></i> Home</a>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 20px;">
+                                        <div class="col-md-12">
+                                            <div class="wpcf7-response-output" aria-hidden="true">Thank you for requesting a quote through <a href="<?php echo esc_url(home_url()); ?>">YesQuoteIt.com</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="no-result-containg-form-section">
                             <?php echo do_shortcode(get_option('no_lead_found_contact_form_shortcode')); ?>
                         </div>
                     </div>
@@ -310,3 +328,17 @@ if (!empty($search_query)) {
 </script>
 
 <?php get_footer(); ?>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('wpcf7mailsent', function(event) {
+            document.getElementById('custom-success-message-for-noresult-popup').style.display = 'block';
+            document.getElementById('no-result-containg-form-section').style.display = 'none';
+        }, false);
+    });
+
+    $('#no-results-popup').on('hidden.bs.modal', function () {
+        document.getElementById('custom-success-message-for-noresult-popup').style.display = 'none';
+            document.getElementById('no-result-containg-form-section').style.display = 'block';
+    });
+</script>
