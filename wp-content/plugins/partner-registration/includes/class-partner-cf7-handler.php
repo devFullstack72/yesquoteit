@@ -181,7 +181,7 @@ class Partner_CF7_Handler {
                 if ($partner->status == 3) {
                     $approved_and_prospect_partners[] = $partner;
                 }
-                
+
                 if ($partner->status == 1) {
                     // $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
                     $this->linkLeadQuoteForPartner([
@@ -318,7 +318,7 @@ class Partner_CF7_Handler {
                 }
 
                 // Get email template dynamically
-                $template_title = 'Reset Password';
+                $template_title = 'Prospects';
                 $template_post = get_page_by_title($template_title, OBJECT, 'quote_tpl');
     
                 if (!$template_post) {
