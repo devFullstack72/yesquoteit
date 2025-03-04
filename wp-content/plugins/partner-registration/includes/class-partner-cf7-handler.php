@@ -176,13 +176,15 @@ class Partner_CF7_Handler {
         $approved_partners_emails = [];
         if (!empty($approved_partners)) {
             foreach ($approved_partners as $partner) {
-                $approved_partners_emails[] = $partner->email;
 
                 if ($partner->status == 3) {
                     $approved_and_prospect_partners[] = $partner;
                 }
 
                 if ($partner->status == 1) {
+
+                    $approved_partners_emails[] = $partner->email;
+
                     // $this->pr_send_yeemail($partner->email, $provider_template_id, $email_data, 'provider');
                     $this->linkLeadQuoteForPartner([
                         'lead_quote_id' => $created_lead_quote_id,

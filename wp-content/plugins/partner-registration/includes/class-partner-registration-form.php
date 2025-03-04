@@ -875,6 +875,17 @@ class Partner_Registration_Form
         if (!isset($_GET['key']) || !isset($_GET['email'])) {
             return '<p class="alert alert-danger text-center">Invalid password reset link.</p>';
         }
+
+        $checkValidToken = $this->validateToken($_GET['key'], $_GET['email']);
+
+        if ($checkValidToken['status'] == false) {
+            $flash_message = [
+                'alert_type' => 'danger',
+                'message' => $checkValidToken['message']
+            ];
+            include plugin_dir_path(__FILE__) . '../views/frontend/flash-message.php';
+            return;
+        }
     
         $errors = isset($_SESSION['forgot_password_errors']) ? $_SESSION['forgot_password_errors'] : [];
         
@@ -965,7 +976,7 @@ class Partner_Registration_Form
         global $wpdb;
         $table_name = $wpdb->prefix . 'service_partners';
         $partner = $wpdb->get_row($wpdb->prepare(
-            "SELECT id, reset_token, reset_expires FROM {$table_name} WHERE email = %s", 
+            "SELECT id, name, reset_token, reset_expires FROM {$table_name} WHERE email = %s", 
             $email
         ));
 
@@ -988,11 +999,19 @@ class Partner_Registration_Form
         );
     
         // Store success message in session
-        $_SESSION['forgot_password_success'] = "Password reset successful. You can now log in.";
+        $_SESSION['flash_message_success'] = "Password reset successful.";
+
+        $this->autoPartnerLogin($partner);
     
         // Redirect to login page
-        wp_safe_redirect(home_url('/partner-login?reset=success'));
+        wp_safe_redirect(home_url('partner-customer-requests'));
         exit;
+    }
+
+    protected function autoPartnerLogin($partner) {
+        $_SESSION['partner_logged_in'] = true;
+        $_SESSION['partner_id'] = $partner->id;
+        $_SESSION['partner_name'] = $partner->name;
     }
     
    
@@ -1049,6 +1068,21 @@ class Partner_Registration_Form
         }
 
         return ob_get_clean();
+    }
+
+    public function validateToken($token, $email) {
+        $prospect = $this->wpdb->get_row($this->wpdb->prepare("SELECT id, reset_token, reset_expires FROM $this->service_partners_table WHERE email = %s and reset_token = %s ", $email, $token));
+
+        if (!$prospect || strtotime($prospect->reset_expires) < time()) {
+            return [
+                'status' => false,
+                'message' => 'Unauthorized access'
+            ];
+        } else {
+            return [
+                'status' => true
+            ];
+        }
     }
 
 }
