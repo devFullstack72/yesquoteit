@@ -155,7 +155,9 @@ jQuery(document).ready(function($) {
 
 jQuery(document).ready(function($) {
     var toastr_message = '<?php echo !empty($successMessage) ? $successMessage : "" ?>';
-    toastr.success(toastr_message, 'success');
+    if (toastr_message != '') {
+        toastr.success(toastr_message);
+    }
 });
 </script>
 </body>
