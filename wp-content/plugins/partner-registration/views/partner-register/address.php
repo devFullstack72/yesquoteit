@@ -125,19 +125,18 @@
                 </p>
 
                 </div>
-                
             </div>
+
+            <div class="row" style="padding: 20px;">
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="add-address" class="btn btn-secondary"> + Add Address</button>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <button class="btn btn-primary has-spinner" type="submit"><?php echo $submit_button_text ?></button>
+                    </div>
+                </div>
 
             
-
-            <div class="row">
-                <div class="col-md-6 text-left">
-                    <button type="button" id="add-address" class="btn btn-secondary"> + Add Address</button>
-                </div>
-                <div class="col-md-6 text-right">
-                    <button class="btn btn-primary has-spinner" type="submit"><?php echo $submit_button_text ?></button>
-                </div>
-            </div>
 
         </div>
     </div>

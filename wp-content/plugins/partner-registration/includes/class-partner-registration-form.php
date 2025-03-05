@@ -451,49 +451,70 @@ class Partner_Registration_Form
         }
 
         // Validation errors array
+        // $errors = [];
+
+        // if (empty($address)) {
+        //     $errors['address'] = "Address is required.";
+        // }
+
+        // if (empty($latitude)) {
+        //     $errors['address'] = "Please choose address from google";
+        // }
+
+        // if (empty($service_area)) {
+        //     $errors['service_area'] = "Please choose service area";
+        // }
+
+        // // If there are errors, redirect back with errors
+        // if (!empty($errors)) {
+        //     $_SESSION['form_errors'] = $errors;
+        //     $_SESSION['form_data'] = $_POST; // Store old values
+        //     // Redirect with both parameters (next-step and partner_id)
+        //     $redirect_url = add_query_arg([
+        //         'form_error' => 1,
+        //         'next_step' => 3
+        //     ], wp_get_referer());
+
+        //     wp_safe_redirect($redirect_url);
+        //     exit;
+        // }
+
+        // Validation errors array
         $errors = [];
 
-        if (empty($address)) {
-            $errors['address'] = "Address is required.";
-        }
+        if (is_array($_POST['address'])) {
+            foreach ($_POST['address'] as $key => $address) {
+                if (empty($address)) {
+                    $errors["address_{$key}"] = "Address is required.";
+                }
 
-        if (empty($latitude)) {
-            $errors['address'] = "Please choose address from google";
-        }
+                if (empty($_POST['latitude'][$key]) || empty($_POST['longitude'][$key])) {
+                    $errors["address_{$key}"] = "Please choose address from Google.";
+                }
 
-        // if (empty($street_number)) {
-        //     $errors['street_number'] = "Please enter street number";
-        // }
+                if (empty($_POST['service_area'][$key])) {
+                    $errors["service_area_{$key}"] = "Please choose a service area.";
+                }
+            }
+        } else {
+            if (empty($_POST['address'])) {
+                $errors['address'] = "Address is required.";
+            }
 
-        // if (empty($route)) {
-        //     $errors['address_line_1'] = "Please enter address line";
-        // }
+            if (empty($_POST['latitude']) || empty($_POST['longitude'])) {
+                $errors['address'] = "Please choose address from Google.";
+            }
 
-        // if (empty($address2)) {
-        //     $errors['address_line_2'] = "Please enter address line";
-        // }
-
-        // if (empty($postal_code)) {
-        //     $errors['postal_code'] = "Please enter postal code";
-        // }
-
-        // if (empty($state)) {
-        //     $errors['state'] = "Please enter state";
-        // }
-
-        // if (empty($country)) {
-        //     $errors['country'] = "Please enter country";
-        // }
-
-        if (empty($service_area)) {
-            $errors['service_area'] = "Please choose service area";
+            if (empty($_POST['service_area'])) {
+                $errors['service_area'] = "Please choose a service area.";
+            }
         }
 
         // If there are errors, redirect back with errors
         if (!empty($errors)) {
             $_SESSION['form_errors'] = $errors;
             $_SESSION['form_data'] = $_POST; // Store old values
-            // Redirect with both parameters (next-step and partner_id)
+
             $redirect_url = add_query_arg([
                 'form_error' => 1,
                 'next_step' => 3
@@ -502,6 +523,7 @@ class Partner_Registration_Form
             wp_safe_redirect($redirect_url);
             exit;
         }
+
 
         if (!isset($_SESSION['partner_id'])) {
             $redirect_url = add_query_arg([
@@ -516,20 +538,54 @@ class Partner_Registration_Form
         global $wpdb;
 
 
+         // Check if we have multiple addresses
+        if (is_array($_POST['address'])) {
+            $addresses = $_POST['address'];
+            $latitudes = $_POST['latitude'];
+            $longitudes = $_POST['longitude'];
+            $street_numbers = $_POST['street_number'];
+            $routes = $_POST['route'];
+            $address2_list = $_POST['address2'];
+            $postal_codes = $_POST['postal_code'];
+            $states = $_POST['state'];
+            $countries = $_POST['country'];
+            $service_areas = $_POST['service_area'];
+            $other_countries = $_POST['other_country'];
 
-        $wpdb->update($this->service_partners_table, [
-            'address' => $address,
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'street_number' => $street_number,
-            'route' => $route,
-            'address2' => $address2,
-            'postal_code' => $postal_code,
-            'state' => $state,
-            'country' => $country,
-            'service_area' => $service_area,
-            'other_country' => $other_country
-        ], [ 'id' => $_SESSION['partner_id'] ]);
+            // Clear old entries (if needed)
+            $wpdb->delete('wp_partner_addresses', ['partner_id' => $_SESSION['partner_id']]);
+
+            foreach ($addresses as $key => $address) {
+                $wpdb->insert('wp_partner_addresses', [
+                    'partner_id'    => $_SESSION['partner_id'],
+                    'address'       => sanitize_text_field($address),
+                    'latitude'      => sanitize_text_field($latitudes[$key]),
+                    'longitude'     => sanitize_text_field($longitudes[$key]),
+                    'street_number' => sanitize_text_field($street_numbers[$key]),
+                    'route'         => sanitize_text_field($routes[$key]),
+                    'address2'      => sanitize_text_field($address2_list[$key]),
+                    'postal_code'   => sanitize_text_field($postal_codes[$key]),
+                    'state'         => sanitize_text_field($states[$key]),
+                    'country'       => sanitize_text_field($countries[$key]),
+                    'service_area'  => sanitize_text_field($service_areas[$key]),
+                    'other_country' => ($other_countries[$key] == 0) ? null : sanitize_text_field($other_countries[$key]),
+                ]);
+            }
+        }
+
+        // $wpdb->update($this->service_partners_table, [
+        //     'address' => $address,
+        //     'latitude' => $latitude,
+        //     'longitude' => $longitude,
+        //     'street_number' => $street_number,
+        //     'route' => $route,
+        //     'address2' => $address2,
+        //     'postal_code' => $postal_code,
+        //     'state' => $state,
+        //     'country' => $country,
+        //     'service_area' => $service_area,
+        //     'other_country' => $other_country
+        // ], [ 'id' => $_SESSION['partner_id'] ]);
 
         // After successful form submission, clear session data
         unset($_SESSION['form_errors']);
