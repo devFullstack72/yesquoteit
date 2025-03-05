@@ -21,4 +21,12 @@ jQuery(document).ready(function($) {
         $details.slideToggle(); // Toggle visibility
         $icon.toggleClass('dashicons-arrow-down dashicons-arrow-up'); // Toggle chevron icon
     });
+
+    $('#service-providers-list .address-toggle').on('click', function() {
+        var $details = $(this).next('.address-details');
+        var $icon = $(this).find('i');
+
+        $details.slideToggle(); // Toggle visibility
+        $icon.toggleClass('dashicons-arrow-down dashicons-arrow-up'); // Toggle chevron icon
+    });
 });

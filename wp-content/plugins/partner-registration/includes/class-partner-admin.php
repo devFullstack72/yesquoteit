@@ -193,13 +193,14 @@ class Partner_Admin
         $lead_partners_table = $wpdb->prefix . 'lead_partners';
         $wp_posts_table = $wpdb->prefix . 'posts';
 
-        // $partners = $wpdb->get_results("SELECT * FROM $service_partners_table");
         $partners = $wpdb->get_results("
             SELECT sp.*, 
-                   GROUP_CONCAT(p.ID, '|', p.post_title SEPARATOR ',') AS leads
+                GROUP_CONCAT(DISTINCT p.ID, '|', p.post_title SEPARATOR ',') AS leads,
+                GROUP_CONCAT(DISTINCT pa.address SEPARATOR ' | ') AS full_addresses
             FROM {$service_partners_table} sp
             LEFT JOIN {$lead_partners_table} lp ON sp.id = lp.partner_id
             LEFT JOIN {$wp_posts_table} p ON lp.lead_id = p.ID AND p.post_type = 'lead_generation'
+            LEFT JOIN {$wpdb->prefix}partner_addresses AS pa ON sp.id = pa.partner_id
             GROUP BY sp.id
         ");
 ?>
@@ -231,15 +232,27 @@ class Partner_Admin
                             <td><?php echo $partner->phone; ?></td>
                             <td>
                                 <?php
-                                $full_address = esc_html($partner->address);
-                                $short_address = mb_strimwidth($full_address, 0, 20, '...');
+                                $addresses = explode(' | ', $partner->full_addresses ?? 'N/A');
+                                $total_addresses = count($addresses);
                                 ?>
-                                <span class="short-address"><?php echo $short_address; ?></span>
-                                <span class="full-address" style="display: none;"><?php echo $full_address; ?></span>
-                                <?php if (strlen($full_address) > 20) : ?>
-                                    <a href="#" class="toggle-address">More</a>
+                                
+                                <?php if ($total_addresses > 0 && $addresses[0] !== 'N/A'): ?>
+                                    <div class="address-toggle" style="cursor: pointer; color: #0073aa; font-weight: bold;">
+                                        <span class="address-summary"><?php echo $total_addresses; ?> Addresses</span>
+                                        <i class="dashicons dashicons-arrow-down"></i>
+                                    </div>
+                                    <div class="address-details" style="display: none; margin-top: 5px;">
+                                        <ul>
+                                            <?php foreach ($addresses as $address) : ?>
+                                                <li><?php echo esc_html($address); ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php else: ?>
+                                    No Addresses Found
                                 <?php endif; ?>
                             </td>
+
 
                             <td>
                                 <?php if (!empty($partner->leads)): 
