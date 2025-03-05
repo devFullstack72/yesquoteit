@@ -179,6 +179,11 @@ class Partner_CF7_Handler {
 
                 if ($partner->status == 3) {
                     $approved_and_prospect_partners[] = $partner;
+
+                    $this->linkLeadQuoteForPartner([
+                        'lead_quote_id' => $created_lead_quote_id,
+                        'provider_id' => $partner->provider_id
+                    ]);
                 }
 
                 if ($partner->status == 1) {
