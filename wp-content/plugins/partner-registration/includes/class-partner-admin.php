@@ -67,6 +67,10 @@ class Partner_Admin
                         <td><input type="text" name="name" id="name" class="regular-text" required></td>
                     </tr>
                     <tr>
+                        <th><label for="business_trading_name">Business Name</label></th>
+                        <td><input type="text" name="business_trading_name" id="business_trading_name" class="regular-text" required></td>
+                    </tr>
+                    <tr>
                         <th><label for="email">Email</label></th>
                         <td><input type="email" name="email" id="email" class="regular-text" required></td>
                     </tr>
@@ -203,6 +207,7 @@ class Partner_Admin
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Business Name</th>
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Address</th>
@@ -216,6 +221,7 @@ class Partner_Admin
                         <tr>
                             <td><?php echo $partner->id; ?></td>
                             <td><?php echo $partner->name; ?></td>
+                            <td><?php echo $partner->business_trading_name; ?></td>
                             <td><?php echo $partner->email; ?></td>
                             <td><?php echo $partner->phone; ?></td>
                             <td>
@@ -286,6 +292,7 @@ class Partner_Admin
 
         if (isset($_POST['create_partner'])) {
             $name = sanitize_text_field($_POST['name']);
+            $business_trading_name = sanitize_text_field($_POST['business_trading_name']);
             $email = sanitize_email($_POST['email']);
             $phone = sanitize_text_field($_POST['phone']);
             $address = sanitize_text_field($_POST['address']);
@@ -307,6 +314,7 @@ class Partner_Admin
                 $wpdb->prefix . 'service_partners',
                 [
                     'name' => $name,
+                    'business_trading_name' => $business_trading_name,
                     'email' => $email,
                     'phone' => $phone,
                     'address' => $address,
@@ -353,6 +361,7 @@ class Partner_Admin
         if (isset($_POST['update_partner'])) {
             $partner_id = intval($_POST['partner_id']);
             $name = sanitize_text_field($_POST['name']);
+            $business_trading_name = sanitize_text_field($_POST['business_trading_name']);
             $email = sanitize_email($_POST['email']);
             $phone = sanitize_text_field($_POST['phone']);
             $address = sanitize_text_field($_POST['address']);
@@ -374,6 +383,7 @@ class Partner_Admin
                 $wpdb->prefix . 'service_partners',
                 [
                     'name' => $name,
+                    'business_trading_name' => $business_trading_name,
                     'email' => $email,
                     'phone' => $phone,
                     'address' => $address,
@@ -493,6 +503,10 @@ class Partner_Admin
                     <tr>
                         <th><label for="name">Name</label></th>
                         <td><input type="text" name="name" id="name" value="<?php echo esc_attr($partner->name); ?>" class="regular-text"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="business_trading_name">Business Name</label></th>
+                        <td><input type="text" name="business_trading_name" value="<?php echo esc_attr($partner->business_trading_name); ?>" class="regular-text" required></td>
                     </tr>
                     <tr>
                         <th><label for="email">Email</label></th>
