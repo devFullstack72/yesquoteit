@@ -486,6 +486,33 @@ class Partner_Registration_Plugin {
         }
     }
 
+    public static function create_partner_addresses_table() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'partner_addresses';
+        $charset_collate = $wpdb->get_charset_collate();
+    
+        $sql = "CREATE TABLE $table_name (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            partner_id BIGINT UNSIGNED NOT NULL,
+            address VARCHAR(255) NOT NULL,
+            latitude VARCHAR(50),
+            longitude VARCHAR(50),
+            street_number VARCHAR(50),
+            route VARCHAR(255),
+            address2 VARCHAR(255),
+            postal_code VARCHAR(50),
+            state VARCHAR(100),
+            country VARCHAR(100),
+            service_area VARCHAR(100),
+            other_country VARCHAR(100),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (partner_id) REFERENCES {$wpdb->prefix}service_partners(id) ON DELETE CASCADE
+        ) $charset_collate;";
+    
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+    }
+
     
 }
 
@@ -515,6 +542,8 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_custo
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_reset_password_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_prospect_reset_password_form']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partner_addresses_table']);
 
 
 // Initialize the plugin
