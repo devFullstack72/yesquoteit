@@ -853,10 +853,43 @@ class Partner_Registration_Form
 
         // Send Email
         $subject = 'Password Reset Request';
-        $message = "Hello,\n\nYou requested a password reset. Click the link below to reset your password:\n\n";
-        $message .= $reset_link . "\n\nIf you did not request this, please ignore this email.";
+
+        $message = "
+            <html>
+            <head>
+                <style>
+                    .reset-button {
+                        background-color: #007bff;
+                        color: #ffffff;
+                        padding: 10px 20px;
+                        text-decoration: none;
+                        font-size: 16px;
+                        display: inline-block;
+                        border-radius: 5px;
+                    }
+                </style>
+            </head>
+            <body>
+                <p>Hello,</p>
+                <p>You requested a password reset. Click the button below to reset your password:</p>
+                <p><a href='$reset_link' class='reset-button'>Reset Password</a></p>
+                <p>If you did not request this, please ignore this email.</p>
+            </body>
+            </html>
+        ";
+
+
+        // $message = "Hello,\n\nYou requested a password reset. Click the link below to reset your password:\n\n";
+        // $message .= $reset_link . "\n\nIf you did not request this, please ignore this email.";
+
+        // wp_mail($email, $subject, $message);
+        $headers = [
+            'MIME-Version: 1.0',
+            'Content-Type: text/html; charset=UTF-8'
+        ];
         
-        wp_mail($email, $subject, $message);
+        // Send the email
+        wp_mail($email, $subject, $message, $headers);
 
         // Redirect with success message
         $_SESSION['forgot_password_success'] = 'A reset link has been sent to your email.';
