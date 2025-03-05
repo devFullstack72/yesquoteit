@@ -14,7 +14,12 @@ class Partner_Registration_Form
     {
         add_shortcode('partner_registration_form', [$this, 'render_registration_form']);
         add_shortcode('partner_forgot_password_form', [$this, 'render_forgot_password_form']);
-        add_shortcode('prospect_reset_password_form', [$this, 'render_reset_password_form']);
+        // add_shortcode('prospect_reset_password_form', [$this, 'render_reset_password_form']);
+
+        add_shortcode('prospect_reset_password_form', function () {
+            return $this->render_reset_password_form('Create Password');
+        });
+
         // add_shortcode('customer_forgot_password_form', [$this, 'render_customer_forgot_password_form']);
         // add_action('admin_post_nopriv_pr_partner_form_submission', [$this, 'handle_form_submission']);
         // add_action('admin_post_pr_partner_form_submission', [$this, 'handle_form_submission']);
@@ -39,7 +44,10 @@ class Partner_Registration_Form
         add_action('admin_post_pr_partner_forgot_password', [$this, 'handle_pr_handle_forgot_password']);
 
 
-        add_shortcode('partner_reset_password_form', [$this, 'render_reset_password_form']);
+        // add_shortcode('partner_reset_password_form', [$this, 'render_reset_password_form']);
+        add_shortcode('partner_reset_password_form', function () {
+            return $this->render_reset_password_form('Reset Password');
+        });
 
 
 
@@ -897,7 +905,7 @@ class Partner_Registration_Form
         exit;
     }
 
-    function render_reset_password_form() {
+    function render_reset_password_form($title = 'Reset Password') {
 
         // Start session if not started
         if (session_status() === PHP_SESSION_NONE) {
@@ -933,7 +941,7 @@ class Partner_Registration_Form
             <div class="wpcf7-form">
                 <div class="step step-1">
                     <div class="step-header">
-                        <h5 class="text-center">Reset Password</h5>
+                        <h5 class="text-center"><?php echo esc_html($title); ?></h5>
                     </div>
                     <div class="form-body">
                         <div class="form-group">
@@ -950,7 +958,7 @@ class Partner_Registration_Form
     
                         <div class="row">
                             <div class="col-md-12 text-right">
-                                <button type="submit" class="btn btn-primary">Reset Password</button>
+                                <button type="submit" class="btn btn-primary"><?php echo esc_html($title); ?></button>
                             </div>
                         </div>
                     </div>
