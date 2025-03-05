@@ -22,6 +22,8 @@ class Partner_CF7_Handler {
 
     public $cf7_fields_labels_table;
 
+    public $partner_addresses_tbl;
+
     public function __construct() {
         add_action('wpcf7_before_send_mail', [$this, 'submit_partner_contact_inquiry']);
         add_action('wpcf7_mail_sent', [$this, 'pr_send_custom_cf7_emails']);
@@ -54,11 +56,15 @@ class Partner_CF7_Handler {
 
         $this->cf7_fields_labels_table = $wpdb->prefix . 'cf7_fields_labels';
 
+        $this->partner_addresses_tbl = $wpdb->prefix . 'partner_addresses';
+
         add_action('wpcf7_save_contact_form', [$this, 'save_cf7_fields_labels'], 10, 1);
 
-        add_action('init', [$this, 'sync_existing_lead_quote_data']);
+        // add_action('init', [$this, 'sync_existing_lead_quote_data']);
 
         // add_action('init', [$this, 'add_cf7_default_fields_lables']);
+
+        add_action('init', [$this, 'sync_partner_addresses_data']);
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
@@ -118,6 +124,28 @@ class Partner_CF7_Handler {
         // );
 
 
+        $partner_ids = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT partner_id FROM $this->partner_addresses_tbl as pa WHERE (
+                    (pa.service_area IS NULL OR pa.service_area = '') -- No restriction
+                    OR (pa.service_area = 'entire' AND pa.country = %s) -- Entire country
+                    OR (pa.service_area = 'state' AND pa.state = %s) -- Entire state
+                    OR (pa.service_area = 'other' AND pa.country != %s) -- Other countries
+                    OR (pa.service_area = 'every') -- Serves everywhere
+                    OR (pa.service_area REGEXP '^[0-9]+$' AND CAST(pa.service_area AS UNSIGNED) > 0 
+                        AND (6371 * acos(
+                            cos(radians(%f)) * cos(radians(pa.latitude)) *
+                            cos(radians(pa.longitude) - radians(%f)) +
+                            sin(radians(%f)) * sin(radians(pa.latitude))
+                        )) <= CAST(pa.service_area AS UNSIGNED) -- Numeric radius filtering
+                    )
+                )",
+                $customer_country, $customer_state, $customer_country, 
+                $customer_lat, $customer_lng, $customer_lat
+            )
+        );
+
+
         $approved_partners = $wpdb->get_results(
             $wpdb->prepare("
                 SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, sp.status,
@@ -130,20 +158,7 @@ class Partner_CF7_Handler {
                 INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
                 WHERE lp.lead_id = %d 
                     AND (sp.status = 1 OR sp.status = 3)
-                    AND (
-                        (sp.service_area IS NULL OR sp.service_area = '') -- No restriction
-                        OR (sp.service_area = 'entire' AND sp.country = %s) -- Entire country
-                        OR (sp.service_area = 'state' AND sp.state = %s) -- Entire state
-                        OR (sp.service_area = 'other' AND sp.country != %s) -- Other countries
-                        OR (sp.service_area = 'every') -- Serves everywhere
-                        OR (sp.service_area REGEXP '^[0-9]+$' AND CAST(sp.service_area AS UNSIGNED) > 0 
-                            AND (6371 * acos(
-                                cos(radians(%f)) * cos(radians(sp.latitude)) *
-                                cos(radians(sp.longitude) - radians(%f)) +
-                                sin(radians(%f)) * sin(radians(sp.latitude))
-                            )) <= CAST(sp.service_area AS UNSIGNED) -- Numeric radius filtering
-                        )
-                    )
+                    AND sp.id IN ('". implode(',', $partner_ids) ."')
             ", 
             $customer_lat, $customer_lng, $customer_lat, 
             $lead_id, 
@@ -606,4 +621,54 @@ class Partner_CF7_Handler {
 
         return $field_labels;
     }
+
+    public function sync_partner_addresses_data() {
+        global $wpdb;
+        
+        $service_partners_table = $wpdb->prefix . 'service_partners';
+        $partner_addresses_table = $wpdb->prefix . 'partner_addresses';
+    
+        // Get existing partners with addresses
+        $partners = $wpdb->get_results("
+            SELECT id, address, latitude, longitude, street_number, route, address2, postal_code, state, country, service_area, other_country
+            FROM {$service_partners_table}
+            WHERE address IS NOT NULL AND address != ''
+        ");
+    
+        if (!empty($partners)) {
+            foreach ($partners as $partner) {
+                // Check if this partner's address already exists in the partner_addresses table
+                $exists = $wpdb->get_var($wpdb->prepare("
+                    SELECT COUNT(*) FROM {$partner_addresses_table}
+                    WHERE partner_id = %d AND address = %s
+                ", $partner->id, $partner->address));
+    
+                // If the address does not exist, insert it
+                if (!$exists) {
+                    $wpdb->insert(
+                        $partner_addresses_table,
+                        [
+                            'partner_id'    => $partner->id,
+                            'address'       => $partner->address,
+                            'latitude'      => $partner->latitude,
+                            'longitude'     => $partner->longitude,
+                            'street_number' => $partner->street_number,
+                            'route'         => $partner->route,
+                            'address2'      => $partner->address2,
+                            'postal_code'   => $partner->postal_code,
+                            'state'         => $partner->state,
+                            'country'       => $partner->country,
+                            'service_area'  => $partner->service_area,
+                            'other_country' => $partner->other_country,
+                            'created_at'    => current_time('mysql')
+                        ],
+                        [
+                            '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
+                        ]
+                    );
+                }
+            }
+        }
+    }
+    
 }
