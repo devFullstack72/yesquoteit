@@ -12,20 +12,21 @@
                 <?php endif; ?>
                 <h5 class="text-center"><?php echo $partner_register_page_title ?></h5>
             </div>
-            <div class="form-body">
+            <div class="form-body" id="address-container">
+                <div class="address-form">
                 <span class="wpcf7-form-control-wrap" data-name="address">
-                    <input class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" id="autocomplete" aria-required="true" aria-invalid="false" type="text" name="address" value="<?php echo !empty($partner) ? $partner->address : '' ?>">
+                    <input class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required autocomplete-address" id="autocomplete" aria-required="true" aria-invalid="false" type="text" name="address[]" value="<?php echo !empty($partner) ? $partner->address : '' ?>">
                     <span class="error"><?php echo $errors['address'] ?? ''; ?></span>
                 </span>
 
                 <!-- Display Map Image -->
-                <div id="map-preview" style="margin-top: 10px;"></div>
+                <div id="map-preview" class="map-preview" style="margin-top: 10px;"></div>
 
                 <br>
                 <p>
                     <label>Latitude<br>
                         <span class="wpcf7-form-control-wrap" data-name="latitude">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="latitude" name="latitude" value="<?php echo !empty($partner) ? $partner->latitude : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text latitude" readonly type="text" id="latitude" name="latitude[]" value="<?php echo !empty($partner) ? $partner->latitude : '' ?>">
                         </span>
                     </label>
                 </p>
@@ -33,7 +34,7 @@
                 <p>
                     <label>Longitude<br>
                         <span class="wpcf7-form-control-wrap" data-name="longitude">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="longitude" name="longitude" value="<?php echo !empty($partner) ? $partner->longitude : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text longitude" readonly type="text" id="longitude" name="longitude[]" value="<?php echo !empty($partner) ? $partner->longitude : '' ?>">
                         </span>
                     </label>
                 </p>
@@ -41,7 +42,7 @@
                 <p>
                     <label>Street Number<br>
                         <span class="wpcf7-form-control-wrap" data-name="street_number">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="street_number" name="street_number" value="<?php echo !empty($partner) ? $partner->street_number : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text street_number" readonly type="text" id="street_number" name="street_number[]" value="<?php echo !empty($partner) ? $partner->street_number : '' ?>">
                             <span class="error"><?php echo $errors['street_number'] ?? ''; ?></span>
                         </span>
                     </label>
@@ -50,7 +51,7 @@
                 <p>
                     <label>Address 1<br>
                         <span class="wpcf7-form-control-wrap" data-name="route">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="route" name="route" value="<?php echo !empty($partner) ? $partner->route : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text route" readonly type="text" id="route" name="route[]" value="<?php echo !empty($partner) ? $partner->route : '' ?>">
                             <span class="error"><?php echo $errors['address_line_1'] ?? ''; ?></span>
                         </span>
                     </label>
@@ -59,7 +60,7 @@
                 <p>
                     <label>Address 2<br>
                         <span class="wpcf7-form-control-wrap" data-name="address2">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="address2" name="address2" value="<?php echo !empty($partner) ? $partner->address2 : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text address2" readonly type="text" id="address2" name="address2[]" value="<?php echo !empty($partner) ? $partner->address2 : '' ?>">
                             <span class="error"><?php echo $errors['address_line_2'] ?? ''; ?></span>
                         </span>
                     </label>
@@ -68,7 +69,7 @@
                 <p>
                     <label>Postal Code<br>
                         <span class="wpcf7-form-control-wrap" data-name="postal_code">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="postal_code" name="postal_code" value="<?php echo !empty($partner) ? $partner->postal_code : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text postal_code" readonly type="text" id="postal_code" name="postal_code[]" value="<?php echo !empty($partner) ? $partner->postal_code : '' ?>">
                             <span class="error"><?php echo $errors['postal_code'] ?? ''; ?></span>
                         </span>
                     </label>
@@ -77,7 +78,7 @@
                 <p>
                     <label>State<br>
                         <span class="wpcf7-form-control-wrap" data-name="state">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="state" name="state" value="<?php echo !empty($partner) ? $partner->state : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text state" readonly type="text" id="state" name="state[]" value="<?php echo !empty($partner) ? $partner->state : '' ?>">
                             <span class="error"><?php echo $errors['state'] ?? ''; ?></span>
                         </span>
                     </label>
@@ -86,7 +87,7 @@
                 <p>
                     <label>Country<br>
                         <span class="wpcf7-form-control-wrap" data-name="country">
-                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text" readonly type="text" id="country" name="country" value="<?php echo !empty($partner) ? $partner->country : '' ?>">
+                            <input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text country" readonly type="text" id="country" name="country[]" value="<?php echo !empty($partner) ? $partner->country : '' ?>">
                             <span class="error"><?php echo $errors['country'] ?? ''; ?></span>
                         </span>
                     </label>
@@ -94,7 +95,7 @@
 
                 <p>
                     <label>Service Area<br>
-                        <select class="cls_slect-radius" onchange="on_country()" name="service_area" id="radius">
+                        <select class="cls_slect-radius service-area" onchange="on_country()" name="service_area[]" id="radius">
                             <option value="5" <?php echo !empty($partner) && $partner->service_area == 5 ? 'selected' : '' ?>> 5 KM </option>
                             <option value="10" <?php echo !empty($partner) && $partner->service_area == 10 ? 'selected' : '' ?>> 10 KM </option>
                             <option value="25" <?php echo !empty($partner) && $partner->service_area == 25 ? 'selected' : '' ?>> 25 KM </option>
@@ -112,9 +113,9 @@
                     </label>
                 </p>
 
-                <p id="show_country" style="display:none;">
+                <p class="other-country-container" id="show_country" style="display:none;">
                     <label>Service provided in other Country<br>
-                        <select class="cls_slect-radius" name="other_country" id="other_country">
+                        <select class="cls_slect-radius other_country" name="other_country[]" id="other_country">
                             <option value="0">Select</option>
                             <?php foreach ($countries as $country) { ?>
                                 <option value="<?php echo $country->code ?>" <?php echo !empty($partner) && $partner->other_country == $country->code ? 'selected' : '' ?>><?php echo $country->name ?></option>
@@ -123,12 +124,69 @@
                     </label>
                 </p>
 
-                <div class="row">
-                    <div class="col-md-12 text-right">
-                        <button class="btn btn-primary has-spinner" type="submit"><?php echo $submit_button_text ?></button>
-                    </div>
+                </div>
+                
+            </div>
+
+            
+
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <button type="button" id="add-address" class="btn btn-secondary"> + Add Address</button>
+                </div>
+                <div class="col-md-6 text-right">
+                    <button class="btn btn-primary has-spinner" type="submit"><?php echo $submit_button_text ?></button>
                 </div>
             </div>
+
         </div>
     </div>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const addressContainer = document.getElementById("address-container");
+    const addAddressButton = document.getElementById("add-address");
+
+    addAddressButton.addEventListener("click", function() {
+        let addressForms = document.querySelectorAll(".address-form");
+        let newAddressForm = addressForms[0].cloneNode(true);
+
+        // Reset input values
+        newAddressForm.querySelectorAll("input").forEach(input => {
+            input.value = "";
+            input.removeAttribute("id"); // Remove duplicate IDs
+        });
+
+         // Add spacing on top
+         newAddressForm.style.marginTop = "80px"; // Adjust spacing as needed
+
+
+        // Create and append remove button if not exists
+        let removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.className = "btn btn-danger remove-address";
+        removeButton.textContent = "Remove Address";
+        removeButton.style.display = "inline-block";
+        removeButton.style.marginTop = "10px";
+
+        removeButton.addEventListener("click", function() {
+            newAddressForm.remove();
+        });
+
+        // Append remove button to new address form
+        newAddressForm.appendChild(removeButton);
+
+        addressContainer.appendChild(newAddressForm);
+
+        initAutocomplete();
+
+        document.addEventListener("change", function (event) {
+            if (event.target.classList.contains("service-area")) {
+                toggleOtherCountryField(event.target);
+            }
+        });
+
+    });
+});
+</script>

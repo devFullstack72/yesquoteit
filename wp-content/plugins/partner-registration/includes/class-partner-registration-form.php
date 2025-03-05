@@ -424,6 +424,8 @@ class Partner_Registration_Form
     }
 
     public function handle_pr_partner_form_submission_step_3() {
+
+        // dd($_POST);
         // Verify nonce for security
         if (!isset($_POST['pr_partner_nonce']) || !wp_verify_nonce($_POST['pr_partner_nonce'], 'pr_partner_form_action')) {
             wp_die('Security check failed.');
