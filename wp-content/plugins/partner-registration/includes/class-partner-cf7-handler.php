@@ -120,7 +120,7 @@ class Partner_CF7_Handler {
 
         $approved_partners = $wpdb->get_results(
             $wpdb->prepare("
-                SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, 
+                SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, sp.status,
                     (6371 * acos(
                         cos(radians(%f)) * cos(radians(sp.latitude)) *
                         cos(radians(sp.longitude) - radians(%f)) +
