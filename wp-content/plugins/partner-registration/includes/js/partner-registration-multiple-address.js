@@ -1,14 +1,79 @@
+window.onload = function () {
+    initMultipleAddressAutocomplete();
+
+    // Attach event for Add Address button
+    function attachEvent() {
+        let addAddressButton = document.getElementById("add-address");
+        if (addAddressButton && !addAddressButton.dataset.eventAttached) {
+            addAddressButton.addEventListener("click", function () {
+                addAddressField();
+            });
+            addAddressButton.dataset.eventAttached = "true";
+            console.log("Event attached to #add-address");
+        }
+    }
+
+    attachEvent();
+
+    // Watch for dynamically added elements
+    const observer = new MutationObserver(function () {
+        attachEvent();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Remove Address Field Event Delegation
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-address')) {
+            let row = e.target.closest('tr');
+            if (row) row.remove();
+        }
+    });
+
+    // Ensure service area change events work for existing and new fields
+    document.querySelectorAll(".service-area").forEach(function (select) {
+        select.addEventListener("change", function () {
+            toggleOtherCountryField(this);
+        });
+    });
+
+    // Disable submit button on form submission
+    jQuery(document).ready(function ($) {
+        $('.partner-registration-form, .partner-login-form').on('submit', function () {
+            var $btn = $(this).find('button[type="submit"]');
+            $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
+        });
+    });
+
+    // Dropdown Toggle
+    let dropdownToggle = document.getElementById('partnerDropdown');
+    if (dropdownToggle) {
+        let dropdown = dropdownToggle.parentElement;
+        dropdownToggle.addEventListener('click', function (event) {
+            event.stopPropagation();
+            dropdown.classList.toggle('active');
+        });
+        document.addEventListener('click', function () {
+            dropdown.classList.remove('active');
+        });
+    }
+};
+
+// Function to initialize Google Maps Autocomplete
 function initMultipleAddressAutocomplete() {
     jQuery(document).on('focus', '.address-field', function () {
         var input = this;
         if (input.getAttribute('data-autocomplete-initialized')) return;
         input.setAttribute('data-autocomplete-initialized', 'true');
 
+        if (!window.google || !google.maps || !google.maps.places) {
+            console.error("Google Maps API is not loaded yet.");
+            return;
+        }
+
         var autocomplete = new google.maps.places.Autocomplete(input);
-        google.maps.event.addDomListener(input, 'keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-            }
+        google.maps.event.addDomListener(input, 'keydown', function (event) {
+            if (event.key === 'Enter') event.preventDefault();
         });
 
         autocomplete.addListener('place_changed', function () {
@@ -16,19 +81,10 @@ function initMultipleAddressAutocomplete() {
             if (!place.geometry) return;
 
             var $container = jQuery(input).closest('.address-group');
+            if (!$container.length) return;
 
             $container.find('.latitude').val(place.geometry.location.lat());
             $container.find('.longitude').val(place.geometry.location.lng());
-            
-            var addressComponents = place.address_components;
-            var componentForm = {
-                street_number: 'short_name',
-                route: 'long_name',
-                address2: 'long_name',
-                postal_code: 'short_name',
-                state: 'short_name',
-                country: 'long_name'
-            };
 
             var addressData = {
                 street_number: '',
@@ -39,9 +95,16 @@ function initMultipleAddressAutocomplete() {
                 country: ''
             };
 
-            addressComponents.forEach(function (component) {
+            place.address_components.forEach(function (component) {
                 var componentType = component.types[0];
-
+                var componentForm = {
+                    street_number: 'short_name',
+                    route: 'long_name',
+                    address2: 'long_name',
+                    postal_code: 'short_name',
+                    state: 'short_name',
+                    country: 'long_name'
+                };
                 if (componentType in componentForm) {
                     addressData[componentType] = component[componentForm[componentType]];
                 }
@@ -57,10 +120,22 @@ function initMultipleAddressAutocomplete() {
     });
 }
 
+// Function to toggle Other Country field
+function toggleOtherCountryField(selectElement) {
+    let addressGroup = selectElement.closest(".address-group");
+    if (!addressGroup) return;
+
+    let otherCountryContainer = addressGroup.querySelector(".other-country-container");
+    if (otherCountryContainer) {
+        console.log('other');
+        otherCountryContainer.style.display = selectElement.value === "other" ? "block" : "none";
+    }
+}
+
 // Function to add a new address field dynamically
 function addAddressField() {
     let addressList = document.getElementById('address-list');
-    let newRow = document.createElement('tr'); 
+    let newRow = document.createElement('tr');
     newRow.classList.add('address-container');
 
     newRow.innerHTML = `
@@ -106,36 +181,12 @@ function addAddressField() {
     `;
 
     addressList.appendChild(newRow);
-
     initMultipleAddressAutocomplete();
 
     let newServiceArea = newRow.querySelector(".service-area");
     newServiceArea.addEventListener("change", function () {
         toggleOtherCountryField(this);
     });
-}
-
-// Event listener for Add Address button
-document.getElementById('add-address').addEventListener('click', function () {
-    addAddressField();
-});
-
-// Event delegation to remove an address field
-document.getElementById('address-list').addEventListener('click', function (e) {
-    if (e.target.classList.contains('remove-address')) {
-        e.target.closest('tr').remove();
-    }
-});
-
-// Initialize autocomplete on page load
-document.addEventListener("DOMContentLoaded", function () {
-    initMultipleAddressAutocomplete();
-});
-
-// Function to toggle Other Country field
-function toggleOtherCountryField(selectElement) {
-    let otherCountryContainer = selectElement.closest(".address-group").querySelector(".other-country-container");
-    otherCountryContainer.style.display = selectElement.value === "other" ? "block" : "none";
 }
 
 // Function to generate country options dynamically
@@ -148,35 +199,3 @@ function countriesOptions() {
         .map(country => `<option value="${country.code}">${country.name}</option>`)
         .join('');
 }
-
-// Ensure existing fields handle service area change
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".service-area").forEach(function (select) {
-        select.addEventListener("change", function () {
-            toggleOtherCountryField(this);
-        });
-    });
-});
-
-// Disable button on form submission
-jQuery(document).ready(function($) {
-    $('.partner-registration-form, .partner-login-form').on('submit', function() {
-        var $btn = $(this).find('button[type="submit"]');
-        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
-    });
-});
-
-// Dropdown Toggle
-document.addEventListener('DOMContentLoaded', function () {
-    let dropdownToggle = document.getElementById('partnerDropdown');
-    let dropdown = dropdownToggle.parentElement;
-
-    dropdownToggle.addEventListener('click', function (event) {
-        event.stopPropagation();
-        dropdown.classList.toggle('active');
-    });
-
-    document.addEventListener('click', function () {
-        dropdown.classList.remove('active');
-    });
-});

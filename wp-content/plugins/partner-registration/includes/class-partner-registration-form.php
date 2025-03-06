@@ -33,6 +33,10 @@ class Partner_Registration_Form
         add_action('admin_post_nopriv_pr_partner_form_submission_step_3', [$this, 'handle_pr_partner_form_submission_step_3']);
         add_action('admin_post_pr_partner_form_submission_step_3', [$this, 'handle_pr_partner_form_submission_step_3']);
 
+
+        add_action('admin_post_nopriv_pr_partner_form_submission_multiple_address', [$this, 'handle_pr_partner_form_submission_multiple_address']);
+        add_action('admin_post_pr_partner_form_submission_multiple_address', [$this, 'handle_pr_partner_form_submission_multiple_address']);
+
         add_action('admin_post_nopriv_pr_partner_form_submission_step_4', [$this, 'handle_pr_partner_form_submission_step_4']);
         add_action('admin_post_pr_partner_form_submission_step_4', [$this, 'handle_pr_partner_form_submission_step_4']);
 
@@ -82,10 +86,35 @@ class Partner_Registration_Form
             // wp_enqueue_script('google-places', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places', [], null, true);
 
             // Custom script for autocomplete
-            wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-places'], null, true);
+
+            
+
+            wp_enqueue_script('partner-multiple-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration-multiple-address.js', ['jquery', 'google-places'], null, true);
+
+            global $wpdb;
+
+            $countries_table = $wpdb->prefix . 'countries';
+                
+            $countries = $wpdb->get_results("SELECT * FROM {$countries_table}");
+
+            $country_data = [];
+            foreach ($countries as $country) {
+                $country_data[] = [
+                    'code' => $country->code,
+                    'name' => $country->name,
+                ];
+            }
+
+            // Pass country data to JavaScript
+            wp_localize_script('partner-multiple-registration-script', 'countryData', ['countries' => $country_data]);
+            // wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-places'], null, true);
             
             wp_enqueue_style('partner-registration-css', plugin_dir_url(__FILE__) . 'css/partner-registration.css');
         // }
+
+        if ($current_page_slug === "register-your-business") {
+            wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-places'], null, true);
+        }
     }
 
 
@@ -605,6 +634,56 @@ class Partner_Registration_Form
 
         wp_safe_redirect($redirect_url);
         exit;
+    }
+
+    public function handle_pr_partner_form_submission_multiple_address() {
+
+        global $wpdb;
+        
+        $partner_id = $_POST['partner_id'];
+        // Handle multiple addresses
+        $addresses_table = $wpdb->prefix . 'partner_addresses';
+        
+        
+
+        // Delete old addresses for this partner before inserting new ones
+        $wpdb->delete($addresses_table, ['partner_id' => $partner_id]);
+    
+        if (!empty($_POST['addresses'])) {
+            foreach ($_POST['addresses'] as $key => $address) {
+                $address = sanitize_text_field($address);
+                $latitude = sanitize_text_field($_POST['latitude'][$key]);
+                $longitude = sanitize_text_field($_POST['longitude'][$key]);
+                $street_number = sanitize_text_field($_POST['street_number'][$key]);
+                $route = sanitize_text_field($_POST['route'][$key]);
+                $address2 = sanitize_text_field($_POST['address2'][$key]);
+                $postal_code = sanitize_text_field($_POST['postal_code'][$key]);
+                $state = sanitize_text_field($_POST['state'][$key]);
+                $country = sanitize_text_field($_POST['country'][$key]);
+                $service_area = $_POST['service_area'][$key];
+                $other_country = $_POST['other_country'][$key];
+    
+                // Insert new address into the database
+                $wpdb->insert($addresses_table, [
+                    'partner_id' => $partner_id,
+                    'address' => $address,
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'street_number' => $street_number,
+                    'route' => $route,
+                    'address2' => $address2,
+                    'postal_code' => $postal_code,
+                    'state' => $state,
+                    'country' => $country,
+                    'service_area' => $service_area,
+                    'other_country' => $other_country
+                ]);
+            }
+        }
+    
+        // Redirect or display a success message
+        $redirect_url = wp_get_referer();
+        wp_safe_redirect($redirect_url);
     }
 
     // public function handle_pr_partner_form_submission_step_4() {

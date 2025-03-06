@@ -2,6 +2,8 @@
 
 $edit_profile_page = !empty($atts['profile']) ? $atts['profile'] : false;
 
+
+
 // Retrieve errors
 $errors = isset($_SESSION['form_errors']) ? $_SESSION['form_errors'] : [];
 $form_data = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
@@ -131,7 +133,7 @@ include plugin_dir_path(__FILE__) . '../views/partner-register/services.php';
 
         $partner_register_page_title = 'Update Address';
         $submit_button_text = 'Save';
-        include plugin_dir_path(__FILE__) . '../views/partner-register/address.php';
+        include plugin_dir_path(__FILE__) . '../views/partner-register/edit-address.php';
         ?>
     </div>
 </div>
