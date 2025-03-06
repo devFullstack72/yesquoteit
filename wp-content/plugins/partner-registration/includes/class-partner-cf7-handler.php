@@ -148,22 +148,14 @@ class Partner_CF7_Handler {
 
         $approved_partners = $wpdb->get_results(
             $wpdb->prepare("
-                SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, sp.status,
-                    (6371 * acos(
-                        cos(radians(%f)) * cos(radians(sp.latitude)) *
-                        cos(radians(sp.longitude) - radians(%f)) +
-                        sin(radians(%f)) * sin(radians(sp.latitude))
-                    )) AS distance
+                SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, sp.status
                 FROM $service_partners_table AS sp
                 INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
                 WHERE lp.lead_id = %d 
                     AND (sp.status = 1 OR sp.status = 3)
                     AND sp.id IN ('". implode(',', $partner_ids) ."')
             ", 
-            $customer_lat, $customer_lng, $customer_lat, 
-            $lead_id, 
-            $customer_country, $customer_state, $customer_country, 
-            $customer_lat, $customer_lng, $customer_lat
+            $lead_id
             )
         );
 
