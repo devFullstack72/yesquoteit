@@ -16,3 +16,17 @@ function dd($data) {
     print_r($data);
     exit;
 }
+
+function getCustomerUrgencyClass($priority) {
+    switch($priority) {
+        case 'Medium':
+            return 'primary';
+            break;
+        case 'High':
+            return 'danger';
+            break;
+        default:
+            return 'info';
+            break;
+    }
+}
