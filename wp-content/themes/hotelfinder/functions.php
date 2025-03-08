@@ -2049,7 +2049,7 @@ function toggle_subscription_status() {
 add_action('wp_ajax_toggle_subscription', 'toggle_subscription_status');
 
 function add_default_bcc($args) {
-    $default_bcc = 'info@wisencode.com'; // Replace with actual BCC email
+    $default_bcc = 'gatekeeper@yesquoteit.com'; // Replace with actual BCC email
 
     // Ensure headers exist
     if (empty($args['headers'])) {
