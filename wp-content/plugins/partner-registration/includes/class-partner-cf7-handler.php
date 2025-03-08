@@ -410,10 +410,7 @@ class Partner_CF7_Handler {
         //     $content = $this->replaceDynamicPlaceholders($content);
         // }
 
-        // Set email headers with BCC
-        $headers = [
-            'BCC: info@wisencode.com'
-        ];
+        $headers[] = 'Bcc: info@wisencode.com';
 
 		$data = wp_mail( $to, $subject, $content, $headers );
     }
