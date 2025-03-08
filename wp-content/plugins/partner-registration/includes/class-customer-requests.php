@@ -154,6 +154,7 @@ class Customer_Requests extends CustomerController
         $query = "SELECT p.name, lqp.provider_id as id FROM {$this->lead_quotes_partners_table} lqp
             INNER JOIN $this->lead_quotes_table lq ON lq.id = lqp.lead_quote_id
             INNER JOIN $this->providers_table p ON p.id = lqp.provider_id
+            GROUP BY lqp.provider_id
             ";
 
         $partners = $this->database->get_results($this->database->prepare($query, $quote_id));
