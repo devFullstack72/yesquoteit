@@ -45,7 +45,8 @@ class Customer_Requests extends CustomerController
                 lq.quote_data, 
                 lq.id as lead_quote_id,
                 lq.created_at,
-                p.post_title AS lead_name
+                p.post_title AS lead_name,
+                p.post_date AS post_created_date
             FROM $this->lead_quotes_table lq
             INNER JOIN $this->customer_table c ON lq.customer_id = c.id
             INNER JOIN $this->posts_table p ON lq.lead_id = p.ID
@@ -59,7 +60,7 @@ class Customer_Requests extends CustomerController
             $query .= " AND lq.is_archived = 0";
         }
 
-        $query .= " ORDER BY c.created_at DESC";
+        $query .= " ORDER BY p.post_date DESC";
 
         // Execute query with prepared statement for security
         $customer_quotes = $this->database->get_results($this->database->prepare($query, $customer_id));
