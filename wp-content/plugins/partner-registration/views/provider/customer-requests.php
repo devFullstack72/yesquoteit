@@ -82,7 +82,7 @@
                             </a>
                             </span><br>
                             <span><?php echo esc_html($customer_quote->phone); ?><br></span>
-                            <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->post_created_date))); ?></span>
+                            <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->lead_created_at))); ?></span>
                         </td>
                         
                         

@@ -44,7 +44,7 @@ class Partner_Customer_Requests extends PartnerController
                 lqp.id as lead_quote_id,
                 lqp.lead_quote_id as l_quote_id,
                 p.post_title AS lead_name,
-                p.post_date AS post_created_date
+                lq.created_at AS lead_created_at
             FROM $this->lead_quotes_partners_table lqp
             INNER JOIN $this->lead_quotes_table lq ON lqp.lead_quote_id = lq.id
             INNER JOIN $this->customer_table c ON lq.customer_id = c.id
@@ -59,7 +59,7 @@ class Partner_Customer_Requests extends PartnerController
             $query .= " AND lqp.is_archived = 0";
         }
 
-        $query .= " ORDER BY p.post_date DESC";
+        $query .= " ORDER BY lq.created_at DESC";
 
         // Execute query with prepared statement for security
         $customer_quotes = $this->database->get_results($this->database->prepare($query, $provider_id));
