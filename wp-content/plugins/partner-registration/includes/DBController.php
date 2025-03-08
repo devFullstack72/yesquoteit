@@ -16,6 +16,10 @@ class DBController
 
     public $posts_table;
 
+    public $providers_table;
+
+    public $provider_reviews_table;
+
     public function __construct() {
         global $wpdb;
 
@@ -28,5 +32,9 @@ class DBController
         $this->lead_quotes_partners_table = $wpdb->prefix . 'yqit_lead_quotes_partners';
 
         $this->posts_table = $this->database->prefix . 'posts';
+
+        $this->providers_table = $this->database->prefix . 'service_partners';
+
+        $this->provider_reviews_table = $this->database->prefix . 'yqit_partner_reviews';
     }
 }

@@ -23,6 +23,12 @@ class Customer_Requests extends CustomerController
         add_action('wp_ajax_delete_customer_quote', [$this, 'delete_customer_quote']);
         add_action('wp_ajax_nopriv_delete_customer_quote', [$this, 'delete_customer_quote']);
 
+        add_action('wp_ajax_get_quote_partners_by_quote_id', [$this, 'get_quote_partners_by_quote_id']);
+        add_action('wp_ajax_nopriv_get_quote_partners_by_quote_id', [$this, 'get_quote_partners_by_quote_id']);
+
+        add_action('wp_ajax_handle_partner_rating_submission', [$this, 'handle_partner_rating_submission']);
+        add_action('wp_ajax_nopriv_handle_partner_rating_submission', [$this, 'handle_partner_rating_submission']);
+
     } 
 
     public function render_customer_requests() {
@@ -44,6 +50,7 @@ class Customer_Requests extends CustomerController
                 lq.lead_id, 
                 lq.quote_data, 
                 lq.id as lead_quote_id,
+                lq.is_closed as quote_closed,
                 lq.created_at,
                 p.post_title AS lead_name,
                 lq.created_at AS lead_created_at
@@ -134,4 +141,80 @@ class Customer_Requests extends CustomerController
             wp_send_json_error(['message' => 'Failed to delete quote.']);
         }
     }
+
+    public function get_quote_partners_by_quote_id() {
+        check_ajax_referer('get_quote_partners_nonce', 'security'); // Validate nonce
+
+        $quote_id = isset($_POST['id']) ? $_POST['id'] : '';
+
+        if (!$quote_id) {
+            wp_send_json_error(array('message' => 'Invalid Quote ID'));
+        }
+
+        $query = "SELECT p.name, lqp.provider_id as id FROM {$this->lead_quotes_partners_table} lqp
+            LEFT JOIN $this->lead_quotes_table lq ON lq.id = lqp.lead_quote_id
+            LEFT JOIN $this->providers_table p ON p.id = lqp.provider_id
+            ";
+
+        $partners = $this->database->get_results($this->database->prepare($query, $quote_id));
+
+        wp_send_json_success($partners);
+    }
+
+    function handle_partner_rating_submission() {
+        check_ajax_referer('get_quote_partners_nonce', 'security'); // Validate nonce
+    
+        // Sanitize and retrieve POST data
+        $partner_id = isset($_POST['partner_id']) ? intval($_POST['partner_id']) : 0;
+        $rating = isset($_POST['rating']) ? intval($_POST['rating']) : 0;
+        $review = isset($_POST['review']) ? sanitize_textarea_field($_POST['review']) : '';
+        $quote_id = isset($_POST['quote_id']) ? intval($_POST['quote_id']) : 0;
+    
+        // Collect validation errors
+        $errors = [];
+    
+        if ($partner_id <= 0) {
+            $errors[] = 'Invalid partner selected.';
+        }
+        if ($rating < 1 || $rating > 5) {
+            $errors[] = 'Please select a valid rating (1-5).';
+        }
+        if (empty($review)) {
+            $errors[] = 'Please enter a review.';
+        }
+        if ($quote_id <= 0) {
+            $errors[] = 'Invalid quote ID.';
+        }
+    
+        // If there are errors, return them all
+        if (!empty($errors)) {
+            wp_send_json_error(['errors' => $errors]);
+        }
+    
+        $this->database->update($this->lead_quotes_table, [
+            'is_closed' => 1
+        ], [
+            'id' => $quote_id
+        ]);
+        
+        $inserted = $this->database->insert(
+            $this->provider_reviews_table,
+            [
+                'customer_id' => $this->getCustomerID(),
+                'partner_id' => $partner_id,
+                'quote_id'   => $quote_id,
+                'rating'     => $rating,
+                'review'     => $review,
+                'created_at' => current_time('mysql')
+            ],
+            ['%d', '%d', '%d', '%d', '%s', '%s']
+        );
+    
+        if ($inserted) {
+            wp_send_json_success(['message' => 'Thank you for your feedback!']);
+        } else {
+            wp_send_json_error(['errors' => ['Failed to save the review. Please try again.']]);
+        }
+    }
+    
 }

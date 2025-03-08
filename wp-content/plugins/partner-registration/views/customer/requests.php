@@ -103,9 +103,14 @@
                         </td>
                         
                         <td>
-                            <button style="float: left;" type="button" class="close delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
+                            <button type="button" class="btn btn-theme-danger delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
 				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
 				          	</button>
+                            <?php if ($customer_quote->quote_closed == 1): ?>
+                                <label class="badge-theme badge-theme-info">Closed</label>
+                            <?php else: ?>
+                            <button type="button" class="btn btn-theme-black close-quote-by-customer" data-id="<?php echo $customer_quote->lead_quote_id; ?>">Close Quote</button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -152,6 +157,37 @@
         <button id="sendMessage" class="btn btn-success">Send</button>
     </div>
 </div>
+
+<!-- Partner List Modal -->
+<div id="quote-close-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg"> <!-- Large modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Mark as Close</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Partner</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="partner-list">
+                        <tr id="loading-spinner">
+                            <td colspan="2" class="text-center">
+                                <i class="fa fa-spinner fa-spin fa-2x"></i> Loading...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <script>
 
@@ -305,11 +341,20 @@ function openChatPopup(leadId) {
 
 <script src="<?php echo get_template_directory_uri(); ?>/js/chat-message.js"></script>
 
+<script>
+    var ajax_object = {
+        ajax_url: "<?php echo admin_url('admin-ajax.php'); ?>",
+        nonce: "<?php echo wp_create_nonce('get_quote_partners_nonce'); ?>"
+    };
+</script>
+
+<script src="<?php echo get_template_directory_uri(); ?>/js/customer/requests.js"></script>
+
 
 <style>
 .htlfndr-under-header{display: none;}
 #emailModal { z-index: 999999; }#leadModal { z-index: 999999; }#chatModal{ z-index: 999999;}#partnerChatModal{ z-index: 999999;}
-.open-email-modal, .delete-quote { margin-top: 0px; }
+.open-email-modal { margin-top: 0px; }
 .modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
 .modal-content { background: #fff; margin: 15% auto; padding: 20px; width: 40%; border-radius: 5px; }
 .close { float: right; font-size: 28px; cursor: pointer; }

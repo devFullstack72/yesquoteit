@@ -45,6 +45,45 @@ foreach ($all_leads as $lead) {
     }
 }
 
+$query = $wpdb->prepare(
+    "SELECT COUNT(id) AS total_reviews, COALESCE(AVG(rating), 0) AS average_rating 
+     FROM {$wpdb->prefix}yqit_partner_reviews 
+     WHERE partner_id = %d", 
+    $provider_id
+);
+
+$result = $wpdb->get_row($query);
+
+$total_reviews = $result->total_reviews;
+$average_rating = round($result->average_rating, 1); // Round to 1 decimal place
+
+function renderStars($average_rating, $total_reviews) {
+    $full_stars = floor($average_rating); // Full stars
+    $half_star = ($average_rating - $full_stars) >= 0.5 ? 1 : 0; // Half star
+    $empty_stars = 5 - ($full_stars + $half_star); // Remaining empty stars
+
+    $stars_html = '<div class="provider-rating">';
+    
+    // Full stars
+    for ($i = 0; $i < $full_stars; $i++) {
+        $stars_html .= '<i class="fa fa-star star-rating-color"></i>';
+    }
+    // Half star
+    if ($half_star) {
+        $stars_html .= '<i class="fa fa-star-half-o star-rating-color"></i>';
+    }
+    // Empty stars
+    for ($i = 0; $i < $empty_stars; $i++) {
+        $stars_html .= '<i class="fa fa-star-o star-rating-color"></i>';
+    }
+
+    // Display total reviews count
+    $stars_html .= '<span class="total-reviews"> (' . $total_reviews . ' Reviews)</span>';
+    $stars_html .= '</div>';
+
+    return $stars_html;
+}
+
 // Set Content-Type
 header('Content-Type: text/html; charset=UTF-8');
 
@@ -170,6 +209,29 @@ header('Content-Type: text/html; charset=UTF-8');
             font-size: 14px; /* Ensure font size stays 14px */
             font-weight: normal; /* Optional: Keep text lightweight */
         }
+        
+        .provider-rating {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            gap: 5px;
+        }
+
+        .stars i {
+            font-size: 18px;
+        }
+
+        .star-rating-color {
+            color: #ffa100; /* Gold color for stars */
+        }
+
+        .provider-rating-container {
+            margin-top: 10px;
+        }
+
+        .total-reviews {
+            font-size: 13px;
+        }
 
     </style>
     <?php wp_head(); ?>
@@ -182,24 +244,14 @@ header('Content-Type: text/html; charset=UTF-8');
             <div class="tab" data-tab="tab3">Contact</div>
         </div>
         <div class="tab-content active" id="tab1">
-            <div class="profile-header">
-                <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
-                <div>
-                    <h1><?php echo esc_html($provider->business_trading_name); ?></h1>
-                </div>
-            </div>
+            <?php include plugin_dir_path(__FILE__) . '../views/provider-public-profile/base-info.php'; ?>
             <p><strong>Country:</strong> <?php echo esc_html($provider->country); ?></p>
             <p><strong>Address:</strong> <?php echo esc_html($provider->address); ?></p>
             <p><strong>Phone:</strong> <?php echo esc_html($provider->phone); ?></p>
             <p><strong>Website:</strong> <a href="<?php echo esc_url($provider->website_url); ?>" target="_blank"><?php echo esc_html($provider->website_url); ?></a></p>
         </div>
         <div class="tab-content services" id="tab2">
-            <div class="profile-header">
-                <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
-                <div>
-                    <h1><?php echo esc_html($provider->business_trading_name); ?></h1>
-                </div>
-            </div>
+            <?php include plugin_dir_path(__FILE__) . '../views/provider-public-profile/base-info.php'; ?>
             <?php if ($assigned_lead_posts): ?>
                 <ol>
                     <?php foreach ($assigned_lead_posts as $lead): ?>
@@ -213,12 +265,7 @@ header('Content-Type: text/html; charset=UTF-8');
             <?php endif; ?>
         </div>
         <div class="tab-content" id="tab3">
-            <div class="profile-header">
-                <img style="height: 100px;" alt="business logo" src="<?php echo esc_url($provider->business_logo); ?>" />
-                <div>
-                    <h1><?php echo esc_html($provider->business_trading_name); ?></h1>
-                </div>
-            </div>
+            <?php include plugin_dir_path(__FILE__) . '../views/provider-public-profile/base-info.php'; ?>
             <p>
                 <?php echo do_shortcode(get_option('partner_contact_form_shortcode')); ?>
             </p>

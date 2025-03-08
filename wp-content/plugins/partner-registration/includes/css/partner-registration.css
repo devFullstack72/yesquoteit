@@ -57,6 +57,36 @@
     color: #fff;
 }
 
+.btn-theme-danger {
+    background: #da2808 none repeat scroll 0 0;
+    border: 1px solid #da2808;
+    padding-left: 17px;
+    padding-right: 13px;
+    color: #fff !important;
+    text-align: center;
+    transition: all .3s ease-in-out 0s;
+    padding: 10px 50px;
+}
+
+.btn-theme-danger:hover {
+    color: #fff;
+}
+
+.btn-theme-black {
+    background: #000 none repeat scroll 0 0;
+    border: 1px solid #000;
+    padding-left: 17px;
+    padding-right: 13px;
+    color: #fff !important;
+    text-align: center;
+    transition: all .3s ease-in-out 0s;
+    padding: 10px 50px;
+}
+
+.btn-theme-black:hover {
+    color: #fff;
+}
+
 .h-50px {
     height: 44.84px !important;
 }
@@ -151,4 +181,12 @@
 
 .hotel-finder-page {
     margin-bottom: 70px;
+}
+
+#quote-close-modal .star-rating {
+    margin-bottom: 10px;
+}
+
+#quote-close-modal .star-rating span {
+    font-size: 30px;
 }
