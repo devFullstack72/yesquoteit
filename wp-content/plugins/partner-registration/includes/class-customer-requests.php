@@ -151,10 +151,17 @@ class Customer_Requests extends CustomerController
             wp_send_json_error(array('message' => 'Invalid Quote ID'));
         }
 
-        $query = "SELECT p.name, lqp.provider_id as id FROM {$this->lead_quotes_partners_table} lqp
-            INNER JOIN $this->lead_quotes_table lq ON lq.id = lqp.lead_quote_id
-            INNER JOIN $this->providers_table p ON p.id = lqp.provider_id
-            GROUP BY lqp.provider_id
+        // $query = "SELECT p.name, lqp.provider_id as id FROM {$this->lead_quotes_partners_table} lqp
+        //     INNER JOIN $this->lead_quotes_table lq ON lq.id = lqp.lead_quote_id
+        //     INNER JOIN $this->providers_table p ON p.id = lqp.provider_id
+        //     GROUP BY lqp.provider_id
+        //     ";
+
+        $query = "
+                SELECT partner.id, partner.business_trading_name AS name
+                FROM {$this->cp_chat_table} AS chat
+                LEFT JOIN {$this->providers_table} AS partner ON chat.partner_id = partner.id
+                WHERE chat.lead_id = %d
             ";
 
         $partners = $this->database->get_results($this->database->prepare($query, $quote_id));

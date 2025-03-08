@@ -38,39 +38,44 @@ jQuery(document).ready(function ($) {
 
     function generateQuotePartnersList(partners) {
         var partnerHtml = '';
-        $.each(partners, function (index, partner) {
-            partnerHtml += `<tr data-partner-id="${partner.id}">
-                                <td>${partner.name}</td>
-                                <td align="right">
-                                    <button class="btn btn-theme-black btn-sm rate-partner" data-id="${partner.id}">Close with this partner</button>
-                                </td>
-                            </tr>
-                            <tr class="rating-row" id="rating-row-${partner.id}" style="display: none;">
-                                <td colspan="2">
-                                    <div class="rating-section">
-                                        <form class="rating-form" data-partner-id="${partner.id}">
-                                            <input type="hidden" name="quote_id" value="${quote_id_customer_selected_for_close}">
-                                            <input type="hidden" name="partner_id" value="${partner.id}">
-                                            <label>Rating:</label>
-                                            <div class="star-rating" data-partner-id="${partner.id}">
-                                                <span class="fa fa-star-o" data-rating="1"></span>
-                                                <span class="fa fa-star-o" data-rating="2"></span>
-                                                <span class="fa fa-star-o" data-rating="3"></span>
-                                                <span class="fa fa-star-o" data-rating="4"></span>
-                                                <span class="fa fa-star-o" data-rating="5"></span>
-                                            </div>
-                                            <input type="hidden" class="rating-value" name="rating" data-partner-id="${partner.id}" value="0">
-                                            <label>Review:</label>
-                                            <textarea class="form-control review-text" name="review" data-partner-id="${partner.id}" rows="3"></textarea>
-                                            <br>
-                                            <button type="submit" class="btn btn-theme-primary submit-rating">Submit</button>
-                                            <button type="button" data-id="${partner.id}" class="btn cancel-rating">Cancel</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>`;
-        });
-
+        if (partners.length > 0) {
+            $.each(partners, function (index, partner) {
+                partnerHtml += `<tr data-partner-id="${partner.id}">
+                                    <td>${partner.name}</td>
+                                    <td align="right">
+                                        <button class="btn btn-theme-black btn-sm rate-partner" data-id="${partner.id}">Close with this partner</button>
+                                    </td>
+                                </tr>
+                                <tr class="rating-row" id="rating-row-${partner.id}" style="display: none;">
+                                    <td colspan="2">
+                                        <div class="rating-section">
+                                            <form class="rating-form" data-partner-id="${partner.id}">
+                                                <input type="hidden" name="quote_id" value="${quote_id_customer_selected_for_close}">
+                                                <input type="hidden" name="partner_id" value="${partner.id}">
+                                                <label>Rating:</label>
+                                                <div class="star-rating" data-partner-id="${partner.id}">
+                                                    <span class="fa fa-star-o" data-rating="1"></span>
+                                                    <span class="fa fa-star-o" data-rating="2"></span>
+                                                    <span class="fa fa-star-o" data-rating="3"></span>
+                                                    <span class="fa fa-star-o" data-rating="4"></span>
+                                                    <span class="fa fa-star-o" data-rating="5"></span>
+                                                </div>
+                                                <input type="hidden" class="rating-value" name="rating" data-partner-id="${partner.id}" value="0">
+                                                <label>Review:</label>
+                                                <textarea class="form-control review-text" name="review" data-partner-id="${partner.id}" rows="3"></textarea>
+                                                <br>
+                                                <button type="submit" class="btn btn-theme-primary submit-rating">Submit</button>
+                                                <button type="button" data-id="${partner.id}" class="btn cancel-rating">Cancel</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>`;
+            });
+        } else {
+            partnerHtml += `<tr>
+                                    <td colspan="2" align="center">No providers connected!</td>
+                                </tr>`;
+        }
         return partnerHtml;
     }    
 
