@@ -141,7 +141,7 @@
 <div id="chatModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close close-chat-modal">&times;</span>
-        <h4>Chat with Partner</h4>
+        <h4>Quote Chat</h4>
         <div id="chat_messages"></div> <!-- Chat messages load here -->
         <input type="hidden" id="partner_id">
         <input type="hidden" id="customer_id">
