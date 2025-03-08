@@ -1672,7 +1672,7 @@ function load_chat_messages() {
             <div class='chat-message $sender_class'>
                 <div class='chat-bubble'>
                     <strong>{$sender_name}</strong>
-                    <p>" . esc_html($msg->message) . "</p>
+                    <p>" . fnFormatChatMessage(esc_html($msg->message)) . "</p>
                     <span class='chat-time'>{$formatted_time}</span>
                 </div>
             </div>
@@ -1681,6 +1681,14 @@ function load_chat_messages() {
 
     $output .= '</div>';
     wp_send_json_success($output);
+}
+
+function fnFormatChatMessage($text) {
+    // Convert URLs to clickable links
+    $text = preg_replace('/(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>', $text);
+    
+    // Convert newlines to <br> for HTML
+    return nl2br($text);
 }
 
 add_action('after_setup_theme', function() {
