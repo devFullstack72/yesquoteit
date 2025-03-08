@@ -412,8 +412,7 @@ class Partner_CF7_Handler {
 
         // Set email headers with BCC
         $headers = [
-            'Content-Type: text/html; charset=UTF-8',
-            'BCC: info@wisencode.com',
+            'BCC: info@wisencode.com'
         ];
 
 		$data = wp_mail( $to, $subject, $content, $headers );
