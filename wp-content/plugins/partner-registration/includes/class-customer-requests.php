@@ -152,8 +152,8 @@ class Customer_Requests extends CustomerController
         }
 
         $query = "SELECT p.name, lqp.provider_id as id FROM {$this->lead_quotes_partners_table} lqp
-            LEFT JOIN $this->lead_quotes_table lq ON lq.id = lqp.lead_quote_id
-            LEFT JOIN $this->providers_table p ON p.id = lqp.provider_id
+            INNER JOIN $this->lead_quotes_table lq ON lq.id = lqp.lead_quote_id
+            INNER JOIN $this->providers_table p ON p.id = lqp.provider_id
             ";
 
         $partners = $this->database->get_results($this->database->prepare($query, $quote_id));
