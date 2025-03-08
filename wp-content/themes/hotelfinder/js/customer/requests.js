@@ -43,7 +43,7 @@ jQuery(document).ready(function ($) {
                 partnerHtml += `<tr data-partner-id="${partner.id}">
                                     <td>${partner.name}</td>
                                     <td align="right">
-                                        <button class="btn btn-theme-black btn-sm rate-partner" data-id="${partner.id}">Close with this partner</button>
+                                        <button class="btn btn-theme-black btn-sm rate-partner" data-id="${partner.id}">Which business did you go with?</button>
                                     </td>
                                 </tr>
                                 <tr class="rating-row" id="rating-row-${partner.id}" style="display: none;">

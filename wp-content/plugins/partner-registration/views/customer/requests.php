@@ -180,13 +180,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Mark as Close</h4>
+                <h4 class="modal-title">Mark as Closed</h4>
             </div>
             <div class="modal-body">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Partner</th>
+                            <th>Which business did you go with?</th>
                             <th></th>
                         </tr>
                     </thead>
