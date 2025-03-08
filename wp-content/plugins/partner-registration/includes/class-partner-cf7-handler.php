@@ -410,9 +410,9 @@ class Partner_CF7_Handler {
         //     $content = $this->replaceDynamicPlaceholders($content);
         // }
 
-        $headers[] = 'Bcc: info@wisencode.com';
+        // $headers[] = 'Bcc: info@wisencode.com';
 
-		$data = wp_mail( $to, $subject, $content, $headers );
+		$data = wp_mail( $to, $subject, $content);
     }
 
     protected function saveCustomer($data) {
