@@ -41,13 +41,12 @@ jQuery(document).ready(function ($) {
         if (partners.length > 0) {
             $.each(partners, function (index, partner) {
                 partnerHtml += `<tr data-partner-id="${partner.id}">
-                                    <td>${partner.name}</td>
-                                    <td align="right">
-                                        <button class="btn btn-theme-black btn-sm rate-partner" data-id="${partner.id}">Which business did you go with?</button>
+                                    <td>
+                                        <button class="btn btn-theme-black btn-sm rate-partner" data-id="${partner.id}"><i class="fa fa-user"></i> ${partner.name}</button>
                                     </td>
                                 </tr>
                                 <tr class="rating-row" id="rating-row-${partner.id}" style="display: none;">
-                                    <td colspan="2">
+                                    <td>
                                         <div class="rating-section">
                                             <form class="rating-form" data-partner-id="${partner.id}">
                                                 <input type="hidden" name="quote_id" value="${quote_id_customer_selected_for_close}">

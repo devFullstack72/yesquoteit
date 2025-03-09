@@ -120,9 +120,9 @@
                         
                         <td>
                             <?php if ($customer_quote->quote_closed == 1): ?>
-                                <label class="btn btn-theme-gray solid">Closed</label>
+                                <label class="btn btn-theme-gray solid" style="width: 117.76px;">Closed</label>
                             <?php else: ?>
-                            <button type="button" class="btn btn-theme-black close-quote-by-customer" data-id="<?php echo $customer_quote->lead_quote_id; ?>">Close Quote</button>
+                            <button type="button" class="btn btn-theme-black close-quote-by-customer" data-id="<?php echo $customer_quote->lead_quote_id; ?>">Close Request</button>
                             <?php endif; ?>
                             <button type="button" class="btn btn-theme-light-danger delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
 				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
