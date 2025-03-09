@@ -87,8 +87,8 @@
                                             ];
                                         }
                                         ?>
-                                        <br>
-                                        <label class="badge-theme badge-theme-<?php echo $customer_urgency['class'] ?> my-auto"><?php echo $customer_urgency['label'] ?></label>
+                                        <!-- <br>
+                                        <label class="badge-theme badge-theme-<?php echo $customer_urgency['class'] ?> my-auto"><?php echo $customer_urgency['label'] ?></label> -->
                                     </div>
                                 </div>
                             </div>
