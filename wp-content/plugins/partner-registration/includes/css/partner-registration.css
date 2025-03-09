@@ -190,3 +190,32 @@
 #quote-close-modal .star-rating span {
     font-size: 30px;
 }
+
+.green-alert { background-color: #DDF2E6; border: 1px solid #6FBF83; color: #6FBF83; }
+.yellow-alert { color:#EDBF27; border: 1px solid #EDBF27; background-color: #FDF5DD }
+.blue-text { color: blue; border: 1px solid blue; }
+.theme-text { color: #08C1DA; border: 1px solid #08C1DA; }
+
+.btn-theme-light-danger {
+    background: #F7D7DA none repeat scroll 0 0;
+    color: #da2808 !important;
+    border: 1px solid #F7D7DA;
+    padding-left: 17px;
+    padding-right: 13px;
+    text-align: center;
+    transition: all .3s ease-in-out 0s;
+    padding: 10px 50px;
+}
+
+.btn-theme-gray {
+    background: #C3C3C3 none repeat scroll 0 0;
+    color: #black;
+    border: 1px solid #F7D7DA;
+    text-align: center;
+    transition: all .3s ease-in-out 0s;
+    padding: 10px 50px;
+}
+
+.btn-theme-gray.solid {
+    font-weight: bold !important;
+}

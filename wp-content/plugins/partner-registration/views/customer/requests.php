@@ -102,11 +102,11 @@
                                 
                                 // Determine color class
                                 if ($total_chat_partners == 0) {
-                                    $color_class = 'blue-text';
+                                    $color_class = 'theme-text';
                                 } elseif ($total_unread_chats > 0) {
-                                    $color_class = 'green-text';
+                                    $color_class = 'green-alert';
                                 } else {
-                                    $color_class = 'yellow-text';
+                                    $color_class = 'yellow-alert';
                                 }
                             ?>
                             
@@ -119,14 +119,14 @@
                         </td>
                         
                         <td>
-                            <button type="button" class="btn btn-theme-danger delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</button>
                             <?php if ($customer_quote->quote_closed == 1): ?>
-                                <label class="badge-theme badge-theme-info">Closed</label>
+                                <label class="btn btn-theme-gray solid">Closed</label>
                             <?php else: ?>
                             <button type="button" class="btn btn-theme-black close-quote-by-customer" data-id="<?php echo $customer_quote->lead_quote_id; ?>">Close Quote</button>
                             <?php endif; ?>
+                            <button type="button" class="btn btn-theme-light-danger delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
+				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
+				          	</button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -461,9 +461,6 @@ thead {
     padding: 5px;
     border-radius: 5px;
 }
-.green-text { color: green; font-weight: bold; border: 1px solid green; }
-.yellow-text { color:#edbf27; font-weight: bold; border: 1px solid #edbf27; }
-.blue-text { color: blue; font-weight: bold; border: 1px solid blue; }
 
 .chat-item {
     display: flex;
