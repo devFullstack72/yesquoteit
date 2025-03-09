@@ -55,7 +55,7 @@
                             <span><?php echo esc_html($customer_quote->phone); ?><br></span>
                             <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->lead_created_at))); ?></span>
                         </td>
-                        
+
                         <?php $image = get_the_post_thumbnail_url($customer_quote->lead_id, 'large'); ?>
 
                         <td>
@@ -66,7 +66,7 @@
 
                                 <div class="email" style="white-space: nowrap;">
                                     <a href="javascript:void(0);" 
-                                        class="open-lead-modal" 
+                                        class="open-lead-modal text-black" 
                                         data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> 
                                         <?php echo esc_html($customer_quote->lead_name); ?>
                                     </a>
