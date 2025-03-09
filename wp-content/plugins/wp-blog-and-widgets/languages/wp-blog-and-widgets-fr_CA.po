@@ -1,0 +1,585 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2023-08-21 11:57+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Loco https://localise.biz/\n"
+"Project-Id-Version: Development (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA"
+
+#: includes/admin/wpbaw-how-it-work.php:187
+msgid ""
+"'Publicize' support with Jetpack to publish your Blog post on your social "
+"network"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:189
+msgid "100% Multi language"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:30
+msgid "120+. In lite version only one design."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:173
+msgid "13 Designs for Grid Box"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:171
+msgid "45 Designs for Slider/Carousel"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:170
+msgid "50 Designs for Grid Layout"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:22
+msgid ""
+"6 (Blog, Recent Blog, Slider, Gridbox , Gridbox Slider , List). In lite "
+"version only 1 layout."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:175
+msgid "6 Shortcodes"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:176
+msgid "6 Widgets (slider,list and category etc)"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:38
+msgid "6. In lite version only one widget."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:172
+msgid "8 Designs for List View"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:174
+msgid "8 Designs for News Grid Box Slider"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:45
+msgid "A link to a Blog."
+msgstr ""
+
+#: includes/wpbaw-post-types.php:24
+msgid "Add Blog"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:25
+msgid "Add New Blog"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:89
+msgid "Add New Category"
+msgstr "Ajouter une nouvelle catégorie"
+
+#: includes/widgets/class-wpbaw-blog.php:88
+msgid "All"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:84
+msgid "All Category"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:84
+msgid "All Shortcodes"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:62
+msgid "Arrange your desired slides with your desired order and display."
+msgstr ""
+
+#: includes/admin/settings/solution-features/solutions-features.php:120
+msgid "Basic Vs Pro"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:22 includes/wpbaw-post-types.php:33
+msgid "Blog"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:23
+msgid "blog"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:166
+msgid "Blog and Widegt Premium Features"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:91
+msgid "Blog Category"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:185
+msgid "Blog display with categories"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:35
+msgid "Blog Image"
+msgstr ""
+
+#: includes/admin/settings/solution-features/solutions-features.php:124
+msgid "Blog in Essential Bundle"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:87
+msgid "Blog in List View"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:44
+msgid "Blog Link"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:38
+msgid "Blog list."
+msgstr ""
+
+#: includes/wpbaw-post-types.php:40
+msgid "Blog published privately."
+msgstr ""
+
+#: includes/wpbaw-post-types.php:39
+msgid "Blog published."
+msgstr ""
+
+#: includes/wpbaw-post-types.php:42
+msgid "Blog reverted to draft."
+msgstr ""
+
+#: includes/wpbaw-post-types.php:41
+msgid "Blog scheduled."
+msgstr ""
+
+#: includes/wpbaw-post-types.php:43
+msgid "Blog updated."
+msgstr ""
+
+#: includes/shortcode/wpbaw-blog-shortcode.php:150
+#: includes/shortcode/wpbaw-blog-shortcode.php:175
+#: includes/shortcode/wpbaw-recent-blog-shortcode.php:136
+#: includes/shortcode/wpbaw-recent-blog-shortcode.php:161
+msgid "By"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:81 includes/wpbaw-post-types.php:82
+msgid "Category"
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:83
+msgid "Category "
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:99
+msgid "Check Documentation"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:107
+msgid "Check Free Demo"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:188
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:184
+msgid "Custom Read More link for Blog Post"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:104
+msgid "Demo"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:27
+msgid "Designs"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:88
+msgid "Display blog in grid 1"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:89
+msgid "Display blog in grid 2"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:90
+msgid "Display blog in grid 3"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Display Blog on your website with list and in grid view. Also work with "
+"Gutenberg shortcode block."
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:106
+msgid "Display Category"
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:100
+msgid "Display Date"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:91
+msgid "Display recent blog posts"
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:112
+msgid "Display Thumbnail"
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:24
+msgid "Displayed Latest Blog post  in a sidebar"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:180
+msgid "Divi Page Builder Native Support"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:78
+msgid ""
+"Do not display the blog & Do not display the blogs for particular categories."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:96
+msgid "Documentation"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:186
+msgid ""
+"Drag & Drop feature to display Blog post in your desired order and other 6 "
+"types of order parameter"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:59
+msgid "Drag & Drop Slide Order Change"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:26
+msgid "Edit Blog"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:87
+msgid "Edit Category"
+msgstr "Modifier la catégorie"
+
+#: includes/admin/wpbaw-how-it-work.php:153
+#, php-format
+msgid ""
+"Enjoyed this plugin? You can help by rate this plugin <a href=\"%s\" "
+"target=\"_blank\">5 stars!"
+msgstr ""
+
+#: includes/admin/supports/gutenberg-block.php:197
+msgid "Essential Plugin Blocks"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:75
+msgid "Exclude Blog and Exclude Some Categories"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:183
+msgid "Fully Responsive and Touch Based Slider"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:181
+msgid "Fusion Page Builder (Avada) native support"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:191
+msgid "Gain access to"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:58
+msgid "Getting Started"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:192
+msgid "Grab Blog and Widget Now"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:177
+msgid "Gutenberg Block Supports"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:70
+msgid ""
+"Gutenberg Block, Elementor, Bevear Builder, SiteOrigin, Divi, Visual "
+"Composer and Fusion Page Builder Support"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:120
+msgid "Gutenberg Support"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:179
+msgid "Gutenberg, Elementor, Beaver and SiteOrigin Page Builder Support"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:149
+msgid "Help to improve this plugin!"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:128
+msgid "How it Work"
+msgstr ""
+
+#: includes/admin/class-wpbaw-admin.php:43
+#: includes/admin/wpbaw-how-it-work.php:38
+msgid "How It Works"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:50
+msgid "How It Works - Display and Shortcode"
+msgstr ""
+
+#: includes/admin/class-wpbaw-admin.php:43
+msgid "How it works, our plugins and offers"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:72
+msgid "How Shortcode Works"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.essentialplugin.com/wordpress-plugin/wp-blog-and-widgets/"
+msgstr ""
+
+#: includes/admin/class-wpbaw-admin.php:145
+msgid "ID:"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:65
+msgid ""
+"If you want to create a blog page with WordPress existing POST section then "
+"try our other plugin --"
+msgstr ""
+
+#: wp-blog-and-widgets.php:183
+#, php-format
+msgid ""
+"It looks like you had PRO version %s of this plugin activated. To avoid "
+"conflicts the extra version has been deactivated and we recommend you delete "
+"it."
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:26
+#: includes/widgets/class-wpbaw-blog.php:30
+msgid "Latest Blog Widget"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:19
+msgid "Layouts"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:27
+msgid "New Blog"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:90
+msgid "New Category Name"
+msgstr "Nom de la nouvelle catégorie"
+
+#: includes/wpbaw-functions.php:146
+msgid "Next"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:30
+msgid "No Blog Items found"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:31
+msgid "No Blog Items found in Trash"
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:76
+msgid "Number of Items "
+msgstr ""
+
+#: includes/admin/class-wpbaw-admin.php:46
+msgid "Overview"
+msgstr ""
+
+#: includes/admin/class-wpbaw-admin.php:46
+msgid "Overview - WP Blog and Widget"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:67
+msgid "Page Builder Support"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:85
+msgid "Parent Category"
+msgstr "Catégorie parente"
+
+#: includes/wpbaw-post-types.php:86
+msgid "Parent Category:"
+msgstr "Catégorie parente&nbsp;:"
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:54
+msgid ""
+"Play with all shortcode parameters with preview panel. No documentation "
+"required."
+msgstr ""
+
+#: includes/wpbaw-functions.php:145
+msgid "Previous"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:19
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:27
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:35
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:43
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:51
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:59
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:67
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:75
+msgid "PRO"
+msgstr ""
+
+#: includes/admin/settings/solution-features/solutions-features.php:116
+msgid "Pro Features"
+msgstr ""
+
+#: includes/shortcode/wpbaw-blog-shortcode.php:190
+#: includes/shortcode/wpbaw-recent-blog-shortcode.php:175
+msgid "Read More"
+msgstr "Lire la suite"
+
+#: includes/wpbaw-post-types.php:36
+msgid "Remove Blog Image"
+msgstr ""
+
+#: includes/admin/settings/solution-features/solutions-features.php:128
+msgid "Reviews"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:29
+msgid "Search Blog"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:83
+msgid "Search Category"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:34
+msgid "Set Blog Image"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:51
+msgid "Shortcode Generator"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:76
+msgid "Step-1. Create a page like Blog OR Our Blog."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:132
+msgid "Step-1. Go to the Gutenberg editor of your page."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:62
+msgid ""
+"Step-1: This plugin create a BLOG menu tab in WordPress menu with custom "
+"post type.\"."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:77
+msgid "Step-2. Put below shortcode as per your need."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:133
+msgid "Step-2. Search \"blog post\" keyword in the Gutenberg block list."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:63
+msgid "Step-2: Go to \"Blog --> Add blog tab\"."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:134
+msgid ""
+"Step-3. Add any block of blog post and you will find its relative options on "
+"the right end side."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:64
+msgid ""
+"Step-3: Add blog title, description, category, and images as featured image."
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:65
+msgid "Step-4:"
+msgstr ""
+
+#: wp-blog-and-widgets.php:182
+#, php-format
+msgid "Thank you for activating %s"
+msgstr ""
+
+#: includes/widgets/class-wpbaw-blog.php:69
+#, fuzzy
+#| msgid "Title:"
+msgid "Title "
+msgstr "Titre&nbsp;:"
+
+#: includes/wpbaw-post-types.php:88
+msgid "Update Category"
+msgstr "Mettre à jour la catégorie"
+
+#: includes/admin/class-wpbaw-admin.php:49
+msgid "Upgrade To PRO"
+msgstr ""
+
+#: includes/admin/class-wpbaw-admin.php:49
+msgid "Upgrade To PRO - WP Blog and Widget"
+msgstr ""
+
+#: includes/wpbaw-post-types.php:37
+msgid "Use as Blog image"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:13
+#, php-format
+msgid ""
+"Utilize this <a href=\"%s\" target=\"_blank\">Premium Features (With Risk-"
+"Free 30 days money back guarantee)</a> to get best of this plugin with "
+"Annual or Lifetime bundle deal."
+msgstr ""
+
+#: includes/wpbaw-post-types.php:28
+msgid "View Blog"
+msgstr ""
+
+#: includes/admin/settings/solution-features/solutions-features.php:112
+msgid "Welcome"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:35
+msgid "Widgets"
+msgstr ""
+
+#. Name of the plugin
+msgid "WP Blog and Widgets"
+msgstr ""
+
+#. Author of the plugin
+msgid "WP OnlineSupport, Essential Plugin"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:182
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:43
+msgid "WP Templating Features"
+msgstr ""
+
+#: includes/admin/wpbaw-how-it-work.php:178
+msgid "WPBakery Page Builder Supports"
+msgstr ""
+
+#: includes/admin/metabox/wpbaw-post-setting-metabox-pro.php:46
+msgid "You can modify plugin html/designs in your current theme."
+msgstr ""
