@@ -120,9 +120,9 @@
                         </td>
 
                         <td>
-                            <span class="badge <?php 
-                                echo ($customer_quote->status == 'New Lead') ? 'badge-success' : 
-                                    (($customer_quote->status == 'Viewed') ? 'badge-warning' : 'badge-primary'); 
+                            <span class="badge-theme badge-theme-<?php 
+                                echo ($customer_quote->status == 'New Lead') ? 'success' : 
+                                    (($customer_quote->status == 'Viewed') ? 'warning' : 'primary'); 
                             ?>">
                                 <?php echo esc_html($customer_quote->status); ?>
                             </span>
@@ -150,7 +150,7 @@
                             
                         </td>
                         <td>
-                            <button style="float: left;" type="button" class="close delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
+                            <button type="button" class="btn btn-theme-light-danger delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
 				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
 				          	</button>
                         </td>
@@ -458,21 +458,6 @@ body {background-color: #f8f9fd;}
 
 .btn-danger{
     background-color: #E4405F;
-}
-
-.badge-success {
-    background-color: #cff6dd !important; /* Ensure it overrides */
-    color: #1fa750;
-}
-
-.badge-warning {
-    background-color: #fdf5dd !important; /* Ensure it overrides */
-    color: #cfa00c;
-}
-
-.badge-primary {
-    background-color:rgb(121, 193, 237) !important; /* Ensure it overrides */
-    color:rgb(255, 255, 255);
 }
 
 thead {

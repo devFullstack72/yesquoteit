@@ -9059,3 +9059,15 @@ only screen and (min-resolution:1.3dppx) {
 .badge-theme.badge-theme-info {
 	background-color: #0883da;
 }
+
+.badge-theme.badge-theme-warning {
+	background-color: #FDF5DD;
+	color: #EDBF27;
+	border: 1px solid #EDBF27;
+}
+
+.badge-theme.badge-theme-success {
+	background-color: #DDF2E6;
+	color: #6FBF83;
+	border: 1px solid #6FBF83;
+}
