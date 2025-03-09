@@ -34,8 +34,8 @@
         <thead>
             <tr>
                 <th><input type="checkbox" id="selectAll"></th>
+                <th>Customer Details</th>
                 <th>Quote Request</th>
-                <th>Contact Details</th>
                 <th>Inbox</th>
                 <th>
                     <input type="checkbox" <?php if (!$is_archived){ echo "checked"; } ?> id="open" onclick="handleCheckboxSelection('open')"> Open
@@ -49,6 +49,13 @@
                     <tr>
                         <td><input type="checkbox" class="quote-checkbox" value="<?php echo $customer_quote->lead_quote_id; ?>"></td>
                        
+                        <td>
+                            <span><?php echo esc_html($customer_quote->name); ?><br></span>
+                            <span><?php echo esc_html($customer_quote->email); ?></span><br>
+                            <span><?php echo esc_html($customer_quote->phone); ?><br></span>
+                            <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->lead_created_at))); ?></span>
+                        </td>
+                        
                         <?php $image = get_the_post_thumbnail_url($customer_quote->lead_id, 'large'); ?>
 
                         <td>
@@ -85,13 +92,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </td>
-                        
-                        <td>
-                            <span><?php echo esc_html($customer_quote->name); ?><br></span>
-                            <span><?php echo esc_html($customer_quote->email); ?></span><br>
-                            <span><?php echo esc_html($customer_quote->phone); ?><br></span>
-                            <span class="text-muted" style="font-size: 11px;"><?php echo esc_html(date('d.m.Y H:i a', strtotime($customer_quote->lead_created_at))); ?></span>
                         </td>
 
                         <td>
