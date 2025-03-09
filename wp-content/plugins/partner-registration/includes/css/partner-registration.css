@@ -219,3 +219,7 @@
 .btn-theme-gray.solid {
     font-weight: bold !important;
 }
+
+.text-black {
+    color: #000 !important;
+}

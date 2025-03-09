@@ -41,7 +41,13 @@
                 <th>
                     <div class="d-flex align-items-center" style="display: flex; align-items: center; gap: 10px;">
                         <div class="profile-img" style="background-image: url('<?php echo $provider_details->business_logo ?>');"></div>
-                        <h3 style="color:black;"><?php echo $provider_details->business_trading_name ?></h3>
+                        <h3 style="color:black;"><?php echo $provider_details->business_trading_name ?>
+                            <div style="font-size: 12px; margin-top: 10px; text-align: right;">
+                                <i class="fa fa-check-circle" style="color: #08c1da;font-size: 15px;"></i>
+                                 <i>Verified member</i>
+                             </div>
+                        </h3>
+                        
                     </div>
                 </th>
                 <th colspan="5" style="float:right;vertical-align:middle;">
@@ -95,7 +101,7 @@
 
                                 <div class="email" style="white-space: nowrap;">
                                     <a href="javascript:void(0);" 
-                                        class="open-lead-modal" 
+                                        class="open-lead-modal text-black" 
                                         data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> 
                                         <?php echo esc_html($customer_quote->lead_name); ?>
                                     </a>
@@ -120,12 +126,12 @@
                         </td>
 
                         <td>
-                            <span class="badge-theme badge-theme-<?php 
+                            <div class="badge-theme badge-theme-<?php 
                                 echo ($customer_quote->status == 'New Lead') ? 'success' : 
                                     (($customer_quote->status == 'Viewed') ? 'warning' : 'primary'); 
-                            ?>">
+                            ?>" style="min-width: 65px; text-align: center;">
                                 <?php echo esc_html($customer_quote->status); ?>
-                            </span>
+                            </div>
                         </td>
                         
                         <td>
