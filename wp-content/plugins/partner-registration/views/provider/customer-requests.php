@@ -105,22 +105,26 @@
                                         data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> 
                                         <?php echo esc_html($customer_quote->lead_name); ?>
                                     </a>
-                                    <?php
-                                    $quote_details = !empty($customer_quote->quote_data) ? json_decode($customer_quote->quote_data, TRUE) : '';
-                                    $customer_urgency = [
-                                        'class' => getCustomerUrgencyClass('Low'),
-                                        'label' => 'Low'
-                                    ];
-                                    if (isset($quote_details['customer-urgency'])) {
-                                        $customer_urgency_value = $quote_details['customer-urgency']['value'] ?? 'Low';
+                                    <div style="display: flex; gap: 2px;">
+                                        <button class="btn btn-sm btn-theme-primary open-lead-modal" 
+                                        data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'><i class="fa fa-eye"></i> Details</button>
+                                        <?php
+                                        $quote_details = !empty($customer_quote->quote_data) ? json_decode($customer_quote->quote_data, TRUE) : '';
                                         $customer_urgency = [
-                                            'class' => getCustomerUrgencyClass($customer_urgency_value),
-                                            'label' => $customer_urgency_value
+                                            'class' => getCustomerUrgencyClass('Low'),
+                                            'label' => 'Low'
                                         ];
-                                    }
-                                    ?>
-                                    <br>
-                                    <label class="badge-theme badge-theme-<?php echo $customer_urgency['class'] ?>"><?php echo $customer_urgency['label'] ?></label>
+                                        if (isset($quote_details['customer-urgency'])) {
+                                            $customer_urgency_value = $quote_details['customer-urgency']['value'] ?? 'Low';
+                                            $customer_urgency = [
+                                                'class' => getCustomerUrgencyClass($customer_urgency_value),
+                                                'label' => $customer_urgency_value
+                                            ];
+                                        }
+                                        ?>
+                                        <br>
+                                        <label class="badge-theme badge-theme-<?php echo $customer_urgency['class'] ?> my-auto"><?php echo $customer_urgency['label'] ?></label>
+                                    </div>
                                 </div>
                             </div>
                         </td>

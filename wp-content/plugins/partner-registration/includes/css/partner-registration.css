@@ -227,3 +227,8 @@
 .mt-4 {
     margin-top: 20px;
 }
+
+.my-auto {
+    margin-top: auto;
+    margin-bottom: auto;
+}
