@@ -145,19 +145,27 @@ class Partner_CF7_Handler {
             )
         );
 
+        // Ensure $partner_ids is an array of integers
+        $partner_ids = array_map('intval', $partner_ids);
+        
+        // Convert array to comma-separated placeholders
+        $placeholders = implode(',', array_fill(0, count($partner_ids), '%d'));
+        
+        $query = "
+            SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, 
+                   sp.latitude, sp.longitude, sp.country, sp.state, sp.status
+            FROM $service_partners_table AS sp
+            INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
+            WHERE lp.lead_id = %d 
+                AND (sp.status = 1 OR sp.status = 3)
+                AND sp.id IN ($placeholders)
+        ";
+        
+        // Prepare the values
+        $params = array_merge([$lead_id], $partner_ids);
 
-        $approved_partners = $wpdb->get_results(
-            $wpdb->prepare("
-                SELECT sp.id as provider_id, sp.email, sp.phone, sp.service_area, sp.latitude, sp.longitude, sp.country, sp.state, sp.status
-                FROM $service_partners_table AS sp
-                INNER JOIN $lead_partners_table AS lp ON sp.id = lp.partner_id
-                WHERE lp.lead_id = %d 
-                    AND (sp.status = 1 OR sp.status = 3)
-                    AND sp.id IN ('". implode(',', $partner_ids) ."')
-            ", 
-            $lead_id
-            )
-        );
+        // Execute the query securely
+        $approved_partners = $wpdb->get_results($wpdb->prepare($query, ...$params));
 
         // Prepare data for email template
         $email_data = [];
