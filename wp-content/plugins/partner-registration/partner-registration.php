@@ -154,7 +154,19 @@ class Partner_Registration_Plugin {
                 service_area VARCHAR(100),
                 other_country VARCHAR(100),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB $charset_collate;"
+            ) ENGINE=InnoDB $charset_collate;",
+
+            "partner_reviews" => "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}yqit_partner_reviews (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                customer_id INT NOT NULL,
+                partner_id INT NOT NULL,
+                quote_id INT NOT NULL,
+                rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+                review TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_partner_id (partner_id),
+                INDEX idx_quote_id (quote_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
 
         ];
 
@@ -199,6 +211,10 @@ class Partner_Registration_Plugin {
 
         if (!in_array('is_archived', $existing_lead_quotes_columns)) {
             $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes ADD COLUMN is_archived VARCHAR(255) NULL DEFAULT 0 AFTER quote_data;");
+        }
+
+        if (!in_array('is_closed', $existing_lead_quotes_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes ADD COLUMN is_closed TINYINT(1) NULL DEFAULT 0 AFTER is_archived;");
         }
 
         $existing_lead_quotes_columns = $wpdb->get_col("DESC {$wpdb->prefix}yqit_lead_quotes_partners", 0);

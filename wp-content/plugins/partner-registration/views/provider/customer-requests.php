@@ -41,7 +41,13 @@
                 <th>
                     <div class="d-flex align-items-center" style="display: flex; align-items: center; gap: 10px;">
                         <div class="profile-img" style="background-image: url('<?php echo $provider_details->business_logo ?>');"></div>
-                        <h3 style="color:black;"><?php echo $provider_details->business_trading_name ?></h3>
+                        <h3 style="color:black;"><?php echo $provider_details->business_trading_name ?>
+                            <div style="font-size: 12px; margin-top: 10px; text-align: right;">
+                                <i class="fa fa-check-circle" style="color: #08c1da;font-size: 15px;"></i>
+                                 <i>Verified member</i>
+                             </div>
+                        </h3>
+                        
                     </div>
                 </th>
                 <th colspan="5" style="float:right;vertical-align:middle;">
@@ -95,21 +101,41 @@
 
                                 <div class="email" style="white-space: nowrap;">
                                     <a href="javascript:void(0);" 
-                                        class="open-lead-modal" 
+                                        class="open-lead-modal text-black" 
                                         data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'> 
                                         <?php echo esc_html($customer_quote->lead_name); ?>
                                     </a>
+                                    <div style="display: flex; gap: 2px;">
+                                        <button class="btn btn-sm btn-theme-primary open-lead-modal" 
+                                        data-quote='<?php echo esc_attr($customer_quote->quote_data); ?>'><i class="fa fa-eye"></i> Details</button>
+                                        <?php
+                                        $quote_details = !empty($customer_quote->quote_data) ? json_decode($customer_quote->quote_data, TRUE) : '';
+                                        $customer_urgency = [
+                                            'class' => getCustomerUrgencyClass('Low'),
+                                            'label' => 'Low'
+                                        ];
+                                        if (isset($quote_details['customer-urgency'])) {
+                                            $customer_urgency_value = $quote_details['customer-urgency']['value'] ?? 'Low';
+                                            $customer_urgency = [
+                                                'class' => getCustomerUrgencyClass($customer_urgency_value),
+                                                'label' => $customer_urgency_value
+                                            ];
+                                        }
+                                        ?>
+                                        <!-- <br>
+                                        <label class="badge-theme badge-theme-<?php echo $customer_urgency['class'] ?> my-auto"><?php echo $customer_urgency['label'] ?></label> -->
+                                    </div>
                                 </div>
                             </div>
                         </td>
 
                         <td>
-                            <span class="badge <?php 
-                                echo ($customer_quote->status == 'New Lead') ? 'badge-success' : 
-                                    (($customer_quote->status == 'Viewed') ? 'badge-warning' : 'badge-primary'); 
-                            ?>">
+                            <div class="badge-theme badge-theme-<?php 
+                                echo ($customer_quote->status == 'New Lead') ? 'success' : 
+                                    (($customer_quote->status == 'Viewed') ? 'warning' : 'primary'); 
+                            ?>" style="min-width: 65px; text-align: center;">
                                 <?php echo esc_html($customer_quote->status); ?>
-                            </span>
+                            </div>
                         </td>
                         
                         <td>
@@ -134,7 +160,7 @@
                             
                         </td>
                         <td>
-                            <button style="float: left;" type="button" class="close delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
+                            <button type="button" class="btn btn-theme-light-danger delete-quote" data-id="<?php echo $customer_quote->lead_quote_id; ?>" data-dismiss="alert" aria-label="Close">
 				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
 				          	</button>
                         </td>
@@ -442,21 +468,6 @@ body {background-color: #f8f9fd;}
 
 .btn-danger{
     background-color: #E4405F;
-}
-
-.badge-success {
-    background-color: #cff6dd !important; /* Ensure it overrides */
-    color: #1fa750;
-}
-
-.badge-warning {
-    background-color: #fdf5dd !important; /* Ensure it overrides */
-    color: #cfa00c;
-}
-
-.badge-primary {
-    background-color:rgb(121, 193, 237) !important; /* Ensure it overrides */
-    color:rgb(255, 255, 255);
 }
 
 thead {

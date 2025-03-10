@@ -2385,7 +2385,7 @@ a.htlfndr-read-more-button.hovered:after {
 	-ms-transform: translate(-50%, 0);
 	-o-transform: translate(-50%, 0);
 	transform: translate(-50%, 0);
-	z-index: 1050
+	z-index: 1
 }
 
 .htlfndr-button-to-top span {
@@ -9037,4 +9037,37 @@ only screen and (min-resolution:1.3dppx) {
 /* On hover: Hide default_title_cat & show category-name */
 .htlfndr-category-box:hover .default_title_cat {
     display:none;
+}
+
+.badge-theme {
+	font-size: 10px;
+    padding: 6px;
+    background-color: #b7b7b7;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.badge-theme.badge-theme-primary {
+	background-color: #08c1da;
+}
+
+.badge-theme.badge-theme-danger {
+	background-color: #da2808;
+}
+
+.badge-theme.badge-theme-info {
+	background-color: #0883da;
+}
+
+.badge-theme.badge-theme-warning {
+	background-color: #FDF5DD;
+	color: #EDBF27;
+	border: 1px solid #EDBF27;
+}
+
+.badge-theme.badge-theme-success {
+	background-color: #DDF2E6;
+	color: #6FBF83;
+	border: 1px solid #6FBF83;
 }
