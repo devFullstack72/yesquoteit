@@ -18,14 +18,12 @@ if (!defined('ABSPATH')) {
         <tbody>
             <?php if (!empty($lead_sent_providers_data)) : ?>
                 <?php foreach ($lead_sent_providers_data as $row) :
-                    $latitude = '';
-                    $longitude = '';
                     $full_address = '';
                     if (!empty($row->quote_data)) {
                         $quote_data = json_decode($row->quote_data, true);
                         $full_address = $quote_data['google_places_form_address']['value'] ?? '';
-                        $latitude = $quote_data['google_places_form_latitude']['value'] ?? '';
-                        $longitude = $quote_data['google_places_form_longitude']['value'] ?? '';
+                        $provider_names = explode(',', $row->provider_names);
+                        $provider_emails = explode(',', $row->provider_emails);
                     }
                     $lead_link = get_permalink($row->lead_id);
                     ?>
@@ -34,10 +32,20 @@ if (!defined('ABSPATH')) {
                         <td><?php echo esc_html($row->category_names); ?></td>
                         <td>
                             <div>Address: <?php echo esc_html($full_address); ?></div>
-                            <div>Latitude: <?php echo esc_html($latitude); ?></div>
-                            <div>Longitude: <?php echo esc_html($longitude); ?></div>
                         </td>
-                        <td><?php echo esc_html($row->provider_names); ?></td>
+                        <td>
+                            <?php
+                            foreach($provider_names as $provider_name_index => $provider_name) {
+                                ?>
+                                <div><?php echo $provider_name ?>
+                                <?php if (!empty($provider_emails[$provider_name_index])): ?>
+                                (<?php echo $provider_emails[$provider_name_index] ?>)
+                                <?php endif; ?>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else : ?>
