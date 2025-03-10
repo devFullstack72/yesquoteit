@@ -545,6 +545,8 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 // Customer hooks
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_requests_page']);
 
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_set_password_page']);
+
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_login_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_forgot_password_page']);
