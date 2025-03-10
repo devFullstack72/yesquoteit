@@ -28,6 +28,8 @@ require_once PR_PLUGIN_DIR . 'includes/class-customer-login.php';
 
 require_once PR_PLUGIN_DIR . 'includes/general-functions.php';
 
+require_once PR_PLUGIN_DIR . 'includes/Backend/class-lead-sent-providers.php';
+
 class Partner_Registration_Plugin {
     public function __construct() {
         new Partner_Registration_Form();
@@ -40,6 +42,8 @@ class Partner_Registration_Plugin {
         new Partner_CF7_Fields_Labels();
 
         new Customer_Login();
+
+        new LeadSentPartnersController();
     }
 
     public static function create_plugin_tables() {
