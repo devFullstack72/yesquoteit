@@ -22,8 +22,10 @@ if (!defined('ABSPATH')) {
                     if (!empty($row->quote_data)) {
                         $quote_data = json_decode($row->quote_data, true);
                         $full_address = $quote_data['google_places_form_address']['value'] ?? '';
-                        $provider_names = explode(',', $row->provider_names);
-                        $provider_emails = explode(',', $row->provider_emails);
+                        // $provider_names = explode(',', $row->provider_names);
+                        // $provider_emails = explode(',', $row->provider_emails);
+
+                        $provider_data_rows = explode('|||SEP|||', $row->provider_data);
                     }
                     $lead_link = get_permalink($row->lead_id);
                     ?>
@@ -35,15 +37,20 @@ if (!defined('ABSPATH')) {
                         </td>
                         <td>
                             <?php
-                            foreach($provider_names as $provider_name_index => $provider_name) {
-                                ?>
-                                <div><?php echo $provider_name ?>
-                                <?php if (!empty($provider_emails[$provider_name_index])): ?>
-                                (<?php echo $provider_emails[$provider_name_index] ?>)
-                                <?php endif; ?>
-                                </div>
-                                <?php
+                            foreach ($provider_data_rows as $provider_data_row) {
+                                // Separate the name and email
+                                list($provider_name, $provider_email) = explode('|||', $provider_data_row);
+                    
+                                // Output with safety (esc_html to prevent XSS)
+                                echo '<div>' . esc_html($provider_name);
+                    
+                                if (!empty($provider_email)) {
+                                    echo ' (' . esc_html($provider_email) . ')';
+                                }
+                    
+                                echo '</div>';
                             }
+                            
                             ?>
                         </td>
                     </tr>

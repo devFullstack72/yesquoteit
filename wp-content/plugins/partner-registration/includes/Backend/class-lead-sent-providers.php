@@ -32,14 +32,37 @@ class LeadSentPartnersController extends DBController
 
         global $wpdb;
 
+        // $query = "
+        //     SELECT 
+        //         p.ID AS lead_id,
+        //         p.post_title AS lead_name,
+        //         GROUP_CONCAT(DISTINCT t.name SEPARATOR ', ') AS category_names,
+        //         q.quote_data AS quote_data,
+        //         GROUP_CONCAT(DISTINCT sp.business_trading_name SEPARATOR ', ') AS provider_names,
+        //         GROUP_CONCAT(DISTINCT sp.email SEPARATOR ', ') AS provider_emails
+        //     FROM {$wpdb->prefix}yqit_lead_quotes q
+        //     LEFT JOIN {$wpdb->prefix}posts p ON p.ID = q.lead_id
+        //     LEFT JOIN {$wpdb->prefix}yqit_lead_quotes_partners qp ON q.id = qp.lead_quote_id
+        //     LEFT JOIN {$wpdb->prefix}service_partners sp ON sp.id = qp.provider_id
+        //     LEFT JOIN {$wpdb->prefix}term_relationships tr ON tr.object_id = p.ID
+        //     LEFT JOIN {$wpdb->prefix}term_taxonomy tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+        //     LEFT JOIN {$wpdb->prefix}terms t ON t.term_id = tt.term_id
+        //     WHERE p.post_status = 'publish'
+        //     GROUP BY q.id
+        //     HAVING provider_names IS NOT NULL AND provider_names <> ''
+        //     ORDER BY q.id DESC
+        // ";
+
         $query = "
             SELECT 
                 p.ID AS lead_id,
                 p.post_title AS lead_name,
                 GROUP_CONCAT(DISTINCT t.name SEPARATOR ', ') AS category_names,
                 q.quote_data AS quote_data,
-                GROUP_CONCAT(DISTINCT sp.business_trading_name SEPARATOR ', ') AS provider_names,
-                GROUP_CONCAT(DISTINCT sp.email SEPARATOR ', ') AS provider_emails
+                GROUP_CONCAT(
+                    DISTINCT CONCAT(sp.business_trading_name, '|||', sp.email) 
+                    SEPARATOR '|||SEP|||'
+                ) AS provider_data
             FROM {$wpdb->prefix}yqit_lead_quotes q
             LEFT JOIN {$wpdb->prefix}posts p ON p.ID = q.lead_id
             LEFT JOIN {$wpdb->prefix}yqit_lead_quotes_partners qp ON q.id = qp.lead_quote_id
@@ -49,7 +72,7 @@ class LeadSentPartnersController extends DBController
             LEFT JOIN {$wpdb->prefix}terms t ON t.term_id = tt.term_id
             WHERE p.post_status = 'publish'
             GROUP BY q.id
-            HAVING provider_names IS NOT NULL AND provider_names <> ''
+            HAVING provider_data IS NOT NULL AND provider_data <> ''
             ORDER BY q.id DESC
         ";
 
