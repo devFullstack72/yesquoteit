@@ -128,22 +128,29 @@ class Customer_Login extends CustomerController
                 $customer_id = decrypt_customer_id($encrypted_id);
                 
                 if ($customer_id) {
+                    
+                    
                     global $wpdb;
                     $table_name = $wpdb->prefix . "yqit_customers";
-                    $customer = $wpdb->get_row($wpdb->prepare("SELECT password FROM $table_name WHERE id = %d", $customer_id));
+                    $customer = $wpdb->get_row($wpdb->prepare("SELECT id, name, password FROM $table_name WHERE id = %d", $customer_id));
 
-                    if ($customer) {
-                        if (!empty($customer->password)) {
-                            // Customer has a password → Redirect to login page
-                            wp_redirect(home_url('/customer-login'));
-                            exit;
-                        } else {
-                            // Customer needs to set password → Store ID in session and redirect
-                            $_SESSION['temp_customer_id'] = $customer_id;
-                            wp_redirect(home_url('/customer-change-password'));
-                            exit;
-                        }
-                    }
+
+                    $this->autoCustomerLogin($customer);
+
+                    // Redirect to login page
+                    wp_safe_redirect(home_url('/customer-requests'));
+                    exit;
+
+                    // if ($customer) {
+                    //     if (!empty($customer->password)) {
+                    //         wp_redirect(home_url('/customer-login'));
+                    //         exit;
+                    //     } else {
+                    //         $_SESSION['temp_customer_id'] = $customer_id;
+                    //         wp_redirect(home_url('/customer-change-password'));
+                    //         exit;
+                    //     }
+                    // }
                 }
                 wp_die('Customer not found!');
             }
