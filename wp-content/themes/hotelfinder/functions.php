@@ -1524,7 +1524,7 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
 
     // Get customer and partner details
     $customer = $wpdb->get_row($wpdb->prepare(
-        "SELECT name, email FROM {$wpdb->prefix}yqit_customers WHERE id = %d",
+        "SELECT name, email, password FROM {$wpdb->prefix}yqit_customers WHERE id = %d",
         $customer_id
     ));
 
@@ -1563,13 +1563,29 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
     );
 
     // Replace placeholders in the email body
+
+    $response_url = '';
+    if ($to == 'partner') {
+        // If email is going to partner, use this URL
+        $response_url = home_url('/partner-customer-requests');
+    } else {
+        // If email is going to customer
+        if (empty($customer->password)) {
+            // Redirect to set password or registration if password is blank
+            $response_url = home_url() . '/handler-events/customer/' . encrypt_customer_id($customer_id);
+        } else {
+            // Redirect to customer login if password exists
+            $response_url = home_url('/customer-login');
+        }
+    }
+
     $email_body = str_replace(
         ['{recipient_name}', '{sender_name}', '{message}', '{response_url}'],
         [
             ($to == 'partner') ? $partner->business_trading_name : $customer->name,
             ($to == 'partner') ? $customer->name : $partner->business_trading_name,
             nl2br($message),
-            home_url(($to == 'partner') ? '/partner-customer-requests' : '/customer-login')
+            $response_url
         ],
         $template_post->post_content
     );
@@ -1672,7 +1688,7 @@ function load_chat_messages() {
             <div class='chat-message $sender_class'>
                 <div class='chat-bubble'>
                     <strong>{$sender_name}</strong>
-                    <p>" . esc_html($msg->message) . "</p>
+                    <p>" . fnFormatChatMessage(esc_html($msg->message)) . "</p>
                     <span class='chat-time'>{$formatted_time}</span>
                 </div>
             </div>
@@ -1681,6 +1697,14 @@ function load_chat_messages() {
 
     $output .= '</div>';
     wp_send_json_success($output);
+}
+
+function fnFormatChatMessage($text) {
+    // Convert URLs to clickable links
+    $text = preg_replace('/(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>', $text);
+    
+    // Convert newlines to <br> for HTML
+    return nl2br($text);
 }
 
 add_action('after_setup_theme', function() {
@@ -2040,16 +2064,29 @@ function toggle_subscription_status() {
 }
 add_action('wp_ajax_toggle_subscription', 'toggle_subscription_status');
 
+function add_default_bcc($args) {
+    $default_bcc = 'gatekeeper@yesquoteit.com'; // Replace with actual BCC email
 
+    // Ensure headers exist
+    if (empty($args['headers'])) {
+        $args['headers'] = [];
+    } elseif (!is_array($args['headers'])) {
+        $args['headers'] = explode("\n", $args['headers']);
+    }
 
+    // Add BCC header if not already set
+    $bcc_set = false;
+    foreach ($args['headers'] as $header) {
+        if (stripos($header, 'BCC:') !== false) {
+            $bcc_set = true;
+            break;
+        }
+    }
 
+    if (!$bcc_set) {
+        $args['headers'][] = 'BCC: ' . $default_bcc;
+    }
 
-
-
-
-
-
-
-
-
-
+    return $args;
+}
+add_filter('wp_mail', 'add_default_bcc');

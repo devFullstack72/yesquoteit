@@ -27,7 +27,27 @@ class Partner_Admin
         wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyADTn5LfNUzzbgxNd-TFiNbVwAf0JNoNBw&libraries=places', [], null, true);
 
         // Custom script for autocomplete
-        wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-maps-api'], null, true);
+        // wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration.js', ['jquery', 'google-maps-api'], null, true);
+        wp_enqueue_script('partner-registration-script', plugin_dir_url(__FILE__) . 'js/partner-registration-multiple-address.js', ['jquery', 'google-maps-api'], null, true);
+
+         // Fetch country data from the database
+        global $wpdb;
+
+        $countries_table = $wpdb->prefix . 'countries';
+            
+        $countries = $wpdb->get_results("SELECT * FROM {$countries_table}");
+
+        $country_data = [];
+        foreach ($countries as $country) {
+            $country_data[] = [
+                'code' => $country->code,
+                'name' => $country->name,
+            ];
+        }
+
+        // Pass country data to JavaScript
+        wp_localize_script('partner-registration-script', 'countryData', ['countries' => $country_data]);
+    
 
         wp_enqueue_script('partner-registration-admin-script', plugin_dir_url(__FILE__) . 'js/admin-custom.js', ['jquery'], null, true);
     }
@@ -78,50 +98,24 @@ class Partner_Admin
                         <th><label for="phone">Phone</label></th>
                         <td><input type="text" name="phone" id="phone" class="regular-text"></td>
                     </tr>
-                    <tr>
-                        <th><label for="address">Address</label></th>
-                        <td>
-                            <input type="text" id="autocomplete" name="address" class="regular-text">
-                            <div id="map-preview" style="position: relative; overflow: hidden;"></div>
-                        </td>
-                        
-                    </tr>
-                    <tr>
-                        <th><label>Latitude</label></th>
-                        <td><input type="text" id="latitude" name="latitude" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Longitude</label></th>
-                        <td><input type="text" id="longitude" name="longitude" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Street Number</label></th>
-                        <td><input type="text" id="street_number" name="street_number" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Address 1</label></th>
-                        <td><input type="text" id="route" name="route" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Address 2</label></th>
-                        <td><input type="text" id="address2" name="address2" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Postal Code</label></th>
-                        <td><input type="text" id="postal_code" name="postal_code" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>State</label></th>
-                        <td><input type="text" id="state" name="state" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Country</label></th>
-                        <td><input type="text" id="country" name="country" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Service Area</label></th>
-                        <td>
-                            <select name="service_area" id="radius" class="cls_slect-radius">
+
+                    <tbody id="address-list">
+                        <tr class="address-container">
+                            <th><label>Address</label></th>
+                            <td class="address-group">
+                            <input type="text" name="addresses[]" class="regular-text address-field" placeholder="Enter address">
+                            <input type="text" name="latitude[]" class="latitude" placeholder="Latitude" readonly>
+                            <input type="text" name="longitude[]" class="longitude" placeholder="Longitude" readonly>
+                            <input type="text" name="street_number[]" class="street_number" placeholder="Street Number" readonly>
+                            <input type="text" name="route[]" class="route" placeholder="Route" readonly>
+                            <input type="text" name="address2[]" class="address2" placeholder="Address 2" readonly>
+                            <input type="text" name="postal_code[]" class="postal_code" placeholder="Postal Code" readonly>
+                            <input type="text" name="state[]" class="state" placeholder="State" readonly>
+                            <input type="text" name="country[]" class="country" placeholder="Country" readonly>
+                            <br><br>
+                            <!-- Service Area field -->
+                            <label>Service Area:</label>
+                            <select name="service_area[]" class="cls_slect-radius service-area">
                                 <option value="5">5 KM</option>
                                 <option value="10">10 KM</option>
                                 <option value="25">25 KM</option>
@@ -135,21 +129,32 @@ class Partner_Admin
                                 <option value="every">Everywhere</option>
                                 <option value="no_service">Not at this location</option>
                             </select>
+
+                            <!-- Other Country field (Initially Hidden) -->
+                            <br><br><div class="other-country-container" style="display: none;">
+                                <label>Service provided in other Country:</label>
+                                <select name="other_country[]" class="cls_slect-radius">
+                                    <option value="">Select</option>
+                                    <?php foreach ($countries as $country) { ?>
+                                        <option value="<?php echo esc_attr($country->code); ?>">
+                                            <?php echo esc_html($country->name); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="map-preview" style="height: 50px;"></div>
+                            <button type="button" class="button remove-address">Remove</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tr>
+                        <td colspan="2">
+                            <button type="button" id="add-address">Add Address</button>
                         </td>
                     </tr>
-                    <tr id="show_country">
-                        <th><label>Service provided in other Country</label></th>
-                        <td>
-                            <select name="other_country" id="other_country" class="cls_slect-radius">
-                                <option value="">Select</option>
-                                <?php foreach($countries as $country) { ?>
-                                    <option value="<?php echo esc_attr($country->code); ?>">
-                                        <?php echo esc_html($country->name); ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </td>
-                    </tr>
+
                     <tr>
                         <th><label for="status">Status</label></th>
                         <td>
@@ -188,13 +193,14 @@ class Partner_Admin
         $lead_partners_table = $wpdb->prefix . 'lead_partners';
         $wp_posts_table = $wpdb->prefix . 'posts';
 
-        // $partners = $wpdb->get_results("SELECT * FROM $service_partners_table");
         $partners = $wpdb->get_results("
             SELECT sp.*, 
-                   GROUP_CONCAT(p.ID, '|', p.post_title SEPARATOR ',') AS leads
+                GROUP_CONCAT(DISTINCT p.ID, '|', p.post_title SEPARATOR ',') AS leads,
+                GROUP_CONCAT(DISTINCT pa.address SEPARATOR ' | ') AS full_addresses
             FROM {$service_partners_table} sp
             LEFT JOIN {$lead_partners_table} lp ON sp.id = lp.partner_id
             LEFT JOIN {$wp_posts_table} p ON lp.lead_id = p.ID AND p.post_type = 'lead_generation'
+            LEFT JOIN {$wpdb->prefix}partner_addresses AS pa ON sp.id = pa.partner_id
             GROUP BY sp.id
         ");
 ?>
@@ -226,15 +232,27 @@ class Partner_Admin
                             <td><?php echo $partner->phone; ?></td>
                             <td>
                                 <?php
-                                $full_address = esc_html($partner->address);
-                                $short_address = mb_strimwidth($full_address, 0, 20, '...');
+                                $addresses = explode(' | ', $partner->full_addresses ?? 'N/A');
+                                $total_addresses = count($addresses);
                                 ?>
-                                <span class="short-address"><?php echo $short_address; ?></span>
-                                <span class="full-address" style="display: none;"><?php echo $full_address; ?></span>
-                                <?php if (strlen($full_address) > 20) : ?>
-                                    <a href="#" class="toggle-address">More</a>
+                                
+                                <?php if ($total_addresses > 0 && $addresses[0] !== 'N/A'): ?>
+                                    <div class="address-toggle" style="cursor: pointer; color: #0073aa; font-weight: bold;">
+                                        <span class="address-summary"><?php echo $total_addresses; ?> Addresses</span>
+                                        <i class="dashicons dashicons-arrow-down"></i>
+                                    </div>
+                                    <div class="address-details" style="display: none; margin-top: 5px;">
+                                        <ul>
+                                            <?php foreach ($addresses as $address) : ?>
+                                                <li><?php echo esc_html($address); ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php else: ?>
+                                    No Addresses Found
                                 <?php endif; ?>
                             </td>
+
 
                             <td>
                                 <?php if (!empty($partner->leads)): 
@@ -291,25 +309,18 @@ class Partner_Admin
         global $wpdb;
 
         if (isset($_POST['create_partner'])) {
+            global $wpdb;
+        
             $name = sanitize_text_field($_POST['name']);
             $business_trading_name = sanitize_text_field($_POST['business_trading_name']);
             $email = sanitize_email($_POST['email']);
             $phone = sanitize_text_field($_POST['phone']);
-            $address = sanitize_text_field($_POST['address']);
-            $latitude = sanitize_text_field($_POST['latitude']);
-            $longitude = sanitize_text_field($_POST['longitude']);
-            $street_number = sanitize_text_field($_POST['street_number']);
-            $route = sanitize_text_field($_POST['route']);
-            $address2 = sanitize_text_field($_POST['address2']);
-            $postal_code = sanitize_text_field($_POST['postal_code']);
-            $state = sanitize_text_field($_POST['state']);
-            $country = sanitize_text_field($_POST['country']);
-            $service_area = sanitize_text_field($_POST['service_area']);
-            $other_country = sanitize_text_field($_POST['other_country']);
+            // $service_area = sanitize_text_field($_POST['service_area']);
+            // $other_country = sanitize_text_field($_POST['other_country']);
             $status = intval($_POST['status']);
             $selected_leads = isset($_POST['leads']) ? array_map('intval', $_POST['leads']) : [];
         
-            // Insert provider into database
+            // Insert provider into the main table
             $wpdb->insert(
                 $wpdb->prefix . 'service_partners',
                 [
@@ -317,25 +328,54 @@ class Partner_Admin
                     'business_trading_name' => $business_trading_name,
                     'email' => $email,
                     'phone' => $phone,
-                    'address' => $address,
-                    'latitude' => $latitude,
-                    'longitude' => $longitude,
-                    'street_number' => $street_number,
-                    'route' => $route,
-                    'address2' => $address2,
-                    'postal_code' => $postal_code,
-                    'state' => $state,
-                    'country' => $country,
-                    'service_area' => $service_area,
-                    'other_country' => $other_country,
+                    // 'service_area' => $service_area,
+                    // 'other_country' => $other_country,
                     'status' => $status
                 ],
-                ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d']
+                ['%s', '%s', '%s', '%s', '%s', '%s', '%d']
             );
         
-            $partner_id = $wpdb->insert_id;
+            $partner_id = $wpdb->insert_id; // Get the inserted partner ID
         
-            // Assign selected leads
+            // ✅ Insert multiple addresses
+            if (!empty($_POST['addresses'])) {
+                $addresses = $_POST['addresses'];
+                $latitudes = $_POST['latitude'];
+                $longitudes = $_POST['longitude'];
+                $street_numbers = $_POST['street_number'];
+                $routes = $_POST['route'];
+                $address2s = $_POST['address2'];
+                $postal_codes = $_POST['postal_code'];
+                $states = $_POST['state'];
+                $countries = $_POST['country'];
+                $service_area = $_POST['service_area'];
+                $other_country = $_POST['other_country'];
+        
+                foreach ($addresses as $index => $address) {
+                    if (!empty($address)) { // Ensure the address is not empty
+                        $wpdb->insert(
+                            $wpdb->prefix . 'partner_addresses',
+                            [
+                                'partner_id' => $partner_id,
+                                'address' => sanitize_text_field($address),
+                                'latitude' => sanitize_text_field($latitudes[$index]),
+                                'longitude' => sanitize_text_field($longitudes[$index]),
+                                'street_number' => sanitize_text_field($street_numbers[$index]),
+                                'route' => sanitize_text_field($routes[$index]),
+                                'address2' => sanitize_text_field($address2s[$index]),
+                                'postal_code' => sanitize_text_field($postal_codes[$index]),
+                                'state' => sanitize_text_field($states[$index]),
+                                'country' => sanitize_text_field($countries[$index]),
+                                'service_area'  => $service_area[$index],
+                                'other_country' => $other_country[$index]
+                            ],
+                            ['%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
+                        );
+                    }
+                }
+            }
+        
+            // ✅ Assign selected leads
             foreach ($selected_leads as $lead_id) {
                 $wpdb->insert(
                     $wpdb->prefix . 'lead_partners',
@@ -351,6 +391,7 @@ class Partner_Admin
             exit;
         }
         
+        
         if (isset($_GET['action']) && $_GET['action'] === 'add_new') {
             add_action('admin_notices', function () {
                 $this->render_create_form();
@@ -359,69 +400,90 @@ class Partner_Admin
         }
         
         if (isset($_POST['update_partner'])) {
+            global $wpdb;
+        
             $partner_id = intval($_POST['partner_id']);
             $name = sanitize_text_field($_POST['name']);
             $business_trading_name = sanitize_text_field($_POST['business_trading_name']);
             $email = sanitize_email($_POST['email']);
             $phone = sanitize_text_field($_POST['phone']);
-            $address = sanitize_text_field($_POST['address']);
-            $latitude = sanitize_text_field($_POST['latitude']);
-            $longitude = sanitize_text_field($_POST['longitude']);
-            $street_number = sanitize_text_field($_POST['street_number']);
-            $route = sanitize_text_field($_POST['route']);
-            $address2 = sanitize_text_field($_POST['address2']);
-            $postal_code = sanitize_text_field($_POST['postal_code']);
-            $state = sanitize_text_field($_POST['state']);
-            $country = sanitize_text_field($_POST['country']);
-            $service_area = sanitize_text_field($_POST['service_area']);
-            $other_country = sanitize_text_field($_POST['other_country']);
+            // $service_area = sanitize_text_field($_POST['service_area']);
+            // $other_country = sanitize_text_field($_POST['other_country']);
             $status = intval($_POST['status']);
             $selected_leads = isset($_POST['leads']) ? array_map('intval', $_POST['leads']) : [];
         
-            // Update partner details
+            // Update the partner information in the database
             $wpdb->update(
-                $wpdb->prefix . 'service_partners',
+                "{$wpdb->prefix}service_partners",
                 [
                     'name' => $name,
                     'business_trading_name' => $business_trading_name,
                     'email' => $email,
                     'phone' => $phone,
-                    'address' => $address,
-                    'latitude' => $latitude,
-                    'longitude' => $longitude,
-                    'street_number' => $street_number,
-                    'route' => $route,
-                    'address2' => $address2,
-                    'postal_code' => $postal_code,
-                    'state' => $state,
-                    'country' => $country,
-                    'service_area' => $service_area,
-                    'other_country' => $other_country,
+                    // 'service_area' => $service_area,
+                    // 'other_country' => $other_country,
                     'status' => $status
                 ],
-                ['id' => $partner_id],
-                ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d'],
-                ['%d']
+                ['id' => $partner_id]
             );
+
+             // Update assigned leads
+             $lead_partners_table = $wpdb->prefix . 'lead_partners';
         
-            // Update assigned leads
-            $lead_partners_table = $wpdb->prefix . 'lead_partners';
+             // Delete existing leads
+             $wpdb->delete($lead_partners_table, ['partner_id' => $partner_id], ['%d']);
+         
+             // Insert new leads
+             foreach ($selected_leads as $lead_id) {
+                 $wpdb->insert($lead_partners_table, [
+                     'partner_id' => $partner_id,
+                     'lead_id' => $lead_id
+                 ], ['%d', '%d']);
+             }
+         
         
-            // Delete existing leads
-            $wpdb->delete($lead_partners_table, ['partner_id' => $partner_id], ['%d']);
+            // Handle multiple addresses
+            $addresses_table = $wpdb->prefix . 'partner_addresses';
         
-            // Insert new leads
-            foreach ($selected_leads as $lead_id) {
-                $wpdb->insert($lead_partners_table, [
-                    'partner_id' => $partner_id,
-                    'lead_id' => $lead_id
-                ], ['%d', '%d']);
+            // Delete old addresses for this partner before inserting new ones
+            $wpdb->delete($addresses_table, ['partner_id' => $partner_id]);
+        
+            if (!empty($_POST['addresses'])) {
+                foreach ($_POST['addresses'] as $key => $address) {
+                    $address = sanitize_text_field($address);
+                    $latitude = sanitize_text_field($_POST['latitude'][$key]);
+                    $longitude = sanitize_text_field($_POST['longitude'][$key]);
+                    $street_number = sanitize_text_field($_POST['street_number'][$key]);
+                    $route = sanitize_text_field($_POST['route'][$key]);
+                    $address2 = sanitize_text_field($_POST['address2'][$key]);
+                    $postal_code = sanitize_text_field($_POST['postal_code'][$key]);
+                    $state = sanitize_text_field($_POST['state'][$key]);
+                    $country = sanitize_text_field($_POST['country'][$key]);
+                    $service_area = $_POST['service_area'][$key];
+                    $other_country = $_POST['other_country'][$key];
+        
+                    // Insert new address into the database
+                    $wpdb->insert($addresses_table, [
+                        'partner_id' => $partner_id,
+                        'address' => $address,
+                        'latitude' => $latitude,
+                        'longitude' => $longitude,
+                        'street_number' => $street_number,
+                        'route' => $route,
+                        'address2' => $address2,
+                        'postal_code' => $postal_code,
+                        'state' => $state,
+                        'country' => $country,
+                        'service_area' => $service_area,
+                        'other_country' => $other_country
+                    ]);
+                }
             }
         
-            // Redirect back to list page
-            wp_redirect(admin_url('admin.php?page=service-partners'));
-            exit;
+            // Redirect or display a success message
+            echo '<div class="updated"><p>Provider updated successfully!</p></div>';
         }
+        
 
         if (isset($_GET['action']) && isset($_GET['id'])) {
             $service_partners_table = $wpdb->prefix . 'service_partners';
@@ -481,19 +543,19 @@ class Partner_Admin
         $wp_posts_table = $wpdb->prefix . 'posts';
         $lead_partners_table = $wpdb->prefix . 'lead_partners';
         $countries_table = $wpdb->prefix . 'countries';
-        
-        $countries = $wpdb->get_results("
-            SELECT * 
-            FROM {$countries_table}
-        ");
-    
+        $partner_addresses_table = $wpdb->prefix . 'partner_addresses'; // Assuming you store multiple addresses in a separate table.
+
+        $countries = $wpdb->get_results("SELECT * FROM {$countries_table}");
+
         // Get all leads (Post type: 'lead_generation')
-        //$all_leads = $wpdb->get_results("SELECT ID, post_title FROM $wp_posts_table WHERE post_type = 'lead_generation' ORDER BY post_title ASC");
         $all_leads = $wpdb->get_results("SELECT ID, post_title FROM $wp_posts_table WHERE post_type = 'lead_generation' AND post_status = 'publish' ORDER BY post_title ASC");
-    
+
         // Get assigned leads for this partner
         $assigned_leads = $wpdb->get_col("SELECT lead_id FROM $lead_partners_table WHERE partner_id = {$partner->id}");
-    
+
+        // Fetch multiple addresses for this partner
+        $partner_addresses = $wpdb->get_results("SELECT * FROM {$partner_addresses_table} WHERE partner_id = {$partner->id}");
+
         ?>
         <div class="wrap">
             <h1>Edit Provider</h1>
@@ -516,79 +578,110 @@ class Partner_Admin
                         <th><label for="phone">Phone</label></th>
                         <td><input type="text" name="phone" id="phone" value="<?php echo esc_attr($partner->phone); ?>" class="regular-text"></td>
                     </tr>
-                    <!-- <tr>
-                        <th><label for="address">Address</label></th>
-                        <td><input type="text" name="address" id="address" value="<?php echo esc_attr($partner->address); ?>" class="regular-text"></td>
-                    </tr> -->
+
+                    <!-- Address Section -->
+                    <tbody id="address-list">
+                        <?php if (!empty($partner_addresses)): ?>
+                            <?php foreach ($partner_addresses as $index => $address): ?>
+                                <tr class="address-container">
+                                    <th><label>Address</label></th>
+                                    <td class="address-group">
+                                        <input type="text" name="addresses[]" class="regular-text address-field" value="<?php echo esc_attr($address->address); ?>" placeholder="Enter address">
+                                        <input type="text" name="latitude[]" class="latitude" value="<?php echo esc_attr($address->latitude); ?>" placeholder="Latitude" readonly>
+                                        <input type="text" name="longitude[]" class="longitude" value="<?php echo esc_attr($address->longitude); ?>" placeholder="Longitude" readonly>
+                                        <input type="text" name="street_number[]" class="street_number" value="<?php echo esc_attr($address->street_number); ?>" placeholder="Street Number" readonly>
+                                        <input type="text" name="route[]" class="route" value="<?php echo esc_attr($address->route); ?>" placeholder="Route" readonly>
+                                        <input type="text" name="address2[]" class="address2" value="<?php echo esc_attr($address->address2); ?>" placeholder="Address 2" readonly>
+                                        <input type="text" name="postal_code[]" class="postal_code" value="<?php echo esc_attr($address->postal_code); ?>" placeholder="Postal Code" readonly>
+                                        <input type="text" name="state[]" class="state" value="<?php echo esc_attr($address->state); ?>" placeholder="State" readonly>
+                                        <input type="text" name="country[]" class="country" value="<?php echo esc_attr($address->country); ?>" placeholder="Country" readonly>
+
+                                        <!-- Service Area Selection -->
+                                        <br><br><select name="service_area[]" class="cls_slect-radius service-area">
+                                            <option value="5" <?php echo ($address->service_area == "5") ? 'selected' : ''; ?>> 5 KM </option>
+                                            <option value="10" <?php echo ($address->service_area == "10") ? 'selected' : ''; ?>> 10 KM </option>
+                                            <option value="25" <?php echo ($address->service_area == "25") ? 'selected' : ''; ?>> 25 KM </option>
+                                            <option value="50" <?php echo ($address->service_area == "50") ? 'selected' : ''; ?>> 50 KM </option>
+                                            <option value="100" <?php echo ($address->service_area == "100") ? 'selected' : ''; ?>> 100 KM </option>
+                                            <option value="250" <?php echo ($address->service_area == "250") ? 'selected' : ''; ?>> 250 KM </option>
+                                            <option value="500" <?php echo ($address->service_area == "500") ? 'selected' : ''; ?>> 500 KM </option>
+                                            <option value="entire" <?php echo ($address->service_area == "entire") ? 'selected' : ''; ?>> Entire Country </option>
+                                            <option value="state" <?php echo ($address->service_area == "state") ? 'selected' : ''; ?>> Entire State </option>
+                                            <option value="other" <?php echo ($address->service_area == "other") ? 'selected' : ''; ?>> Other Country </option>
+                                            <option value="every" <?php echo ($address->service_area == "every") ? 'selected' : ''; ?>> Everywhere </option>
+                                            <option value="no_service" <?php echo ($address->service_area == "no_service") ? 'selected' : ''; ?>> Not at this location </option>
+                                        </select>
+
+                                        <!-- Other Country Selection -->
+                                        <br><br><div class="other-country-container" <?php if($address->service_area != 'other') echo 'style="display: none;"'; ?>>
+                                        <select name="other_country[]" class="cls_slect-radius">
+                                            <option value="">Select</option>
+                                            <?php foreach($countries as $country) { ?>
+                                                <option value="<?php echo $country->code; ?>" <?php echo ($address->other_country == $country->code) ? 'selected' : ''; ?>>
+                                                    <?php echo esc_html($country->name); ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                        </div>
+                                        
+                                        <div class="map-preview" style="height: 50px;"></div>
+                                        <button type="button" class="button remove-address">Remove</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <!-- If no addresses exist, show one empty field -->
+                            <tr class="address-container">
+                                <th><label>Address</label></th>
+                                <td class="address-group">
+                                    <input type="text" name="addresses[]" class="regular-text address-field" placeholder="Enter address">
+                                    <input type="text" name="latitude[]" class="latitude" placeholder="Latitude" readonly>
+                                    <input type="text" name="longitude[]" class="longitude" placeholder="Longitude" readonly>
+                                    <input type="text" name="street_number[]" class="street_number" placeholder="Street Number" readonly>
+                                    <input type="text" name="route[]" class="route" placeholder="Route" readonly>
+                                    <input type="text" name="address2[]" class="address2" placeholder="Address 2" readonly>
+                                    <input type="text" name="postal_code[]" class="postal_code" placeholder="Postal Code" readonly>
+                                    <input type="text" name="state[]" class="state" placeholder="State" readonly>
+                                    <input type="text" name="country[]" class="country" placeholder="Country" readonly>
+
+                                    <!-- Service Area Selection -->
+                                    <br><br><select name="service_area[]" class="cls_slect-radius service-area">
+                                        <option value="5"> 5 KM </option>
+                                        <option value="10"> 10 KM </option>
+                                        <option value="25"> 25 KM </option>
+                                        <option value="50"> 50 KM </option>
+                                        <option value="100"> 100 KM </option>
+                                        <option value="250"> 250 KM </option>
+                                        <option value="500"> 500 KM </option>
+                                        <option value="entire"> Entire Country </option>
+                                        <option value="state"> Entire State </option>
+                                        <option value="other"> Other Country </option>
+                                        <option value="every"> Everywhere </option>
+                                        <option value="no_service"> Not at this location </option>
+                                    </select>
+
+                                    <!-- Other Country Selection -->
+                                    <br><br><div class="other-country-container" style="display: none;">
+                                    <select name="other_country[]" class="cls_slect-radius">
+                                        <option value="">Select</option>
+                                        <?php foreach($countries as $country) { ?>
+                                            <option value="<?php echo $country->code; ?>">
+                                                <?php echo esc_html($country->name); ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                    </div>
+
+                                    <div class="map-preview" style="height: 50px;"></div>
+                                    <button type="button" class="button remove-address">Remove</button>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+
                     <tr>
-                        <th><label for="address">Address</label></th>
-                        <td>
-                            <input type="text" id="autocomplete" class="regular-text" aria-required="true" aria-invalid="false" name="address" value="<?php echo esc_attr($partner->address); ?>">
-                            <div id="map-preview" style="position: relative; overflow: hidden;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><label>Latitude</label></th>
-                        <td><input type="text" id="latitude" name="latitude" value="<?php echo esc_attr($partner->latitude); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Longitude</label></th>
-                        <td><input type="text" id="longitude" name="longitude" value="<?php echo esc_attr($partner->longitude); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Street Number</label></th>
-                        <td><input type="text" id="street_number" name="street_number" value="<?php echo esc_attr($partner->street_number); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Address 1</label></th>
-                        <td><input type="text" id="route" name="route" value="<?php echo esc_attr($partner->route); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Address 2</label></th>
-                        <td><input type="text" id="address2" name="address2" value="<?php echo esc_attr($partner->address2); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Postal Code</label></th>
-                        <td><input type="text" id="postal_code" name="postal_code" value="<?php echo esc_attr($partner->postal_code); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>State</label></th>
-                        <td><input type="text" id="state" name="state" value="<?php echo esc_attr($partner->state); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Country</label></th>
-                        <td><input type="text" id="country" name="country" value="<?php echo esc_attr($partner->country); ?>" class="regular-text" readonly></td>
-                    </tr>
-                    <tr>
-                        <th><label>Service Area</label></th>
-                        <td>
-                            <select name="service_area" id="radius" class="cls_slect-radius" onchange="on_country()">
-                                <option value="5" <?php echo ($partner->service_area == "5") ? 'selected' : ''; ?>> 5 KM </option>
-                                <option value="10" <?php echo ($partner->service_area == "10") ? 'selected' : ''; ?>> 10 KM </option>
-                                <option value="25" <?php echo ($partner->service_area == "25") ? 'selected' : ''; ?>> 25 KM </option>
-                                <option value="50" <?php echo ($partner->service_area == "50") ? 'selected' : ''; ?>> 50 KM </option>
-                                <option value="100" <?php echo ($partner->service_area == "100") ? 'selected' : ''; ?>> 100 KM </option>
-                                <option value="250" <?php echo ($partner->service_area == "250") ? 'selected' : ''; ?>> 250 KM </option>
-                                <option value="500" <?php echo ($partner->service_area == "500") ? 'selected' : ''; ?>> 500 KM </option>
-                                <option value="entire" <?php echo ($partner->service_area == "entire") ? 'selected' : ''; ?>> Entire Country </option>
-                                <option value="state" <?php echo ($partner->service_area == "state") ? 'selected' : ''; ?>> Entire State </option>
-                                <option value="other" <?php echo ($partner->service_area == "other") ? 'selected' : ''; ?>> Other Country </option>
-                                <option value="every" <?php echo ($partner->service_area == "every") ? 'selected' : ''; ?>> Every Where </option>
-                                <option value="no_service" <?php echo ($partner->service_area == "no_service") ? 'selected' : ''; ?>> Not at this location </option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr id="show_country">
-                        <th><label>Service provided in other Country</label></th>
-                        <td>
-                            <select name="other_country" id="other_country" class="cls_slect-radius">
-                                <option value="">Select</option>
-                                <?php foreach($countries as $country) { ?>
-                                    <option value="<?php echo $country->code; ?>" <?php echo ($partner->other_country == $country->code) ? 'selected' : ''; ?>>
-                                        <?php echo esc_html($country->name); ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
+                        <td colspan="2">
+                            <button type="button" id="add-address">Add Address</button>
                         </td>
                     </tr>
 
@@ -617,10 +710,12 @@ class Partner_Admin
                         </td>
                     </tr>
                 </table>
-                <p><input type="submit" name="update_partner" value="Save Changes" class="button button-primary"></p>
+                <p><input type="submit" name="update_partner" value="Update Provider" class="button button-primary"></p>
             </form>
         </div>
+
         <?php
     }
+
 }
 ?>

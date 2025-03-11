@@ -49,6 +49,15 @@ jQuery(document).ready(function($) {
         $("#chatModal").hide();
     });
 
+    function _fnFormatMessage(text) {
+        const urlPattern = /(https?:\/\/[^\s]+)/g; // Match URLs
+        const formattedText = text
+            .replace(urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>') // Convert URLs to links
+            .replace(/\n/g, '<br>'); // Convert newlines to <br> for HTML
+        
+        return formattedText;
+    }
+
     // Send Message via AJAX
     $("#sendMessage").click(function () {
         var partner_id = $("#partner_id").val();
@@ -82,7 +91,7 @@ jQuery(document).ready(function($) {
                         <div class='chat-message sent'>
                             <div class='chat-bubble'>
                                 <strong>You</strong>
-                                <p>${message}</p>
+                                <p>${_fnFormatMessage(message)}</p>
                                 <span class='chat-time'>${timestamp}</span>
                             </div>
                         </div>

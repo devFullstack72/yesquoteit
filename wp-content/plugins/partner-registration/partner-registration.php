@@ -28,6 +28,8 @@ require_once PR_PLUGIN_DIR . 'includes/class-customer-login.php';
 
 require_once PR_PLUGIN_DIR . 'includes/general-functions.php';
 
+require_once PR_PLUGIN_DIR . 'includes/Backend/class-lead-sent-providers.php';
+
 class Partner_Registration_Plugin {
     public function __construct() {
         new Partner_Registration_Form();
@@ -40,6 +42,8 @@ class Partner_Registration_Plugin {
         new Partner_CF7_Fields_Labels();
 
         new Customer_Login();
+
+        new LeadSentPartnersController();
     }
 
     public static function create_plugin_tables() {
@@ -137,7 +141,36 @@ class Partner_Registration_Plugin {
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     field_name VARCHAR(255) NOT NULL UNIQUE,
                     field_label VARCHAR(255) NOT NULL
-                );"
+                );",
+
+            "partner_addresses" => "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}partner_addresses (
+                id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                partner_id BIGINT UNSIGNED NOT NULL,
+                address VARCHAR(255) NOT NULL,
+                latitude VARCHAR(50),
+                longitude VARCHAR(50),
+                street_number VARCHAR(50),
+                route VARCHAR(255),
+                address2 VARCHAR(255),
+                postal_code VARCHAR(50),
+                state VARCHAR(100),
+                country VARCHAR(100),
+                service_area VARCHAR(100),
+                other_country VARCHAR(100),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB $charset_collate;",
+
+            "partner_reviews" => "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}yqit_partner_reviews (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                customer_id INT NOT NULL,
+                partner_id INT NOT NULL,
+                quote_id INT NOT NULL,
+                rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+                review TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_partner_id (partner_id),
+                INDEX idx_quote_id (quote_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
 
         ];
 
@@ -182,6 +215,10 @@ class Partner_Registration_Plugin {
 
         if (!in_array('is_archived', $existing_lead_quotes_columns)) {
             $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes ADD COLUMN is_archived VARCHAR(255) NULL DEFAULT 0 AFTER quote_data;");
+        }
+
+        if (!in_array('is_closed', $existing_lead_quotes_columns)) {
+            $wpdb->query("ALTER TABLE {$wpdb->prefix}yqit_lead_quotes ADD COLUMN is_closed TINYINT(1) NULL DEFAULT 0 AFTER is_archived;");
         }
 
         $existing_lead_quotes_columns = $wpdb->get_col("DESC {$wpdb->prefix}yqit_lead_quotes_partners", 0);
@@ -507,6 +544,8 @@ register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_partn
 
 // Customer hooks
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_requests_page']);
+
+register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_set_password_page']);
 
 register_activation_hook(__FILE__, ['Partner_Registration_Plugin', 'create_customer_login_page']);
 
