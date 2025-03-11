@@ -31,6 +31,8 @@ function openChat(partner_id, customer_id, lead_id, view = 'customer') {
             $("#partner_id").val(partner_id);
             $("#customer_id").val(customer_id);
             $("#lead_id").val(lead_id);
+
+            setChatLinksPreview();
         },
         complete: function () {
             $(".chat-loading").remove(); // Remove loading spinner after loading messages
@@ -140,5 +142,59 @@ function sendChatNotification(chat_message_id, customer_id, partner_id, message_
         error: function () {
             console.log("Failed to send notification.");
         }
+    });
+}
+
+function setChatLinksPreview() {
+    $(".link-preview-pending").each(function () {
+        var previewElement = $(this);
+        var url = previewElement.data("url");
+
+        // Prevent duplicate processing
+        if (!url || previewElement.data("processed") === true) return;
+
+        var requestData = new FormData();
+        requestData.append("action", "get_url_metadata");
+        requestData.append("preview_url", url);
+
+        $.ajax({
+            url: ajaxurl,
+            type: "POST",
+            data: requestData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function (response) {
+                if (!response.success) return;
+
+                var data = response.data;
+
+                var previewHTML = `
+                    <div class='link-preview'>
+                        <a href='${data.url}' target='_blank' class='preview-content'>
+                            <img class='preview-image' src='${data.image}' alt='Preview Image' onerror='this.style.display="none"'>
+                            <div class='preview-text'>
+                                <strong>${data.title}</strong>
+                                <p>${data.description}</p>
+                            </div>
+                        </a>
+                    </div>
+                `;
+
+                // Ensure the preview is not duplicated
+                previewElement.html(previewHTML);
+                previewElement.removeClass("link-preview-pending").data("processed", true);
+
+                $(".chat-bubble").each(function () {
+                    var linkPreviews = $(this).find(".link-preview");
+                    if (linkPreviews.length > 1) {
+                        linkPreviews.not(":first").remove(); // Keep the first one, remove the rest
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching link preview:", error);
+            }
+        });
     });
 }

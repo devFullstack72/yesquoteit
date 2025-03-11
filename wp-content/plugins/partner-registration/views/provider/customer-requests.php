@@ -645,4 +645,80 @@ thead {
 .quote-table tr:hover {
     background-color: #f1f1f1;
 }
+
+/* Chat Bubble */
+.chat-bubble {
+    position: relative;
+    background: #f1f0f0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 75%;
+    margin: 5px 0;
+}
+
+.chat-message.sent .chat-bubble {
+    background:rgb(71, 60, 130);
+    align-self: flex-end;
+}
+
+.chat-message.received .chat-bubble {
+    background: #fff;
+    align-self: flex-start;
+}
+
+/* Link Preview - Compact Layout */
+.link-preview {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    margin-bottom: 8px;
+    width: 100%;
+    max-width: 300px;
+    text-decoration: none;
+    color: #000;
+    overflow: hidden; /* Prevents content from spilling out */
+    white-space: nowrap;
+}
+
+/* Small Image on the Left */
+.preview-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+    flex-shrink: 0; /* Prevents the image from shrinking */
+}
+
+/* Title and Description Stack */
+.preview-text {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden; /* Keeps content inside */
+}
+
+.preview-text strong {
+    font-size: 13px;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Prevent description from overflowing */
+.preview-text p {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 </style>
