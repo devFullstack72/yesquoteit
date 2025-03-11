@@ -177,16 +177,25 @@ function setChatLinksPreview() {
                 var data = response.data;
 
                 var previewHTML = `
-                    <div class='link-preview'>
-                        <a href='${data.url}' target='_blank' class='preview-content'>
-                            <img class='preview-image' src='${data.image}' alt='Preview Image' onerror='this.style.display="none"'>
-                            <div class='preview-text'>
-                                <strong>${data.title}</strong>
-                                <p>${data.description}</p>
+                    <div class="link-preview">
+                        <div class="wa-preview-container">
+                            <div class="wa-preview-thumbnail">
+                                ${data.image 
+                                    ? `<img src="${data.image}" style="width:100%; height:100%; object-fit:cover;" />`
+                                    : `<svg class="wa-link-icon" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24">
+                                        <path fill="#7f7f7f" d="M3.9,12A5.1,5.1,0,0,1,9,6.9h3V8.4H9A3.6,3.6,0,0,0,5.4,12,3.6,3.6,0,0,0,9,15.6h3V17.1H9A5.1,5.1,0,0,1,3.9,12ZM9.75,13.5h4.5v-3h-4.5Zm7.35-6H15V8.4h2.1a3.6,3.6,0,0,1,0,7.2H15v1.5h2.1a5.1,5.1,0,0,0,0-10.2Z"/>
+                                    </svg>`
+                                }
                             </div>
-                        </a>
-                    </div>
-                `;
+                            <div class="wa-preview-details">
+                                <div class="wa-preview-title">${data.title}</div>
+                                <div class="wa-preview-description">${data.description}</div>
+                                <div class="wa-preview-domain">${new URL(data.url).hostname}</div>
+                            </div>
+                        </div>
+                    </div>`;
+
+
 
                 // Ensure the preview is not duplicated
                 previewElement.html(previewHTML);

@@ -1799,51 +1799,128 @@ add_action('wp_ajax_nopriv_get_url_metadata', 'get_url_metadata');
 add_action('wp_ajax_get_url_metadata', 'get_url_metadata');
 add_action('wp_ajax_nopriv_get_url_metadata', 'get_url_metadata');
 
+// function get_url_metadata() {
+//     if (!isset($_POST['preview_url'])) {
+//         wp_send_json_error(['error' => 'No URL provided'], 400);
+//     }
+
+//     $url = esc_url_raw($_POST['preview_url']);
+
+//     // Check cache first (transient storage)
+//     $cache_key = 'url_preview_' . md5($url);
+//     $cached_data = get_transient($cache_key);
+//     if ($cached_data) {
+//         wp_send_json_success($cached_data);
+//     }
+
+//     // Use cURL instead of file_get_contents()
+//     $ch = curl_init();
+//     curl_setopt($ch, CURLOPT_URL, $url);
+//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//     curl_setopt($ch, CURLOPT_TIMEOUT, 5); // 5 seconds timeout
+//     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+//     curl_setopt($ch, CURLOPT_HEADER, false);
+//     $html = curl_exec($ch);
+//     curl_close($ch);
+
+//     if (!$html) {
+//         wp_send_json_error(['error' => 'Unable to fetch URL'], 400);
+//     }
+
+//     // Extract OpenGraph metadata
+//     preg_match('/<meta property="og:title" content="(.*?)"/', $html, $title);
+//     preg_match('/<meta property="og:description" content="(.*?)"/', $html, $description);
+//     preg_match('/<meta property="og:image" content="(.*?)"/', $html, $image);
+
+//     $data = [
+//         'title' => $title[1] ?? '',
+//         'description' => $description[1] ?? '',
+//         'image' => $image[1] ?? '',
+//         'url' => $url
+//     ];
+
+//     // Cache results for 1 hour
+//     set_transient($cache_key, $data, HOUR_IN_SECONDS);
+
+//     wp_send_json_success($data);
+// }
+
 function get_url_metadata() {
-    if (!isset($_POST['preview_url'])) {
+    if (!isset($_POST['preview_url']) || empty($_POST['preview_url'])) {
         wp_send_json_error(['error' => 'No URL provided'], 400);
     }
 
-    $url = esc_url_raw($_POST['preview_url']);
+    $url = esc_url_raw(trim($_POST['preview_url']));
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        wp_send_json_error(['error' => 'Invalid URL'], 400);
+    }
 
-    // Check cache first (transient storage)
     $cache_key = 'url_preview_' . md5($url);
     $cached_data = get_transient($cache_key);
-    if ($cached_data) {
+    if ($cached_data !== false) {
         wp_send_json_success($cached_data);
     }
 
-    // Use cURL instead of file_get_contents()
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5); // 5 seconds timeout
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; LinkPreviewBot/1.0)',
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_HEADER => false
+    ]);
+
     $html = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
     curl_close($ch);
 
-    if (!$html) {
-        wp_send_json_error(['error' => 'Unable to fetch URL'], 400);
+    if ($html === false || $http_code >= 400) {
+        $error_message = $curl_error ?: 'Unable to fetch URL';
+        wp_send_json_error(['error' => $error_message], 400);
     }
 
-    // Extract OpenGraph metadata
-    preg_match('/<meta property="og:title" content="(.*?)"/', $html, $title);
-    preg_match('/<meta property="og:description" content="(.*?)"/', $html, $description);
-    preg_match('/<meta property="og:image" content="(.*?)"/', $html, $image);
-
     $data = [
-        'title' => $title[1] ?? '',
-        'description' => $description[1] ?? '',
-        'image' => $image[1] ?? '',
+        'title' => '',
+        'description' => '',
+        'image' => '',
         'url' => $url
     ];
 
-    // Cache results for 1 hour
-    set_transient($cache_key, $data, HOUR_IN_SECONDS);
+    function extract_meta($html, $keys = []) {
+        foreach ($keys as $key) {
+            // Match property or name attribute
+            $pattern = '/<meta\s+(?:property|name)=["\']' . preg_quote($key, '/') . '["\']\s+content=["\']([^"\']+)["\']/i';
+            preg_match($pattern, $html, $matches);
+            if (!empty($matches[1])) {
+                return html_entity_decode($matches[1]);
+            }
+        }
+        return '';
+    }
 
+    // Try multiple options for each field
+    $data['title'] = extract_meta($html, ['og:title', 'twitter:title']);
+    if (empty($data['title'])) {
+        preg_match('/<title>(.*?)<\/title>/is', $html, $title_match);
+        $data['title'] = !empty($title_match[1]) ? html_entity_decode($title_match[1]) : '';
+    }
+
+    $data['description'] = extract_meta($html, ['og:description', 'twitter:description', 'description']);
+    $data['image'] = extract_meta($html, ['og:image', 'twitter:image']);
+
+    // Basic validation
+    if (empty($data['title']) && empty($data['description']) && empty($data['image'])) {
+        wp_send_json_error(['error' => 'No metadata found', 'debug' => substr($html, 0, 1000)], 404);
+    }
+
+    set_transient($cache_key, $data, HOUR_IN_SECONDS);
     wp_send_json_success($data);
 }
+
+
 
 function get_customer_chat_details_callback() {
     global $wpdb;

@@ -667,7 +667,7 @@ thead {
 }
 
 /* Link Preview - Compact Layout */
-.link-preview {
+/* .link-preview {
     display: flex;
     align-items: center;
     background: #f9f9f9;
@@ -679,27 +679,27 @@ thead {
     max-width: 300px;
     text-decoration: none;
     color: #000;
-    overflow: hidden; /* Prevents content from spilling out */
+    overflow: hidden;
     white-space: nowrap;
-}
+} */
 
-/* Small Image on the Left */
-.preview-image {
+
+/* .preview-image {
     width: 40px;
     height: 40px;
     object-fit: cover;
     border-radius: 5px;
     margin-right: 10px;
-    flex-shrink: 0; /* Prevents the image from shrinking */
+    flex-shrink: 0;
 }
 
-/* Title and Description Stack */
+
 .preview-text {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow: hidden; /* Keeps content inside */
+    overflow: hidden;
 }
 
 .preview-text strong {
@@ -712,7 +712,7 @@ thead {
     white-space: nowrap;
 }
 
-/* Prevent description from overflowing */
+
 .preview-text p {
     font-size: 12px;
     color: #666;
@@ -720,5 +720,5 @@ thead {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
+} */
 </style>

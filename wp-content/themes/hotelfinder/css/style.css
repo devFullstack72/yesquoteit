@@ -9071,3 +9071,80 @@ only screen and (min-resolution:1.3dppx) {
 	color: #6FBF83;
 	border: 1px solid #6FBF83;
 }
+
+
+.link-preview {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    margin-bottom: 8px;
+    width: 100%;
+    max-width: 300px;
+    text-decoration: none;
+    color: #000;
+    overflow: hidden; 
+    white-space: nowrap;
+}
+
+.link-preview {
+    background-color: #e1ffc7; /* Light green chat bubble background */
+    padding: 8px;
+    border-radius: 8px;
+    display: inline-block;
+    /* max-width: 320px; */
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.wa-preview-container {
+    display: flex;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.wa-preview-thumbnail {
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    min-width: 60px;
+    height: 60px;
+}
+
+.wa-link-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.wa-preview-details {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.wa-preview-title {
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.wa-preview-description {
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.wa-preview-domain {
+    color: #888;
+    font-size: 12px;
+}
