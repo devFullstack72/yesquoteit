@@ -1524,7 +1524,7 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
 
     // Get customer and partner details
     $customer = $wpdb->get_row($wpdb->prepare(
-        "SELECT name, email FROM {$wpdb->prefix}yqit_customers WHERE id = %d",
+        "SELECT name, email, password FROM {$wpdb->prefix}yqit_customers WHERE id = %d",
         $customer_id
     ));
 
@@ -1563,13 +1563,29 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
     );
 
     // Replace placeholders in the email body
+
+    $response_url = '';
+    if ($to == 'partner') {
+        // If email is going to partner, use this URL
+        $response_url = home_url('/partner-customer-requests');
+    } else {
+        // If email is going to customer
+        if (empty($customer->password)) {
+            // Redirect to set password or registration if password is blank
+            $response_url = home_url() . '/handler-events/customer/' . encrypt_customer_id($customer_id);
+        } else {
+            // Redirect to customer login if password exists
+            $response_url = home_url('/customer-login');
+        }
+    }
+
     $email_body = str_replace(
         ['{recipient_name}', '{sender_name}', '{message}', '{response_url}'],
         [
             ($to == 'partner') ? $partner->business_trading_name : $customer->name,
             ($to == 'partner') ? $customer->name : $partner->business_trading_name,
             nl2br($message),
-            home_url(($to == 'partner') ? '/partner-customer-requests' : '/customer-login')
+            $response_url
         ],
         $template_post->post_content
     );
