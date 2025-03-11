@@ -89,11 +89,16 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     var timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+                    var firstUrlMatch = message.match(/(https?:\/\/[^\s]+)/);
+                    var firstUrl = firstUrlMatch ? firstUrlMatch[1] : "";
+                    var linkPreview = firstUrl ? `<div class='link-preview-pending' data-url='${firstUrl}'></div>` : "";
+
                     var newMessage = `
                         <div class='chat-message sent'>
                             <div class='chat-bubble'>
                                 <strong>You</strong>
-                                <p>${_fnFormatMessage(message)}</p>
+                                ${linkPreview}
+                                <p class='message-text'>${_fnFormatMessage(message)}</p>
                                 <span class='chat-time'>${timestamp}</span>
                             </div>
                         </div>
@@ -110,6 +115,8 @@ jQuery(document).ready(function($) {
 
                     // Auto-scroll to latest message
                     $("#chat_messages").scrollTop($("#chat_messages")[0].scrollHeight);
+
+                    setChatLinksPreview();
 
                     sendChatNotification(response.data.chat_message_id, response.data.customer_id, response.data.partner_id, response.data.message_text, response.data.view);
                 } else {
