@@ -31,6 +31,8 @@ function openChat(partner_id, customer_id, lead_id, view = 'customer') {
             $("#partner_id").val(partner_id);
             $("#customer_id").val(customer_id);
             $("#lead_id").val(lead_id);
+
+            setChatLinksPreview();
         },
         complete: function () {
             $(".chat-loading").remove(); // Remove loading spinner after loading messages
@@ -87,11 +89,16 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     var timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+                    var firstUrlMatch = message.match(/(https?:\/\/[^\s]+)/);
+                    var firstUrl = firstUrlMatch ? firstUrlMatch[1] : "";
+                    var linkPreview = firstUrl ? `<div class='link-preview-pending' data-url='${firstUrl}'></div>` : "";
+
                     var newMessage = `
                         <div class='chat-message sent'>
                             <div class='chat-bubble'>
                                 <strong>You</strong>
-                                <p>${_fnFormatMessage(message)}</p>
+                                ${linkPreview}
+                                <p class='message-text'>${_fnFormatMessage(message)}</p>
                                 <span class='chat-time'>${timestamp}</span>
                             </div>
                         </div>
@@ -108,6 +115,8 @@ jQuery(document).ready(function($) {
 
                     // Auto-scroll to latest message
                     $("#chat_messages").scrollTop($("#chat_messages")[0].scrollHeight);
+
+                    setChatLinksPreview();
 
                     sendChatNotification(response.data.chat_message_id, response.data.customer_id, response.data.partner_id, response.data.message_text, response.data.view);
                 } else {
@@ -140,5 +149,68 @@ function sendChatNotification(chat_message_id, customer_id, partner_id, message_
         error: function () {
             console.log("Failed to send notification.");
         }
+    });
+}
+
+function setChatLinksPreview() {
+    $(".link-preview-pending").each(function () {
+        var previewElement = $(this);
+        var url = previewElement.data("url");
+
+        // Prevent duplicate processing
+        if (!url || previewElement.data("processed") === true) return;
+
+        var requestData = new FormData();
+        requestData.append("action", "get_url_metadata");
+        requestData.append("preview_url", url);
+
+        $.ajax({
+            url: ajaxurl,
+            type: "POST",
+            data: requestData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function (response) {
+                if (!response.success) return;
+
+                var data = response.data;
+
+                var previewHTML = `
+                    <div class="link-preview">
+                        <div class="wa-preview-container">
+                            <div class="wa-preview-thumbnail">
+                                ${data.image 
+                                    ? `<img src="${data.image}" style="width:100%; height:100%; object-fit:cover;" />`
+                                    : `<svg class="wa-link-icon" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24">
+                                        <path fill="#7f7f7f" d="M3.9,12A5.1,5.1,0,0,1,9,6.9h3V8.4H9A3.6,3.6,0,0,0,5.4,12,3.6,3.6,0,0,0,9,15.6h3V17.1H9A5.1,5.1,0,0,1,3.9,12ZM9.75,13.5h4.5v-3h-4.5Zm7.35-6H15V8.4h2.1a3.6,3.6,0,0,1,0,7.2H15v1.5h2.1a5.1,5.1,0,0,0,0-10.2Z"/>
+                                    </svg>`
+                                }
+                            </div>
+                            <div class="wa-preview-details">
+                                <div class="wa-preview-title">${data.title}</div>
+                                <div class="wa-preview-description">${data.description}</div>
+                                <div class="wa-preview-domain">${new URL(data.url).hostname}</div>
+                            </div>
+                        </div>
+                    </div>`;
+
+
+
+                // Ensure the preview is not duplicated
+                previewElement.html(previewHTML);
+                previewElement.removeClass("link-preview-pending").data("processed", true);
+
+                $(".chat-bubble").each(function () {
+                    var linkPreviews = $(this).find(".link-preview");
+                    if (linkPreviews.length > 1) {
+                        linkPreviews.not(":first").remove(); // Keep the first one, remove the rest
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching link preview:", error);
+            }
+        });
     });
 }
