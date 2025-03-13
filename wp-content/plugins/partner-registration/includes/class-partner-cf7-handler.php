@@ -64,7 +64,7 @@ class Partner_CF7_Handler {
 
         // add_action('init', [$this, 'add_cf7_default_fields_lables']);
 
-        add_action('init', [$this, 'sync_partner_addresses_data']);
+        // add_action('init', [$this, 'sync_partner_addresses_data']);
     }
 
     public function submit_partner_contact_inquiry($contact_form) {
