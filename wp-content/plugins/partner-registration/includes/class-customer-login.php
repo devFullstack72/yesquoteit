@@ -89,7 +89,7 @@ class Customer_Login extends CustomerController
     
         $customer = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->customer_table} WHERE email = %s", $email));
     
-        if ($customer && wp_check_password($password, $customer->password)) {
+        if ($customer && !empty($customer->password) &&  wp_check_password($password, $customer->password)) {
             
             $this->autoCustomerLogin($customer);
     

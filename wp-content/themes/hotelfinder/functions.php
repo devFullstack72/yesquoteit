@@ -1567,7 +1567,8 @@ function send_chat_email_notification($customer_id, $partner_id, $message, $to =
     $response_url = '';
     if ($to == 'partner') {
         // If email is going to partner, use this URL
-        $response_url = home_url('/partner-customer-requests');
+        // $response_url = home_url('/partner-customer-requests');
+        $response_url = home_url() . '/handler-events/partner/' . encrypt_partner_id($partner->id);
     } else {
         // If email is going to customer
         if (empty($customer->password)) {

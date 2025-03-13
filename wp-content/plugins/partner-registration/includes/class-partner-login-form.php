@@ -18,6 +18,12 @@ class Partner_Login_Form
         add_action('admin_post_nopriv_partner_logout', [$this, 'handle_partner_logout']);
         add_action('admin_post_partner_logout', [$this, 'handle_partner_logout']);
 
+        add_action('init', [$this, 'custom_partner_handler_rewrite_rule']);
+        
+        add_filter('query_vars', [$this, 'add_partner_handler_query_var']);
+
+        add_action('template_redirect', [$this, 'handle_partner_redirect']);
+
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
 
         add_shortcode('partner_loggedin_info', [$this, 'show_partner_loggedin_info']);
@@ -34,6 +40,41 @@ class Partner_Login_Form
     public function enqueue_scripts()
     {
         
+    }
+
+    public function custom_partner_handler_rewrite_rule() {
+        add_rewrite_rule('handler-events/partner/([^/]+)/?$', 'index.php?partner_handler=$matches[1]', 'top');
+    }
+
+    public function add_partner_handler_query_var($query_vars) {
+        $query_vars[] = 'partner_handler';
+        return $query_vars;
+    }
+
+    public function handle_partner_redirect() {
+        if (get_query_var('partner_handler')) {
+            $encrypted_id = get_query_var('partner_handler');
+            
+            if ($encrypted_id) {
+                // Decrypt Customer ID
+                $partner_id = decrypt_partner_id($encrypted_id);
+                
+                if ($partner_id) {
+                    global $wpdb;
+                    $table_name = $wpdb->prefix . "service_partners";
+                    $partner = $wpdb->get_row($wpdb->prepare("SELECT id, name, password FROM $table_name WHERE id = %d", $partner_id));
+
+
+                    $_SESSION['partner_logged_in'] = true;
+                    $_SESSION['partner_id'] = $partner->id;
+                    $_SESSION['partner_name'] = $partner->name;
+                    // wp_safe_redirect(home_url());
+                    wp_safe_redirect(home_url('partner-customer-requests'));
+                    exit;
+                }
+                wp_die('Partner not found!');
+            }
+        }
     }
 
 

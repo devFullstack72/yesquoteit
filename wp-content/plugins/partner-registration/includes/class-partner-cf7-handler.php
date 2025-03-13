@@ -313,6 +313,13 @@ class Partner_CF7_Handler {
     public function pr_send_emails_background($user_email, $partner_emails, $customer_template_id, $provider_template_id, $email_data = []) {
         if (!empty($partner_emails)) {
             foreach ($partner_emails as $email) {
+
+                $table_name = $this->database->prefix . "service_partners";
+                $partner = $this->database->get_row($this->database->prepare("SELECT id FROM $table_name WHERE email = %s", $email));
+
+                // $email_data['partner_cost_hotlink'] = home_url() . '/partner-customer-requests';
+                $email_data['partner_cost_hotlink'] = home_url() . '/handler-events/partner/' . encrypt_partner_id($partner->id);
+
                 $this->pr_send_yeemail($email, $provider_template_id, $email_data, 'provider');
             }
         }

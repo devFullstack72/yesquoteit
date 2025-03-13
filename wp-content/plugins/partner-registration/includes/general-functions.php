@@ -11,6 +11,18 @@ function decrypt_customer_id($encrypted_id) {
     return openssl_decrypt(base64_decode(urldecode($encrypted_id)), 'AES-256-CBC', $key, 0, substr($key, 0, 16));
 }
 
+// Encryption Function
+function encrypt_partner_id($partner_id) {
+    $key = wp_salt(); // Use WordPress's secure salt
+    return urlencode(base64_encode(openssl_encrypt($partner_id, 'AES-256-CBC', $key, 0, substr($key, 0, 16))));
+}
+
+// Decryption Function
+function decrypt_partner_id($encrypted_id) {
+    $key = wp_salt(); // Use WordPress's secure salt
+    return openssl_decrypt(base64_decode(urldecode($encrypted_id)), 'AES-256-CBC', $key, 0, substr($key, 0, 16));
+}
+
 function dd($data) {
     echo "<pre>";
     print_r($data);
