@@ -52,12 +52,20 @@ jQuery(document).ready(function($) {
     });
 
     function _fnFormatMessage(text) {
-        const urlPattern = /(https?:\/\/[^\s]+)/g; // Match URLs
-        const formattedText = text
-            .replace(urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>') // Convert URLs to links
-            .replace(/\n/g, '<br>'); // Convert newlines to <br> for HTML
-        
-        return formattedText;
+        const urlPattern = /(https?:\/\/[^\s]+)/; // Match only the first URL
+    
+        // Find the first URL in the text
+        const match = text.match(urlPattern);
+        if (match) {
+            const url = match[1]; // First URL found
+            const linkPreview = `<div class='link-preview-pending' data-url='${url}'></div>`;
+    
+            // Replace only the first occurrence of the URL with a clickable link + preview div
+            text = text.replace(urlPattern, `<a href="${url}" class="link-tag" target="_blank" rel="noopener noreferrer">${url}</a>${linkPreview}`);
+        }
+    
+        // Convert newlines to <br> for HTML formatting
+        return text.replace(/\n/g, '<br>');
     }
 
     // Send Message via AJAX
@@ -89,15 +97,10 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     var timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                    var firstUrlMatch = message.match(/(https?:\/\/[^\s]+)/);
-                    var firstUrl = firstUrlMatch ? firstUrlMatch[1] : "";
-                    var linkPreview = firstUrl ? `<div class='link-preview-pending' data-url='${firstUrl}'></div>` : "";
-
                     var newMessage = `
                         <div class='chat-message sent'>
                             <div class='chat-bubble'>
                                 <strong>You</strong>
-                                ${linkPreview}
                                 <p class='message-text'>${_fnFormatMessage(message)}</p>
                                 <span class='chat-time'>${timestamp}</span>
                             </div>
@@ -214,6 +217,8 @@ function setChatLinksPreview() {
                     if (linkPreviews.length > 1) {
                         linkPreviews.not(":first").remove(); // Keep the first one, remove the rest
                     }
+
+                    $(this).find('.link-tag').remove();
                 });
             },
             error: function (xhr, status, error) {
