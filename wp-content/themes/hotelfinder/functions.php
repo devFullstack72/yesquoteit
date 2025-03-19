@@ -1686,17 +1686,16 @@ foreach ($messages as $msg) {
     $formatted_time = date("h:i A", strtotime($msg->created_at));
 
     // Extract first URL from message
-    preg_match('/(https?:\/\/[^\s]+)/', $msg->message, $matches);
-    $first_url = $matches[1] ?? '';
+    // preg_match('/(https?:\/\/[^\s]+)/', $msg->message, $matches);
+    // $first_url = $matches[1] ?? '';
 
     // Ensure the preview is only added once (above the message text)
-    $link_preview = $first_url ? "<div class='link-preview-pending' data-url='{$first_url}'></div>" : '';
+    // $link_preview = $first_url ? "<div class='link-preview-pending' data-url='{$first_url}'></div>" : '';
 
     $output .= "
         <div class='chat-message $sender_class'>
             <div class='chat-bubble'>
                 <strong>{$sender_name}</strong>
-                $link_preview
                 <p class='message-text'>" . fnFormatChatMessage(esc_html($msg->message)) . "</p>
                 <span class='chat-time'>{$formatted_time}</span>
             </div>
@@ -1713,11 +1712,11 @@ function fnFormatChatMessage($text) {
     if (preg_match('/(https?:\/\/[^\s]+)/', $text, $match)) {
         $url = $match[1]; // First URL found
         
-        // Convert all URLs to clickable links
-        $text = preg_replace('/(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>', $text);
+        // Create the preview div
+        $link_preview = "<div class='link-preview-pending' data-url='{$url}'></div>";
 
-        // Append a div only for the first URL
-        $text .= "<div class='link-preview-pending' data-url='{$url}'></div>";
+        // Replace only the first occurrence of the URL with a clickable link + preview div
+        $text = preg_replace('/' . preg_quote($url, '/') . '/', '<a href="' . $url . '" class="link-tag" target="_blank" rel="noopener noreferrer">' . $url . '</a>' . $link_preview, $text, 1);
     }
 
     // Convert newlines to <br> for HTML formatting

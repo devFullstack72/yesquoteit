@@ -9082,7 +9082,7 @@ only screen and (min-resolution:1.3dppx) {
     padding: 8px;
     margin-bottom: 8px;
     width: 100%;
-    max-width: 300px;
+    max-width: 400px;
     text-decoration: none;
     color: #000;
     overflow: hidden; 

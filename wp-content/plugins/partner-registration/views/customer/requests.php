@@ -171,8 +171,9 @@
         <input type="hidden" id="partner_id">
         <input type="hidden" id="customer_id">
         <input type="hidden" id="lead_id">
-        <div class="form-group">
-            <textarea id="chat_message" class="form-control" rows="2" placeholder="Type a message..."></textarea>
+        <div style="display: flex;">
+            <textarea id="chat_message" class="form-control" rows="2" placeholder="Type a message..." style="margin-right: 10px; flex: 1;"></textarea>
+            <!-- <button type="button" id="add_link" class="btn btn-primary">Add Link</button> -->
         </div>
         <button id="sendMessage" class="btn btn-success">Send</button>
     </div>
