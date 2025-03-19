@@ -177,23 +177,31 @@ function setChatLinksPreview() {
                 var data = response.data;
 
                 var previewHTML = `
-                    <div class="link-preview">
-                        <div class="wa-preview-container">
-                            <div class="wa-preview-thumbnail">
-                                ${data.image 
-                                    ? `<img src="${data.image}" style="width:100%; height:100%; object-fit:cover;" />`
-                                    : `<svg class="wa-link-icon" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24">
-                                        <path fill="#7f7f7f" d="M3.9,12A5.1,5.1,0,0,1,9,6.9h3V8.4H9A3.6,3.6,0,0,0,5.4,12,3.6,3.6,0,0,0,9,15.6h3V17.1H9A5.1,5.1,0,0,1,3.9,12ZM9.75,13.5h4.5v-3h-4.5Zm7.35-6H15V8.4h2.1a3.6,3.6,0,0,1,0,7.2H15v1.5h2.1a5.1,5.1,0,0,0,0-10.2Z"/>
-                                    </svg>`
-                                }
-                            </div>
-                            <div class="wa-preview-details">
-                                <div class="wa-preview-title">${data.title}</div>
-                                <div class="wa-preview-description">${data.description}</div>
-                                <div class="wa-preview-domain">${new URL(data.url).hostname}</div>
-                            </div>
-                        </div>
-                    </div>`;
+    <div class="link-preview">
+        <a href="${url}" target="_blank" class="wa-preview-container" style="text-decoration: none; color: inherit;">
+            <div class="wa-preview-thumbnail">
+                ${data.image 
+                    ? `<img src="${data.image}" style="width:100%; height:100%; object-fit:cover;" />`
+                    : `<svg class="wa-link-icon" xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24">
+                        <path fill="#7f7f7f" d="M3.9,12A5.1,5.1,0,0,1,9,6.9h3V8.4H9A3.6,3.6,0,0,0,5.4,12,3.6,3.6,0,0,0,9,15.6h3V17.1H9A5.1,5.1,0,0,1,3.9,12ZM9.75,13.5h4.5v-3h-4.5Zm7.35-6H15V8.4h2.1a3.6,3.6,0,0,1,0,7.2H15v1.5h2.1a5.1,5.1,0,0,0,0-10.2Z"/>
+                    </svg>`
+                }
+            </div>
+            <div class="wa-preview-details">
+                <div class="wa-preview-title">${data.title}</div>
+                <div class="wa-preview-description">${data.description}</div>
+                <div class="wa-preview-domain">${new URL(data.url).hostname}</div>
+            </div>
+        </a>
+        <div style="">
+            <a href="${url}" target="_blank" class="btn btn-primary btn-sm" style="color: #ffffff !important; margin-top: 10px !important;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4.5c-4.418 0-7-4.167-7-4.5 0-.333 2.582-4.5 7-4.5s7 4.167 7 4.5c0 .333-2.582 4.5-7 4.5z"/>
+                    <path d="M8 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 5a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+                </svg> View Details
+            </a>
+        </div>
+    </div>`;
 
 
 
@@ -214,3 +222,11 @@ function setChatLinksPreview() {
         });
     });
 }
+
+document.getElementById("add_link").addEventListener("click", function () {
+    let link = prompt("Enter the link:");
+    if (link) {
+        let textarea = document.getElementById("chat_message");
+        textarea.value += (textarea.value ? "\n" : "") + link;
+    }
+});
